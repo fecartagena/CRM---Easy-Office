@@ -1,100 +1,88 @@
-# CRM---Easy-Office
+# CRM Easy Office
 
 ## Descripción
 
-CRM Easy Office es una plataforma web orientada a **centralizar y automatizar procesos internos y documentales de Easy Office**.
+CRM Easy Office es una plataforma web orientada a centralizar y automatizar procesos internos y documentales de Easy Office.
 
 La solución busca mejorar la gestión de clientes y trámites, reducir errores derivados de procesos manuales, aumentar la trazabilidad de las operaciones y permitir que determinados servicios puedan gestionarse de forma digital.
 
-El sistema estará dirigido principalmente a ejecutivos, supervisores, administradores y, para ciertos procesos, clientes de Easy Office.
+El sistema estará dirigido principalmente a administradores, supervisores, ejecutivos y, para ciertos procesos, clientes de Easy Office.
 
-## Problema que resuelve
+Actualmente parte de la información y de los procesos se gestiona manualmente mediante herramientas como Excel, plantillas documentales y comunicación directa con los clientes. Esto genera problemas de descentralización de información, falta de trazabilidad, riesgo de errores, tiempos elevados de procesamiento y dificultades para escalar la cantidad de trámites gestionados.
 
-Actualmente parte de la información y de los procesos se gestiona manualmente, utilizando herramientas como Excel y comunicación directa con los clientes.
+## Tecnologías utilizadas
 
-Esto genera problemas de:
+Stack tecnológico preliminar:
 
-* Descentralización de información.
-* Falta de trazabilidad.
-* Riesgo de errores.
-* Tiempos elevados de procesamiento.
-* Dificultad para escalar la cantidad de trámites.
+- **Frontend:** React.
+- **Backend:** Django.
+- **Base de datos:** PostgreSQL.
+- **API:** REST.
+- **Control de versiones:** Git / GitHub.
+- **Contenedores:** Docker.
+- **Cloud / despliegue:** Por definir.
+- **Firma electrónica avanzada:** Integración por definir.
 
-## Tecnologías
-
-Las tecnologías definitivas se encuentran en etapa de definición.
-
-* **Frontend:** Por definir.
-* **Backend:** Por definir.
-* **Base de datos:** SQL, motor por definir.
-* **API:** REST.
-* **Control de versiones:** Git / GitHub.
-* **Contenedores:** Docker.
-* **Cloud / despliegue:** Por definir.
-* **Firma electrónica avanzada:** Integración por definir.
+Las tecnologías podrán ajustarse según los requerimientos definitivos y las integraciones que sean necesarias durante el desarrollo del proyecto.
 
 ## Ejecución local
 
-Las instrucciones de instalación y ejecución local serán incorporadas una vez definida e implementada la arquitectura inicial del proyecto.
+Las instrucciones definitivas para ejecutar el proyecto localmente serán incorporadas una vez implementada la arquitectura inicial.
 
-## Integrantes
+De forma preliminar, el proyecto utilizará:
+
+- Python.
+- Django.
+- Node.js.
+- React.
+- PostgreSQL.
+- Docker.
+- Git.
+
+Posteriormente se documentará el procedimiento para clonar el repositorio, configurar las variables de entorno, instalar las dependencias, preparar la base de datos y ejecutar frontend y backend.
+
+## Integrantes y roles
 
 ### Fernando Esteban Cartagena Acuña
-
-**Rol:** Gestión del proyecto / Arquitectura / Backend
-
-### Marcos José Álvarez Muñoz
-
-**Rol:** Frontend / UX/UI
+**Rol principal:** Coordinación del proyecto, ingeniería de requisitos, arquitectura e integraciones.
 
 ### Nicolás Eduardo Zapata Trujillo
+**Rol principal:** Base de datos y desarrollo backend.
 
-**Rol:** Base de Datos / Backend / QA
+### Marcos José Álvarez Muñoz
+**Rol principal:** Desarrollo frontend y UX/UI.
 
-Los integrantes podrán colaborar en distintas áreas según las necesidades del proyecto.
+Los roles representan responsabilidades principales y no funciones exclusivas. Los integrantes podrán colaborar en distintas áreas según las necesidades del proyecto.
 
-## Metodología
+## Metodología de trabajo
 
-Se utilizará una metodología ágil basada en **Scrum**, trabajando mediante:
+Se utilizará una metodología ágil basada en **Scrum**, adaptada al contexto académico y a un equipo de tres integrantes.
 
-* Product Backlog.
-* Historias de usuario.
-* Sprints.
-* Desarrollo iterativo.
-* Pruebas.
-* Revisión de avances.
-* Retroalimentación de la contraparte.
+El trabajo se organizará mediante:
 
-## Arquitectura preliminar
+- Product Backlog.
+- Historias de usuario.
+- Sprint Backlog.
+- Sprints.
+- Tablero Kanban.
+- Desarrollo iterativo e incremental.
+- Pruebas.
+- Revisión de avances.
+- Retrospectivas.
+- Retroalimentación de la contraparte.
 
-La solución estará compuesta principalmente por:
+## Arquitectura de la solución
 
-* Portal web.
-* Sistema interno de gestión.
-* Gestión de clientes y trámites.
-* Usuarios, roles y permisos.
-* Base de datos centralizada.
-* Registro y auditoría de operaciones.
-* Generación de documentos.
-* Integración con firma electrónica avanzada.
-* API para la comunicación entre los componentes.
+De forma preliminar, la solución estará compuesta por:
 
-La arquitectura definitiva será validada durante la Fase 1 del proyecto.
+- **Frontend web:** React.
+- **Backend:** Django.
+- **API REST:** comunicación entre frontend y backend.
+- **Base de datos:** PostgreSQL.
+- Sistema de autenticación y control de acceso.
+- Gestión de usuarios, clientes y trámites.
+- Registro y trazabilidad de operaciones.
+- Generación y gestión de documentos.
+- Integraciones externas, como firma electrónica avanzada, cuando corresponda.
 
-## Estado del proyecto
-
-**Fase actual: Fase 1 – Definición del Proyecto APT.**
-
-Actualmente se está trabajando en:
-
-* Levantamiento de requerimientos.
-* Definición del MVP.
-* Mockups.
-* Arquitectura preliminar.
-* Modelo de datos.
-* Product Backlog.
-* Planificación del desarrollo.
-
-El alcance definitivo será validado con Easy Office y el docente Fabián Alcantara.
-
-
+La arquitectura definitiva será validada durante el levantamiento y definición del proyecto.
