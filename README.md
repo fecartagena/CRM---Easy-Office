@@ -87,7 +87,7 @@ contenedores.
 
 ```bash
 # 1. Clonar el repositorio de backend
-git clone https://github.com/<organizacion>/crm-easyoffice-backend.git
+git clone git@github.com:Nicozapata1811/crm-easyoffice-backend.git
 cd crm-easyoffice-backend
 
 # 2. Preparar las variables de entorno
@@ -130,7 +130,7 @@ valores de marcador.
 ### Frontend
 
 ```bash
-git clone https://github.com/<organizacion>/crm-easyoffice-frontend.git
+git clone git@github.com:Nicozapata1811/crm-easyoffice-frontend.git
 cd crm-easyoffice-frontend
 cp .env.example .env    # definir la URL base de la API
 docker compose up --build
