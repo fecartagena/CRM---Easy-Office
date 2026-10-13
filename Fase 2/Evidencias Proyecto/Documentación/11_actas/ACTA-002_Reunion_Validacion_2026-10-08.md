@@ -8,7 +8,7 @@
 | **Versión** | 1.3 |
 | **Fecha de la reunión** | Jueves 8 de octubre de 2026, 20:00 |
 | **Modalidad** | `[CONFIRMAR: remota o presencial]` |
-| **Participantes** | Por Easy Office: Natanael `[APELLIDO PENDIENTE]`. Por el equipo: Fernando Cartagena `[CONFIRMAR asistencia de Nicolás Zapata y Marcos Álvarez]` |
+| **Participantes** | Por Easy Office: Natanael Escobar. Por el equipo: Fernando Cartagena `[CONFIRMAR asistencia de Nicolás Zapata y Marcos Álvarez]` |
 | **Hito** | H2 · Validación de requerimientos con la contraparte |
 | **Estado del documento** | Emitido. Pendiente de confirmación escrita de Easy Office |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |

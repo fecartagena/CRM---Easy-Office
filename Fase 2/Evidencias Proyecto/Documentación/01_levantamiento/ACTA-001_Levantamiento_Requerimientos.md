@@ -19,15 +19,15 @@ El levantamiento se realizó en dos sesiones remotas con la contraparte.
 | | Sesión 1 | Sesión 2 |
 |---|---|---|
 | Carácter | Presentación de la problemática por parte de la empresa | Ronda de preguntas y cierre preliminar de requerimientos |
-| Fecha | `[PENDIENTE DE CONFIRMAR]` | Jueves 3 de septiembre de 2026 `[CONFIRMAR]` |
+| Fecha | 28 de septiembre de 2026 | Jueves 3 de septiembre de 2026  |
 | Registro | Transcripción disponible | Transcripción del 5 de septiembre de 2026 |
 | Modalidad | Remota | Remota |
 
 **Participantes**
 
-- Por Easy Office: Natanael `[APELLIDO PENDIENTE]`, representante de la empresa.
+- Por Easy Office: Natanael Escobar, representante de la empresa.
 - Por el equipo CRM Easy Office: Fernando Cartagena (formuló preguntas en la
-  sesión 2). `[CONFIRMAR asistencia de Nicolás Zapata y Marcos Álvarez]`
+  sesión 2). asistencia de Nicolás Zapata y Marcos Álvarez
 
 **Objetivo de las sesiones**
 
@@ -325,4 +325,4 @@ Solicitado adicionalmente por el equipo, `[PENDIENTE DE CONFIRMAR]`:
 *Documento elaborado por el equipo del proyecto sobre la base de las
 transcripciones de ambas sesiones. Toda afirmación atribuida a la contraparte
 proviene de esas transcripciones, que se conservan como evidencia en
-`12_evidencias/`.*
+`Documentación/12_evidencias/`.*
