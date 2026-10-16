@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RN-001 · Reglas de negocio |
-| **Versión** | 2.2 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 2.3 |
+| **Fecha** | 14 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | Las especificaciones formales de Easy Office confirman reglas que la versión 1.0 marcaba como propuesta, y agregan otras nuevas |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -101,6 +101,8 @@ meses, vencimiento 01-10-2027.
 del 12-10-2026)
 *La planilla actual registra el vencimiento a mano; la migración lo recalcula con
 esta regla e informa las diferencias.*
+*Implementación (issue #38): cuando el día de inicio no existe en el mes de
+vencimiento, se usa el último día de ese mes* `[SUPUESTO – VALIDAR CON EASY OFFICE]`.
 
 **RN-38.** Cada contrato recibe un folio con el formato
 `{código de sucursal}-{correlativo de 4 dígitos}-{año}`, donde el código es `LF`
@@ -109,6 +111,13 @@ es común a todas las sucursales y se reinicia cada año. El folio identifica el
 contrato, no al cliente.
 **Confirmada** · Proceso actual y propuesto · Formulario Excel entregado por Easy
 Office, Reunión del 08-10-2026 (`ACTA-002`)
+*Implementación (issue #38): el correlativo es común también a las marcas
+EASY OFFICE e INOFFICE; la sucursal sale del inmueble del primer servicio con
+ubicación y, si ninguno la tiene, se indica explícitamente; el ancho del
+correlativo es configurable (cuatro por defecto) para conservar los folios
+históricos de dos dígitos (TA-03). El año del folio es el año de emisión del
+contrato* `[SUPUESTO – VALIDAR CON EASY OFFICE]`*. Si una renovación conserva el
+folio está pendiente; hoy se registra como contrato nuevo que apunta al anterior.*
 *Regla obtenida de la macro del formulario. La muestra de datos usa un formato
 anterior de dos dígitos.* `[PENDIENTE DE VALIDAR CON EASY OFFICE: formato vigente
 y tratamiento de los folios históricos]`
@@ -206,6 +215,9 @@ confirmación.*
 
 **RN-43.** La autorización de uso del domicilio tributario la otorga el
 propietario del inmueble de la oficina, que puede ser distinto en cada oficina.
+*El propietario puede ser una persona natural (bodega, `PLT-02`) o una empresa con
+su representante legal (oficina, `PLT-01`); el documento incorpora la imagen de su
+cédula de identidad, que se guarda como archivo protegido.*
 **Confirmada** · Proceso actual y propuesto · Contratos entregados por Easy
 Office, Reunión del 08-10-2026 (`ACTA-002`)
 
@@ -251,6 +263,11 @@ ejecutivo en el CRM.
 
 **RN-44.** Los precios de los servicios incluyen IVA y no existen precios
 especiales por cliente.
+*Al contratar se copia el precio de lista y no se puede cambiar; solo un servicio
+sin precio fijo recibe el precio acordado. El anexo de `PLT-01` dice «TODOS LOS
+VALORES MÁS I.V.A.», lo que contradice esta regla* `[DISCREPANCIA A RESOLVER CON
+EASY OFFICE]`*; mientras tanto, cada servicio lleva el indicador
+`precio_incluye_iva` y ningún precio está confirmado.*
 **Confirmada** · Proceso actual y propuesto · `ACTA-002` (actualización del
 12-10-2026)
 
@@ -333,3 +350,4 @@ agenda de la próxima validación. RN-37 quedó confirmada el 12-10-2026.
 | 2.0 | 24-09-2026 | Incorporación de las reglas de las especificaciones formales; distinción entre proceso actual y propuesto; renumeración a RN-01 a RN-36; registro de la discrepancia de firmante en el piloto |
 | 2.1 | 09-10-2026 | Reglas RN-37 a RN-43 a partir de `ACTA-002` y de los documentos entregados: vencimiento, folio, firmante, momento del pago, cuenta del cliente, estados y autorizante del domicilio. RN-29 pasa a confirmada; discrepancia de RN-23 resuelta; dashboard para el perfil Ejecutivo en RN-32 |
 | 2.2 | 12-10-2026 | RN-37 con la regla de inicio + duración − 1 día; RN-39 precisa los firmantes del domicilio tributario; RN-42 cambia a tres estados con motivo de pendiente; nueva RN-44 sobre precios con IVA |
+| 2.3 | 14-10-2026 | Notas de implementación en RN-37 (fin de mes), RN-38 (marcas, sucursal, ancho configurable, año de emisión, renovación), RN-43 (autorizante persona o empresa) y RN-44 (copia del precio y discrepancia del IVA con el anexo de `PLT-01`) |

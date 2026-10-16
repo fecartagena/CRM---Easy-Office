@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RSK-001 · Registro inicial de riesgos |
-| **Versión** | 1.3 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 1.4 |
+| **Fecha** | 14 de octubre de 2026 |
 | **Revisión** | Al cierre de cada sprint |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -29,7 +29,7 @@
 **Disparador:** el hecho observable que indica que el riesgo se está
 materializando y que corresponde activar la contingencia.
 
-**Última revisión:** 12-10-2026, tras la integración de los pagos. **Próxima revisión:** cierre del sprint en curso.
+**Última revisión:** 14-10-2026, tras el modelo de contratos e inmuebles. **Próxima revisión:** cierre del sprint en curso.
 
 ---
 
@@ -55,6 +55,7 @@ materializando y que corresponde activar la contingencia.
 | R-16 | Los precios cargados en el catálogo de ventas no coinciden con los de Easy Office | Dependencia externa | Alta | Medio | Alto | Se publica el portal con valores sin confirmar | Los servicios llevan `precio_confirmado = falso` y el portal los rotula como «Valores de ejemplo»; los valores cargados (14.900 y 3.500) difieren de los de los contratos vigentes (59.990 y 5.900) | Easy Office entrega la lista de precios vigente antes de abrir el portal | Fernando | Abierto |
 | R-17 | No existe política de reembolsos y el adaptador de Flow no soporta la operación | Producto y legal | Media | Medio | Medio | Un cliente pide devolución de un pago | Se registra como pendiente en `ACTA-002`; el adaptador de Klap ya soporta el reembolso | Gestionar los reembolsos de forma manual en el panel del proveedor mientras se define la política | Nicolás | Abierto |
 | R-18 | El túnel de desarrollo expone la API local a internet | Seguridad | Baja | Medio | Bajo | Uso de datos reales en un entorno local | Solo se usan datos ficticios en local; las llaves viven en archivos ignorados por Git; el túnel se renueva solo y no usa el socket de Docker | Apagar el servicio `tunnel` y usar un túnel manual | Nicolás | Mitigado |
+| R-19 | Exposición o retención excesiva de la imagen de la cédula del autorizante | Cumplimiento y seguridad | Baja | Alto | Medio | Acceso a la cédula por un perfil no autorizado, o datos reales en un entorno de desarrollo | Almacenamiento privado fuera de los archivos públicos y sin URL; descarga solo con permiso propio del Administrador, como adjunto y sin caché; carpeta excluida del repositorio | Definir retención y cifrado en reposo conforme a la Ley 21.719 al decidir el alojamiento (TA-09) | Nicolás | Abierto |
 
 ---
 
@@ -89,3 +90,4 @@ Se dejan registrados para evitar que se agreguen sin fundamento:
 | 1.1 | 24-09-2026 | Matriz de nivel completada con las nueve combinaciones; niveles recalculados; incorporación de la columna de disparador y de la fecha de revisión |
 | 1.2 | 09-10-2026 | Revisión tras `ACTA-002`: R-01, R-02 y R-10 mitigados; R-03, R-04 y R-12 actualizados; nuevo R-15 |
 | 1.3 | 12-10-2026 | Estado de la integración de pagos: R-04 y R-15 actualizados; nuevos R-16 (precios), R-17 (reembolsos) y R-18 (túnel de desarrollo) |
+| 1.4 | 14-10-2026 | Nuevo R-19 (cédula del autorizante) |
