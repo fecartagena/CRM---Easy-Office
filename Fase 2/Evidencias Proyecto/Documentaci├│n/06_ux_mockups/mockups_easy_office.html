@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Easy Office — Prototipo CRM (portal cliente y backoffice)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1F2ED;
+    --surface:#FFFFFF;
+    --ink:#182233;
+    --ink-soft:#5B6472;
+    --ink-faint:#8A9099;
+    --primary:#1F4C3D;
+    --primary-dark:#123027;
+    --primary-tint:#E4ECE7;
+    --stamp:#A24328;
+    --stamp-tint:#F3E4DE;
+    --gold:#AD8A34;
+    --gold-tint:#F2ECDA;
+    --border:#DBDCD4;
+    --border-strong:#C3C5BB;
+    --success:#2F7D4F;
+    --radius-s:3px;
+    --radius-m:6px;
+    --serif:'Source Serif 4', Georgia, serif;
+    --sans:'Inter', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+
+  /* ---------- prototype switcher (viewer chrome, not part of product UI) ---------- */
+  .proto-bar{
+    position:sticky;top:0;z-index:50;background:var(--primary-dark);color:#EDEFE9;
+    display:flex;align-items:center;gap:2px;padding:0 16px;overflow-x:auto;
+    font-family:var(--sans);
+  }
+  .proto-bar .proto-label{
+    font-size:11px;letter-spacing:.02em;color:#9FB0A5;padding-right:14px;white-space:nowrap;
+    border-right:1px solid #2C5041;margin-right:8px;
+  }
+  .proto-tab{
+    background:none;border:none;color:#B9C6BC;font-family:var(--sans);font-size:13px;font-weight:500;
+    padding:13px 14px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;
+  }
+  .proto-tab:hover{color:#fff;}
+  .proto-tab.active{color:#fff;border-bottom-color:var(--gold);}
+
+  .screen{display:none;min-height:100vh;}
+  .screen.active{display:block;}
+
+  /* ---------- shared product chrome ---------- */
+  .app-header{
+    background:var(--surface);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;padding:14px 32px;
+  }
+  .wordmark{font-family:var(--serif);font-weight:600;font-size:19px;color:var(--primary-dark);display:flex;align-items:center;gap:9px;}
+  .wordmark .mark{width:26px;height:26px;border:1.5px solid var(--primary-dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-family:var(--serif);}
+  .header-right{display:flex;align-items:center;gap:20px;font-size:13.5px;color:var(--ink-soft);}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--primary-tint);color:var(--primary-dark);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;font-family:var(--serif);}
+
+  .folio-nav{
+    background:var(--primary-dark);display:flex;padding:0 32px;overflow-x:auto;
+  }
+  .folio-nav .step{
+    padding:13px 20px 11px;font-size:12.5px;color:#8FA398;display:flex;align-items:center;gap:8px;white-space:nowrap;
+    border-bottom:2px solid transparent;
+  }
+  .folio-nav .step .num{
+    width:18px;height:18px;border-radius:50%;border:1px solid #567362;display:flex;align-items:center;justify-content:center;
+    font-size:10.5px;font-family:var(--serif);
+  }
+  .folio-nav .step.done{color:#CFE0D5;}
+  .folio-nav .step.done .num{background:var(--gold);border-color:var(--gold);color:#3A2E0C;}
+  .folio-nav .step.current{color:#fff;border-bottom-color:var(--gold);}
+  .folio-nav .step.current .num{border-color:#fff;color:#fff;}
+
+  .container{max-width:1080px;margin:0 auto;padding:40px 32px 80px;}
+  .container.narrow{max-width:760px;}
+  h1.page-title{font-family:var(--serif);font-weight:600;font-size:27px;margin:0 0 6px;color:var(--primary-dark);}
+  p.page-sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 32px;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);}
+
+  /* ---------- Screen 1: Catálogo ---------- */
+  .catalog-hero{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;flex-wrap:wrap;gap:16px;}
+  .search-row{display:flex;gap:10px;}
+  .search-row input{padding:10px 14px;border:1px solid var(--border-strong);border-radius:var(--radius-s);font-family:var(--sans);font-size:13.5px;width:260px;}
+  .grid-services{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+  .svc-card{padding:20px;position:relative;transition:border-color .15s;display:flex;flex-direction:column;}
+  .svc-card .meta{margin-top:auto;}
+  .svc-card.disabled h3{padding-right:96px;}
+  .svc-card:not(.disabled):hover{border-color:var(--primary);cursor:pointer;}
+  .svc-card .eyebrow{font-size:11px;color:var(--stamp);font-weight:600;margin-bottom:10px;}
+  .svc-card h3{font-family:var(--serif);font-size:16.5px;margin:0 0 8px;font-weight:600;}
+  .svc-card p{font-size:12.8px;color:var(--ink-soft);margin:0 0 14px;line-height:1.5;}
+  .svc-card .meta{font-size:12px;color:var(--ink-faint);display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:12px;}
+  .svc-card.disabled{opacity:.5;}
+  .svc-card.disabled .meta{color:var(--ink-faint);}
+  .badge-soon{position:absolute;top:18px;right:16px;z-index:2;font-size:10px;background:var(--bg);border:1px solid var(--border);padding:3px 8px;border-radius:20px;color:var(--ink-soft);}
+  .tramites-strip{display:flex;gap:10px;margin-top:36px;padding-top:24px;border-top:1px solid var(--border);align-items:center;}
+  .tramites-strip .label{font-size:12.5px;color:var(--ink-soft);margin-right:8px;}
+  .mini-pill{font-size:12px;padding:6px 12px;border-radius:20px;background:var(--primary-tint);color:var(--primary-dark);font-weight:500;}
+
+  /* ---------- forms ---------- */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .field{margin-bottom:18px;}
+  .field.full{grid-column:1/-1;}
+  .field label{display:block;font-size:12.8px;font-weight:600;margin-bottom:6px;color:var(--ink);}
+  .field .hint{font-size:11.5px;color:var(--ink-faint);margin-top:5px;}
+  .field input,.field select{
+    width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:var(--radius-s);
+    font-family:var(--sans);font-size:13.5px;color:var(--ink);background:var(--surface);
+  }
+  .field input:focus,.field select:focus{outline:2px solid var(--primary);outline-offset:1px;border-color:var(--primary);}
+  .field.valid input{border-color:var(--success);}
+  .field.valid .hint{color:var(--success);}
+  .field.error input{border-color:var(--stamp);}
+  .field.error .hint{color:var(--stamp);}
+  .form-panel{padding:32px;}
+  .form-panel h2.section-h{font-family:var(--serif);font-size:16px;font-weight:600;margin:0 0 18px;color:var(--primary-dark);}
+  .form-panel h2.section-h:not(:first-child){margin-top:8px;padding-top:24px;border-top:1px solid var(--border);}
+
+  .btn{
+    font-family:var(--sans);font-size:13.5px;font-weight:600;padding:11px 22px;border-radius:var(--radius-s);
+    border:1px solid transparent;cursor:pointer;
+  }
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--primary-dark);}
+  .btn-ghost{background:transparent;border-color:var(--border-strong);color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  .btn-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+
+  /* ---------- Screen 3: Vista previa ---------- */
+  .preview-wrap{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start;}
+  .document-sheet{
+    background:#fff;border:1px solid var(--border);padding:52px 48px;font-family:var(--serif);
+    box-shadow:0 1px 3px rgba(20,30,25,.06);
+  }
+  .document-sheet .doc-seal{font-size:10.5px;color:var(--ink-faint);letter-spacing:.03em;text-align:right;font-family:var(--sans);margin-bottom:24px;}
+  .document-sheet h2{font-size:17px;text-align:center;margin:0 0 4px;font-weight:600;}
+  .document-sheet .doc-sub{text-align:center;font-size:11.5px;color:var(--ink-soft);font-family:var(--sans);margin-bottom:32px;}
+  .document-sheet p{font-size:13.5px;line-height:1.85;color:var(--ink);margin:0 0 16px;text-align:justify;}
+  .document-sheet .fill{background:var(--gold-tint);padding:1px 4px;border-bottom:1px solid var(--gold);font-weight:600;}
+  .document-sheet .sig-line{margin-top:56px;padding-top:10px;border-top:1px solid var(--ink);width:220px;font-family:var(--sans);font-size:11px;color:var(--ink-soft);}
+  .side-panel{padding:22px;}
+  .side-panel h3{font-family:var(--serif);font-size:14.5px;margin:0 0 14px;}
+  .kv-row{display:flex;justify-content:space-between;font-size:12.8px;padding:9px 0;border-bottom:1px solid var(--border);}
+  .kv-row span:first-child{color:var(--ink-soft);}
+  .kv-row span:last-child{font-weight:600;}
+  .watermark-note{font-size:11.5px;color:var(--ink-faint);margin-top:16px;line-height:1.5;padding-top:14px;border-top:1px dashed var(--border);}
+
+  /* ---------- Screen 4: Confirmación y pago ---------- */
+  .pay-wrap{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
+  .pay-methods{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+  .pay-method{border:1px solid var(--border-strong);border-radius:var(--radius-s);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+  .pay-method.selected{border-color:var(--primary);background:var(--primary-tint);}
+  .pay-method .name{font-size:13.5px;font-weight:600;}
+  .pay-method .desc{font-size:11.8px;color:var(--ink-soft);margin-top:2px;}
+  .radio-dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border-strong);flex:none;}
+  .pay-method.selected .radio-dot{border-color:var(--primary);background:radial-gradient(circle,var(--primary) 0 5px,transparent 6px);}
+  .summary-line{display:flex;justify-content:space-between;font-size:13px;padding:9px 0;}
+  .summary-line.total{border-top:1px solid var(--border);margin-top:6px;padding-top:14px;font-weight:700;font-size:15px;}
+
+  /* ---------- Screen 5: Estado firma ---------- */
+  .status-hero{display:flex;align-items:center;gap:16px;padding:24px;margin-bottom:28px;}
+  .status-hero .icon{width:44px;height:44px;border-radius:50%;background:var(--gold-tint);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:19px;font-family:var(--serif);flex:none;}
+  .status-hero h2{font-family:var(--serif);font-size:17px;margin:0 0 4px;}
+  .status-hero p{margin:0;font-size:13px;color:var(--ink-soft);}
+  .timeline{padding:8px 4px;}
+  .tl-item{display:flex;gap:16px;padding-bottom:26px;position:relative;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item:not(:last-child)::before{content:"";position:absolute;left:11px;top:26px;bottom:0;width:1px;background:var(--border-strong);}
+  .tl-dot{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--surface);border:1.5px solid var(--border-strong);color:var(--ink-faint);z-index:1;}
+  .tl-item.done .tl-dot{background:var(--success);border-color:var(--success);color:#fff;}
+  .tl-item.current .tl-dot{background:var(--gold);border-color:var(--gold);color:#3A2E0C;}
+  .tl-body .tl-title{font-size:13.8px;font-weight:600;margin-bottom:3px;}
+  .tl-item:not(.done):not(.current) .tl-body .tl-title{color:var(--ink-faint);}
+  .tl-body .tl-meta{font-size:12px;color:var(--ink-soft);}
+  .signer-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .signer-row:last-child{border:none;}
+  .sig-status{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;}
+  .sig-status.pend{background:var(--gold-tint);color:var(--gold);}
+  .sig-status.ok{background:var(--primary-tint);color:var(--primary);}
+
+  /* ---------- Screen 6: Mis trámites ---------- */
+  .tabs-row{display:flex;gap:4px;margin-bottom:22px;border-bottom:1px solid var(--border);}
+  .tabs-row button{background:none;border:none;font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);padding:10px 4px;margin-right:22px;border-bottom:2px solid transparent;cursor:pointer;}
+  .tabs-row button.active{color:var(--primary-dark);border-bottom-color:var(--primary);font-weight:600;}
+  table.tramites{width:100%;border-collapse:collapse;}
+  table.tramites th{text-align:left;font-size:11.5px;color:var(--ink-faint);font-weight:600;padding:0 14px 10px;border-bottom:1px solid var(--border-strong);text-transform:none;}
+  table.tramites td{padding:15px 14px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  table.tramites tr:hover td{background:var(--bg);}
+  .folio-id{font-family:var(--serif);font-weight:600;color:var(--primary-dark);}
+  .status-pill{font-size:11px;padding:4px 11px;border-radius:20px;font-weight:600;display:inline-block;}
+  .status-pill.progreso{background:var(--gold-tint);color:var(--gold);}
+  .status-pill.completo{background:var(--primary-tint);color:var(--primary);}
+  .status-pill.espera{background:var(--stamp-tint);color:var(--stamp);}
+  .dl-link{font-size:12.5px;color:var(--primary);font-weight:600;text-decoration:none;}
+  .dl-link.disabled{color:var(--ink-faint);pointer-events:none;}
+
+  /* ---------- proto bar extras ---------- */
+  .proto-sep{width:1px;height:20px;background:#2C5041;margin:0 10px;flex:none;}
+  .proto-note{margin-left:auto;padding-left:20px;font-size:11px;color:#9FB0A5;white-space:nowrap;font-style:italic;}
+
+  /* ---------- Backoffice chrome ---------- */
+  .bo-header{background:var(--primary-dark);color:#EDEFE9;display:flex;align-items:center;justify-content:space-between;padding:14px 32px;}
+  .bo-header .wordmark{color:#fff;}
+  .bo-header .wordmark .mark{border-color:#8FA398;color:#fff;}
+  .bo-header .bo-tag{font-size:11px;letter-spacing:.04em;color:#9FB0A5;border:1px solid #2C5041;padding:3px 9px;border-radius:20px;margin-left:12px;}
+  .bo-header .header-right{color:#B9C6BC;}
+  .bo-header .avatar{background:#2C5041;color:#DCE6DF;}
+  .bo-nav{background:var(--primary);display:flex;padding:0 32px;gap:4px;overflow-x:auto;}
+  .bo-nav a{padding:11px 16px;font-size:13px;color:#C4D5C9;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;}
+  .bo-nav a.active{color:#fff;border-bottom-color:var(--gold);font-weight:600;}
+
+  /* ---------- KPIs ---------- */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+  .kpi{padding:20px;}
+  .kpi .kpi-label{font-size:11.8px;color:var(--ink-soft);margin-bottom:10px;}
+  .kpi .kpi-value{font-family:var(--serif);font-size:30px;font-weight:600;color:var(--primary-dark);line-height:1;}
+  .kpi .kpi-foot{font-size:11.5px;color:var(--ink-faint);margin-top:9px;}
+  .kpi .kpi-foot.up{color:var(--success);}
+  .kpi .kpi-foot.warn{color:var(--stamp);}
+
+  .panel-2col{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start;}
+  .panel{padding:22px;}
+  .panel h3{font-family:var(--serif);font-size:15px;margin:0 0 16px;font-weight:600;color:var(--primary-dark);}
+  .panel h3 .sub{font-family:var(--sans);font-size:11.5px;color:var(--ink-faint);font-weight:400;margin-left:8px;}
+
+  .bar-row{margin-bottom:14px;}
+  .bar-row .bar-head{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;}
+  .bar-row .bar-head span:last-child{color:var(--ink-soft);}
+  .bar-track{height:7px;background:var(--bg);border-radius:20px;overflow:hidden;}
+  .bar-fill{height:100%;background:var(--primary);border-radius:20px;}
+  .bar-fill.gold{background:var(--gold);}
+
+  .alert-row{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid var(--border);font-size:12.8px;line-height:1.5;}
+  .alert-row:last-child{border:none;}
+  .alert-dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px;}
+  .alert-dot.red{background:var(--stamp);}
+  .alert-dot.gold{background:var(--gold);}
+  .alert-dot.green{background:var(--success);}
+  .alert-row .a-meta{color:var(--ink-faint);font-size:11.5px;margin-top:2px;}
+
+  /* ---------- Detalle backoffice ---------- */
+  .detail-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26px;flex-wrap:wrap;gap:14px;}
+  .detail-head .crumb{font-size:12px;color:var(--ink-faint);margin-bottom:6px;}
+  .detail-actions{display:flex;gap:9px;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;}
+  .info-item{padding:11px 0;border-bottom:1px solid var(--border);}
+  .info-item .i-label{font-size:11.5px;color:var(--ink-faint);margin-bottom:3px;}
+  .info-item .i-value{font-size:13.2px;font-weight:500;}
+  .audit-row{display:grid;grid-template-columns:118px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--border);font-size:12.6px;}
+  .audit-row:last-child{border:none;}
+  .audit-row .a-time{color:var(--ink-faint);font-size:11.8px;}
+  .audit-row .a-actor{font-weight:600;}
+  .audit-row .a-detail{color:var(--ink-soft);margin-top:2px;}
+  .chip{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;}
+  .chip.gold{background:var(--gold-tint);color:var(--gold);}
+  .chip.green{background:var(--primary-tint);color:var(--primary);}
+  .chip.grey{background:var(--bg);color:var(--ink-soft);border:1px solid var(--border);}
+  .doc-mini{border:1px solid var(--border);border-radius:var(--radius-s);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;font-size:12.8px;margin-bottom:9px;}
+  .doc-mini .d-name{font-weight:600;}
+  .doc-mini .d-meta{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+</style>
+</head>
+<body>
+
+<div class="proto-bar">
+  <span class="proto-label">PROTOTIPO · CRM EASY OFFICE</span>
+  <button class="proto-tab active" data-screen="s1">1. Catálogo</button>
+  <button class="proto-tab" data-screen="s2">2. Formulario</button>
+  <button class="proto-tab" data-screen="s3">3. Vista previa</button>
+  <button class="proto-tab" data-screen="s4">4. Confirmación y pago</button>
+  <button class="proto-tab" data-screen="s5">5. Estado de firma</button>
+  <button class="proto-tab" data-screen="s6">6. Mis trámites</button>
+  <span class="proto-sep"></span>
+  <button class="proto-tab" data-screen="s7">7. Dashboard ejecutivo</button>
+  <button class="proto-tab" data-screen="s8">8. Detalle de trámite</button>
+  <span class="proto-note">Propuesta inicial · pendiente de validación con la contraparte</span>
+</div>
+
+<!-- ================= SCREEN 1 — CATÁLOGO ================= -->
+<section class="screen active" id="s1">
+  <div class="app-header">
+    <div class="wordmark"><span class="mark">EO</span>Easy Office</div>
+    <div class="header-right"><span>Constructora Ríos Ltda.</span><div class="avatar">CR</div></div>
+  </div>
+  <div class="container">
+    <div class="catalog-hero">
+      <div>
+        <h1 class="page-title">¿Qué trámite necesitas hoy?</h1>
+        <p class="page-sub" style="margin-bottom:0;">Elige un servicio para comenzar. Tus datos se completan automáticamente desde trámites anteriores.</p>
+      </div>
+      <div class="search-row">
+        <input type="text" placeholder="Buscar trámite o documento">
+        <button class="btn btn-ghost">Buscar</button>
+      </div>
+    </div>
+
+    <div class="grid-services">
+      <div class="svc-card" onclick="showScreen('s2')">
+        <div class="eyebrow">Disponible ahora</div>
+        <h3>Domicilio tributario</h3>
+        <p>Formaliza o cambia el domicilio tributario de tu empresa ante el SII.</p>
+        <div class="meta"><span>Requiere pago</span><span>Requiere firma</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="eyebrow">Disponible ahora</div>
+        <h3>Declaración jurada</h3>
+        <p>Declaraciones juradas con formato estándar y firma electrónica avanzada.</p>
+        <div class="meta"><span>Requiere pago</span><span>Requiere firma</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="eyebrow">Disponible ahora</div>
+        <h3>Contrato de arriendo</h3>
+        <p>Contrato de arriendo con los datos de las partes y firma de cada firmante.</p>
+        <div class="meta"><span>Requiere pago</span><span>Requiere firma</span></div>
+      </div>
+      <div class="svc-card disabled">
+        <span class="badge-soon">Próximamente</span>
+        <h3>Orden de compra</h3>
+        <p>Se incorporará al motor configurable definiendo su plantilla y sus campos.</p>
+        <div class="meta"><span>Estado</span><span>Fuera del MVP</span></div>
+      </div>
+      <div class="svc-card disabled">
+        <span class="badge-soon">Próximamente</span>
+        <h3>Constitución de empresa</h3>
+        <p>Requiere siempre revisión de un ejecutivo Easy Office.</p>
+        <div class="meta"><span>Estado</span><span>Con intervención humana</span></div>
+      </div>
+    </div>
+
+    <div class="tramites-strip">
+      <span class="label">Tienes 2 trámites en curso —</span>
+      <span class="mini-pill" onclick="showScreen('s6')">Ver mis trámites →</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCREEN 2 — FORMULARIO ================= -->
+<section class="screen" id="s2">
+  <div class="app-header">
+    <div class="wordmark"><span class="mark">EO</span>Easy Office</div>
+    <div class="header-right"><span>Constructora Ríos Ltda.</span><div class="avatar">CR</div></div>
+  </div>
+  <div class="folio-nav">
+    <div class="step done"><span class="num">1</span>Catálogo</div>
+    <div class="step current"><span class="num">2</span>Formulario</div>
+    <div class="step"><span class="num">3</span>Vista previa</div>
+    <div class="step"><span class="num">4</span>Confirmación y pago</div>
+    <div class="step"><span class="num">5</span>Firma</div>
+  </div>
+  <div class="container narrow">
+    <h1 class="page-title">Domicilio tributario</h1>
+    <p class="page-sub">Completa los datos de la empresa y del nuevo domicilio. Validamos el RUT y la dirección antes de generar el documento.</p>
+
+    <div class="card form-panel">
+      <h2 class="section-h">Datos de la empresa</h2>
+      <div class="form-grid">
+        <div class="field valid">
+          <label>RUT empresa</label>
+          <input type="text" value="76.245.891-3">
+          <div class="hint">✓ RUT válido — dígito verificador correcto</div>
+        </div>
+        <div class="field">
+          <label>Razón social</label>
+          <input type="text" value="Constructora Ríos Ltda.">
+        </div>
+        <div class="field full">
+          <label>Representante legal</label>
+          <input type="text" value="Marcela Ríos Fuentes">
+          <div class="hint">Según la representación vigente registrada en la ficha de la empresa</div>
+        </div>
+      </div>
+
+      <h2 class="section-h">Nuevo domicilio tributario</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label>Dirección</label>
+          <input type="text" placeholder="Calle, número, oficina">
+        </div>
+        <div class="field">
+          <label>Comuna</label>
+          <select><option>San Bernardo</option></select>
+        </div>
+        <div class="field error">
+          <label>Rol de avalúo</label>
+          <input type="text" value="4021-15a">
+          <div class="hint">Formato esperado: 0000-00</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="showScreen('s1')">← Volver al catálogo</button>
+        <button class="btn btn-primary" onclick="showScreen('s3')">Generar vista previa</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCREEN 3 — VISTA PREVIA ================= -->
+<section class="screen" id="s3">
+  <div class="app-header">
+    <div class="wordmark"><span class="mark">EO</span>Easy Office</div>
+    <div class="header-right"><span>Constructora Ríos Ltda.</span><div class="avatar">CR</div></div>
+  </div>
+  <div class="folio-nav">
+    <div class="step done"><span class="num">1</span>Catálogo</div>
+    <div class="step done"><span class="num">2</span>Formulario</div>
+    <div class="step current"><span class="num">3</span>Vista previa</div>
+    <div class="step"><span class="num">4</span>Confirmación y pago</div>
+    <div class="step"><span class="num">5</span>Firma</div>
+  </div>
+  <div class="container">
+    <h1 class="page-title">Revisa el documento</h1>
+    <p class="page-sub">Verifica que los datos sean correctos. Una vez confirmado, se generará la versión final para firma.</p>
+
+    <div class="preview-wrap">
+      <div class="document-sheet">
+        <div class="doc-seal">Plantilla v3 · Folio provisorio N° 0148</div>
+        <h2>Declaración de Cambio de Domicilio Tributario</h2>
+        <p class="doc-sub">Servicio de Impuestos Internos — Formulario de aviso</p>
+        <p>En San Bernardo, con fecha 8 de septiembre de 2026, comparece <span class="fill">Marcela Ríos Fuentes</span>, en representación de <span class="fill">Constructora Ríos Ltda.</span>, RUT <span class="fill">76.245.891-3</span>, quien viene en informar el cambio de domicilio tributario de la empresa.</p>
+        <p>El nuevo domicilio tributario queda fijado en <span class="fill">Av. Portales 1450, oficina 302, San Bernardo</span>, correspondiente al rol de avalúo <span class="fill">4021-15</span>, dejándose constancia para los efectos legales y tributarios correspondientes.</p>
+        <div class="sig-line">Firma representante legal</div>
+      </div>
+
+      <div class="card side-panel">
+        <h3>Resumen del trámite</h3>
+        <div class="kv-row"><span>Servicio</span><span>Domicilio tributario</span></div>
+        <div class="kv-row"><span>Folio</span><span>N° 0148</span></div>
+        <div class="kv-row"><span>Requiere pago</span><span>Sí</span></div>
+        <div class="kv-row"><span>Requiere firma</span><span>Sí</span></div>
+        <div class="kv-row"><span>Firmantes</span><span>1</span></div>
+        <div class="watermark-note">Este documento aún no tiene validez legal. Se marca como definitivo solo tras el pago y la firma electrónica avanzada.</div>
+        <div class="btn-row" style="margin-top:20px;">
+          <button class="btn btn-ghost" onclick="showScreen('s2')">Editar datos</button>
+          <button class="btn btn-primary" onclick="showScreen('s4')">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCREEN 4 — CONFIRMACIÓN Y PAGO ================= -->
+<section class="screen" id="s4">
+  <div class="app-header">
+    <div class="wordmark"><span class="mark">EO</span>Easy Office</div>
+    <div class="header-right"><span>Constructora Ríos Ltda.</span><div class="avatar">CR</div></div>
+  </div>
+  <div class="folio-nav">
+    <div class="step done"><span class="num">1</span>Catálogo</div>
+    <div class="step done"><span class="num">2</span>Formulario</div>
+    <div class="step done"><span class="num">3</span>Vista previa</div>
+    <div class="step current"><span class="num">4</span>Confirmación y pago</div>
+    <div class="step"><span class="num">5</span>Firma</div>
+  </div>
+  <div class="container">
+    <h1 class="page-title">Confirma y paga</h1>
+    <p class="page-sub">El documento se envía a firma electrónica avanzada apenas se confirme el pago.</p>
+
+    <div class="pay-wrap">
+      <div class="card" style="padding:26px;">
+        <h2 class="section-h" style="margin-top:0;">Medio de pago</h2>
+        <div class="pay-methods">
+          <div class="pay-method selected">
+            <div><div class="name">Webpay Plus</div><div class="desc">Tarjeta de crédito o débito · Transbank</div></div>
+            <div class="radio-dot"></div>
+          </div>
+          <div class="pay-method">
+            <div><div class="name">Transferencia</div><div class="desc">Confirmación manual, hasta 1 día hábil</div></div>
+            <div class="radio-dot"></div>
+          </div>
+        </div>
+        <p style="font-size:11.5px;color:var(--ink-faint);margin-top:18px;">Ambiente de prueba (sandbox) · valores referenciales de ejemplo, tarifas por confirmar con Easy Office.</p>
+      </div>
+
+      <div class="card side-panel">
+        <h3>Resumen</h3>
+        <div class="summary-line"><span>Domicilio tributario</span><span>$14.900</span></div>
+        <div class="summary-line"><span>Firma electrónica avanzada</span><span>$3.500</span></div>
+        <div class="summary-line total"><span>Total</span><span>$18.400</span></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:18px;" onclick="showScreen('s5')">Pagar y enviar a firma</button>
+        <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="showScreen('s3')">Volver</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCREEN 5 — ESTADO DE FIRMA ================= -->
+<section class="screen" id="s5">
+  <div class="app-header">
+    <div class="wordmark"><span class="mark">EO</span>Easy Office</div>
+    <div class="header-right"><span>Constructora Ríos Ltda.</span><div class="avatar">CR</div></div>
+  </div>
+  <div class="folio-nav">
+    <div class="step done"><span class="num">1</span>Catálogo</div>
+    <div class="step done"><span class="num">2</span>Formulario</div>
+    <div class="step done"><span class="num">3</span>Vista previa</div>
+    <div class="step done"><span class="num">4</span>Confirmación y pago</div>
+    <div class="step current"><span class="num">5</span>Firma</div>
+  </div>
+  <div class="container narrow">
+    <h1 class="page-title">Trámite N° 0148</h1>
+    <p class="page-sub">Domicilio tributario · Enviado a firma electrónica avanzada</p>
+
+    <div class="card status-hero">
+      <div class="icon">✎</div>
+      <div>
+        <h2>Pendiente de firma</h2>
+        <p>Notificamos a Marcela Ríos Fuentes por correo para firmar. Vence en 5 días.</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding:26px;margin-bottom:20px;">
+      <h2 class="section-h" style="margin-top:0;">Línea de tiempo</h2>
+      <div class="timeline">
+        <div class="tl-item done">
+          <div class="tl-dot">✓</div>
+          <div class="tl-body"><div class="tl-title">Documento generado</div><div class="tl-meta">8 sep · 09:14</div></div>
+        </div>
+        <div class="tl-item done">
+          <div class="tl-dot">✓</div>
+          <div class="tl-body"><div class="tl-title">Pago confirmado</div><div class="tl-meta">8 sep · 09:16 · Webpay Plus</div></div>
+        </div>
+        <div class="tl-item current">
+          <div class="tl-dot">2</div>
+          <div class="tl-body"><div class="tl-title">Enviado al proveedor de firma</div><div class="tl-meta">8 sep · 09:17 · esperando firmante</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">3</div>
+          <div class="tl-body"><div class="tl-title">Documento firmado y verificado</div><div class="tl-meta">Hash SHA-256 se generará al firmar</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:26px;">
+      <h2 class="section-h" style="margin-top:0;">Firmantes</h2>
+      <div class="signer-row"><span>Marcela Ríos Fuentes — Representante legal</span><span class="sig-status pend">Pendiente</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCREEN 6 — MIS TRÁMITES ================= -->
+<section class="screen" id="s6">
+  <div class="app-header">
+    <div class="wordmark"><span class="mark">EO</span>Easy Office</div>
+    <div class="header-right"><span>Constructora Ríos Ltda.</span><div class="avatar">CR</div></div>
+  </div>
+  <div class="container">
+    <h1 class="page-title">Mis trámites</h1>
+    <p class="page-sub">Historial y seguimiento de todos los trámites de tu empresa.</p>
+
+    <div class="tabs-row">
+      <button class="active">Todos (4)</button>
+      <button>En curso (2)</button>
+      <button>Completados (1)</button>
+      <button>Con problemas (1)</button>
+    </div>
+
+    <div class="card">
+      <table class="tramites">
+        <thead>
+          <tr><th>Folio</th><th>Trámite</th><th>Iniciado</th><th>Estado</th><th>Documento</th></tr>
+        </thead>
+        <tbody>
+          <tr onclick="showScreen('s5')">
+            <td class="folio-id">N° 0148</td>
+            <td>Domicilio tributario</td>
+            <td>8 sep 2026</td>
+            <td><span class="status-pill progreso">Pendiente de firma</span></td>
+            <td><a class="dl-link disabled">Disponible al firmar</a></td>
+          </tr>
+          <tr>
+            <td class="folio-id">N° 0141</td>
+            <td>Inicio de actividades</td>
+            <td>2 sep 2026</td>
+            <td><span class="status-pill espera">Falta pago</span></td>
+            <td><a class="dl-link disabled">Disponible al pagar</a></td>
+          </tr>
+          <tr>
+            <td class="folio-id">N° 0119</td>
+            <td>Poder simple notarial</td>
+            <td>24 ago 2026</td>
+            <td><span class="status-pill completo">Completado</span></td>
+            <td><a class="dl-link" href="#">Descargar PDF</a></td>
+          </tr>
+          <tr>
+            <td class="folio-id">N° 0098</td>
+            <td>Domicilio tributario</td>
+            <td>10 ago 2026</td>
+            <td><span class="status-pill completo">Completado</span></td>
+            <td><a class="dl-link" href="#">Descargar PDF</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCREEN 7 — BACKOFFICE · DASHBOARD ================= -->
+<section class="screen" id="s7">
+  <div class="bo-header">
+    <div style="display:flex;align-items:center;">
+      <div class="wordmark"><span class="mark">EO</span>Easy Office</div>
+      <span class="bo-tag">BACKOFFICE</span>
+    </div>
+    <div class="header-right"><span>Natalia Soto · Supervisora</span><div class="avatar">NS</div></div>
+  </div>
+  <div class="bo-nav">
+    <a href="#" class="active">Panel</a>
+    <a href="#">Trámites</a>
+    <a href="#">Clientes</a>
+    <a href="#">Empresas</a>
+    <a href="#">Documentos</a>
+    <a href="#">Tipos de trámite</a>
+    <a href="#">Usuarios y roles</a>
+    <a href="#">Auditoría</a>
+  </div>
+  <div class="container">
+    <h1 class="page-title">Panel operacional</h1>
+    <p class="page-sub">Septiembre 2026 · vista de supervisión</p>
+
+    <div class="kpi-grid">
+      <div class="card kpi">
+        <div class="kpi-label">Trámites en curso</div>
+        <div class="kpi-value">18</div>
+        <div class="kpi-foot">7 esperando al cliente</div>
+      </div>
+      <div class="card kpi">
+        <div class="kpi-label">Pendientes de firma</div>
+        <div class="kpi-value">6</div>
+        <div class="kpi-foot warn">2 vencen en 24 h</div>
+      </div>
+      <div class="card kpi">
+        <div class="kpi-label">Completados este mes</div>
+        <div class="kpi-value">63</div>
+        <div class="kpi-foot up">41 sin intervención de ejecutivo</div>
+      </div>
+      <div class="card kpi">
+        <div class="kpi-label">Tiempo medio del trámite</div>
+        <div class="kpi-value">22 min</div>
+        <div class="kpi-foot">Se compara contra la línea base manual</div>
+      </div>
+    </div>
+
+    <div class="panel-2col">
+      <div class="card panel">
+        <h3>Documentos generados por tipo <span class="sub">últimos 30 días</span></h3>
+        <div class="bar-row">
+          <div class="bar-head"><span>Domicilio tributario</span><span>34</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-head"><span>Declaración jurada</span><span>19</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:56%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-head"><span>Contrato de arriendo</span><span>10</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:29%"></div></div>
+        </div>
+        <div class="bar-row" style="margin-bottom:0;">
+          <div class="bar-head"><span>Procesos asistidos por ejecutivo</span><span>22</span></div>
+          <div class="bar-track"><div class="bar-fill gold" style="width:65%"></div></div>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <h3>Requiere atención</h3>
+        <div class="alert-row">
+          <span class="alert-dot red"></span>
+          <div>Trámite N° 0142 sin firma hace 6 días
+            <div class="a-meta">Comercial Andes SpA · asignado a J. Bravo</div>
+          </div>
+        </div>
+        <div class="alert-row">
+          <span class="alert-dot gold"></span>
+          <div>3 contratos de domicilio vencen este mes
+            <div class="a-meta">Renovación pendiente de contacto</div>
+          </div>
+        </div>
+        <div class="alert-row">
+          <span class="alert-dot gold"></span>
+          <div>Oficina 302 sin cupo disponible
+            <div class="a-meta">4 empresas domiciliadas</div>
+          </div>
+        </div>
+        <div class="alert-row">
+          <span class="alert-dot green"></span>
+          <div>Migración de clientes desde Excel completada
+            <div class="a-meta">2 registros en cuarentena por RUT inválido</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCREEN 8 — BACKOFFICE · DETALLE DE TRÁMITE ================= -->
+<section class="screen" id="s8">
+  <div class="bo-header">
+    <div style="display:flex;align-items:center;">
+      <div class="wordmark"><span class="mark">EO</span>Easy Office</div>
+      <span class="bo-tag">BACKOFFICE</span>
+    </div>
+    <div class="header-right"><span>Natalia Soto · Supervisora</span><div class="avatar">NS</div></div>
+  </div>
+  <div class="bo-nav">
+    <a href="#">Panel</a>
+    <a href="#" class="active">Trámites</a>
+    <a href="#">Clientes</a>
+    <a href="#">Empresas</a>
+    <a href="#">Documentos</a>
+    <a href="#">Tipos de trámite</a>
+    <a href="#">Usuarios y roles</a>
+    <a href="#">Auditoría</a>
+  </div>
+  <div class="container">
+    <div class="detail-head">
+      <div>
+        <div class="crumb">Trámites › Domicilio tributario</div>
+        <h1 class="page-title" style="margin-bottom:8px;">Trámite N° 0148</h1>
+        <span class="chip gold">Pendiente de firma</span>
+        <span class="chip grey" style="margin-left:6px;">Proceso automatizado</span>
+      </div>
+      <div class="detail-actions">
+        <button class="btn btn-ghost">Reasignar</button>
+        <button class="btn btn-ghost">Reenviar a firma</button>
+        <button class="btn btn-primary">Ver documento</button>
+      </div>
+    </div>
+
+    <div class="panel-2col">
+      <div>
+        <div class="card panel" style="margin-bottom:22px;">
+          <h3>Antecedentes</h3>
+          <div class="info-grid">
+            <div class="info-item"><div class="i-label">Empresa</div><div class="i-value">Constructora Ríos Ltda.</div></div>
+            <div class="info-item"><div class="i-label">RUT</div><div class="i-value">76.245.891-3</div></div>
+            <div class="info-item"><div class="i-label">Representante legal</div><div class="i-value">Marcela Ríos Fuentes</div></div>
+            <div class="info-item"><div class="i-label">Vigencia de representación</div><div class="i-value">Vigente hasta 03-2028</div></div>
+            <div class="info-item"><div class="i-label">Oficina asignada</div><div class="i-value">Av. Portales 1450, of. 302</div></div>
+            <div class="info-item"><div class="i-label">Rol de avalúo</div><div class="i-value">4021-15</div></div>
+            <div class="info-item"><div class="i-label">Ejecutivo responsable</div><div class="i-value">J. Bravo</div></div>
+            <div class="info-item"><div class="i-label">Canal de origen</div><div class="i-value">Portal cliente (autoservicio)</div></div>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <h3>Auditoría del trámite <span class="sub">registro no modificable</span></h3>
+          <div class="audit-row">
+            <div class="a-time">8 sep · 09:12</div>
+            <div><span class="a-actor">Marcela Ríos (cliente)</span>
+              <div class="a-detail">Creó la solicitud desde el portal · tipo de trámite: Domicilio tributario</div></div>
+          </div>
+          <div class="audit-row">
+            <div class="a-time">8 sep · 09:14</div>
+            <div><span class="a-actor">Sistema</span>
+              <div class="a-detail">Generó el documento con plantilla v3 · datos congelados en el trámite</div></div>
+          </div>
+          <div class="audit-row">
+            <div class="a-time">8 sep · 09:16</div>
+            <div><span class="a-actor">Sistema</span>
+              <div class="a-detail">Registró el pago · Webpay Plus, ambiente de prueba</div></div>
+          </div>
+          <div class="audit-row">
+            <div class="a-time">8 sep · 09:17</div>
+            <div><span class="a-actor">Sistema</span>
+              <div class="a-detail">Envió el documento al proveedor de firma electrónica avanzada</div></div>
+          </div>
+          <div class="audit-row">
+            <div class="a-time">8 sep · 11:40</div>
+            <div><span class="a-actor">J. Bravo (ejecutivo)</span>
+              <div class="a-detail">Modificó el campo Dirección · anterior: «Av. Portales 1450 of. 301» → nuevo: «Av. Portales 1450 of. 302»</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card panel" style="margin-bottom:22px;">
+          <h3>Documento</h3>
+          <div class="doc-mini">
+            <div>
+              <div class="d-name">Declaración de cambio de domicilio</div>
+              <div class="d-meta">Plantilla v3 · generado 8 sep</div>
+            </div>
+            <span class="chip gold">Sin firmar</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--ink-faint);line-height:1.55;padding-top:10px;border-top:1px dashed var(--border);">
+            El hash SHA-256 del archivo se registra al generar y al recibir el documento firmado, para verificar que no cambió en el intertanto.
+          </div>
+        </div>
+
+        <div class="card panel">
+          <h3>Firmantes</h3>
+          <div class="signer-row">
+            <span>Marcela Ríos Fuentes<br><span style="font-size:11.5px;color:var(--ink-soft);">Representante legal</span></span>
+            <span class="sig-status pend">Pendiente</span>
+          </div>
+          <div class="signer-row">
+            <span>Easy Office SpA<br><span style="font-size:11.5px;color:var(--ink-soft);">Titular de la oficina</span></span>
+            <span class="sig-status ok">Firmado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.proto-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('.proto-tab[data-screen="'+id+'"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.proto-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>showScreen(tab.dataset.screen));
+});
+document.querySelectorAll('.pay-method').forEach(pm=>{
+  pm.addEventListener('click',()=>{
+    document.querySelectorAll('.pay-method').forEach(x=>x.classList.remove('selected'));
+    pm.classList.add('selected');
+  });
+});
+</script>
+</body>
+</html>

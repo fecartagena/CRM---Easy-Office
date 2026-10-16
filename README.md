@@ -68,8 +68,9 @@ está en `REC-001 Recomendación técnica`.
 
 **Integraciones externas.** Firma electrónica avanzada y pasarela de pago se
 consumen a través de interfaces definidas por el sistema, con implementaciones
-intercambiables. El proveedor de firma es el que utiliza Easy Office; el de pago
-está pendiente de decisión de la contraparte.
+intercambiables. El proveedor de firma es el que utiliza Easy Office. En pagos
+están integrados Klap y Flow, y el cliente elige entre los medios habilitados; la
+elección de cuáles ofrecer en producción está pendiente de la contraparte.
 
 ---
 
@@ -119,8 +120,11 @@ administración en `http://localhost:8000/admin`.
 | `CELERY_BROKER_URL` | Conexión a Redis |
 | `SIGNATURE_PROVIDER` | Implementación de firma a utilizar: `simulado` o el proveedor real |
 | `SIGNATURE_API_KEY` | Credencial del proveedor de firma |
-| `PAYMENT_PROVIDER` | Implementación de pago a utilizar |
-| `PAYMENT_API_KEY` | Credencial del proveedor de pago |
+| `PAYMENT_PROVIDERS` | Medios de pago habilitados para el cliente (`klap`, `flow`) |
+| `KLAP_API_KEY` | Credencial de Klap |
+| `FLOW_API_KEY`, `FLOW_SECRET_KEY` | Credenciales de Flow |
+| `PAYMENT_WEBHOOK_BASE_URL` | URL pública a la que los proveedores notifican (en local, la entrega el túnel) |
+| `PORTAL_BASE_URL` | URL del portal a la que se devuelve al cliente tras pagar |
 | `DOCUMENT_STORAGE_PATH` | Ubicación del almacenamiento de documentos |
 
 **Ninguna credencial se versiona.** Los archivos de entorno están excluidos del
@@ -169,7 +173,7 @@ Metodología ágil basada en **Scrum**, adaptada a un equipo de tres integrantes
 | Equipo de desarrollo | Los tres integrantes |
 | Ceremonias | Sprint Planning, seguimiento asíncrono tres veces por semana, Sprint Review con demostración y retrospectiva al cierre |
 | Tablero | GitHub Projects |
-| Planificación macro | Carta Gantt de 18 semanas con diez hitos |
+| Planificación macro | Carta Gantt de 18 semanas con diez hitos (`GNT-001`) |
 
 ### Artefactos
 
@@ -215,7 +219,8 @@ Backoffice CRM (React)  ─┘             │
 | `inmuebles` | Oficinas, rol de avalúo, domicilios asignados |
 | `tramites` | Tipos de trámite configurables, trámites, máquina de estados |
 | `documentos` | Plantillas versionadas, generación, firmantes, integridad |
-| `integrations` | Interfaces e implementaciones de firma y pago |
+| `ventas` | Catálogo vendible, ventas, órdenes de pago y pagos |
+| `integrations` | Interfaces e implementaciones de firma y pago (Klap y Flow) |
 | `migracion` | Carga de información desde planillas |
 
 ### Decisiones de diseño
@@ -242,7 +247,7 @@ CRM---Easy-Office/
 ├── Fase 1/          Definición del proyecto
 ├── Fase 2/          Desarrollo
 │   └── Evidencias Proyecto/
-│       └── Documentación/   Documentos técnicos del proyecto
+│       └── Documentación/   Documentación del proyecto (índice en su README.md)
 ├── Fase 3/          Cierre
 └── README.md
 ```
@@ -278,6 +283,7 @@ Los repositorios de código se mantienen separados:
 | PLA-001 | Plan de pruebas |
 | RSK-001 | Registro de riesgos |
 | ACTA-001 | Acta de levantamiento |
+| GNT-001 | Carta Gantt, hitos y calendario de sprints |
 
 ---
 
