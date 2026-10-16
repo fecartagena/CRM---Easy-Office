@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | TRZ-001 · Matriz de trazabilidad |
-| **Versión** | 2.2 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 2.3 |
+| **Fecha** | 14 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | La versión 1.0 referenciaba los identificadores de `MRQ-001 v1.0`, que la versión 2.0 reutilizó para requerimientos distintos. Esta versión está reconstruida contra el catálogo vigente `CAT-001` |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -46,9 +46,9 @@ Según la versión reducida de objetivos (cinco específicos).
 | RF-02 Permisos por roles | HU-04 | UC-10 | OE-2 | core | Pendiente | Pendiente | HU-45 | — | Especificado |
 | RF-03 Administración de usuarios | HU-02 | UC-10 | OE-2 | core | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-04 Restricción de eliminación | HU-05 | UC-10 | OE-2 | core | Pendiente | Pendiente | HU-45 | — | Especificado |
-| RF-05 Formulario de ingreso | HU-06 | UC-04 | OE-2 | clientes | Pendiente | Pendiente | Pendiente | — | Especificado |
+| RF-05 Formulario de ingreso | HU-06, HU-08 | UC-04 | OE-2 | clientes | #17 · #35 (HU-08) | PR #18 · HU-08 en rama local, sin PR | Pruebas de la API de clientes; 221 en la rama de HU-08 | — | HU-06 implementado · HU-08 en rama local |
 | RF-06 Validación previa al guardado | HU-52 | UC-04 | OE-2 | clientes | Pendiente | Pendiente | Pendiente | — | Especificado |
-| RF-07 Identificador único y folio de contrato | HU-51, HU-60 | UC-04 | OE-2 | clientes | Pendiente | Pendiente | Pendiente | — | Especificado |
+| RF-07 Identificador único y folio de contrato | HU-51, HU-60 | UC-04 | OE-2 | clientes, contratos | #17 · #38 (HU-60) | PR #18 (código del cliente) · HU-60 en ramas locales, sin PR | Folio común entre sucursales y marcas, reinicio anual, ancho configurable, creación concurrente, alias `folio`; 351 en la rama de HU-60 | — | En rama local |
 | RF-08 Búsqueda de clientes | HU-47 | UC-05 | OE-2 | clientes | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-09 Filtros de listado | HU-50 | UC-05 | OE-2 | clientes | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-10 Ficha del cliente | HU-49 | UC-05 | OE-2 | clientes | Pendiente | Pendiente | Pendiente | Falta pantalla en prototipo | Especificado |
@@ -67,12 +67,12 @@ Según la versión reducida de objetivos (cinco específicos).
 
 | Requerimiento | Historia | Caso de uso | Objetivo | Módulo | Issue | Commit / PR | Prueba | Evidencia | Estado |
 |---|---|---|---|---|---|---|---|---|---|
-| RF-19 Catálogo de servicios | HU-23 | UC-01 | OE-4 | portal | Pendiente | Pendiente | Pendiente | Prototipo pantalla 1 | Especificado |
+| RF-19 Catálogo de servicios | HU-23 | UC-01 | OE-4 | portal, ventas | #39 | Rama local, sin PR | Semillas, idempotencia y restricción de servicio del portal con precio; 229 en su rama | Prototipo pantalla 1 | En rama local · precios sin confirmar (IVA) |
 | RF-20 Formularios dinámicos | HU-24 | UC-01 | OE-3 | portal | Pendiente | Pendiente | Pendiente | Prototipo pantalla 2 | Especificado |
 | RF-21 Revisión y confirmación | HU-26, HU-27 | UC-01 | OE-4 | portal | Pendiente | Pendiente | Pendiente | Prototipo pantalla 3 | Especificado |
 | RF-22 Pago en línea | HU-39, HU-62 | UC-17 | OE-4 | integrations, ventas, portal | Backend #23, #27 · Frontend #7, #11 | Backend #25, #26, #28 · Frontend #9, #10, #12 | Pruebas unitarias y de integración (214 backend, 97 frontend); pagos de prueba con Klap y Flow en sandbox | Prototipo pantalla 4 | Implementado en pruebas · proveedor y precios por confirmar |
 | RF-23 Verificación del pago | HU-57 | UC-17 | OE-4 | integrations, ventas | Backend #23, #27 | Backend #25, #26, #28 | Pruebas de webhooks (duplicados, firma falsa, monto distinto, rechazo tardío) y de sincronización | — | Implementado en pruebas |
-| RF-24 Generación del documento | HU-19 | UC-15 | OE-4 | documentos | Pendiente | Pendiente | HU-43 | — | Especificado |
+| RF-24 Generación del documento | HU-19, HU-65, HU-66 | UC-15 | OE-4 | documentos, configuracion, inmuebles | #36 (HU-65) · #37 (HU-66) | HU-65 y HU-66 en ramas locales, sin PR | HU-43 · acceso a la cédula y permisos (HU-66) | — | Generación especificada · datos de apoyo en rama local |
 | RF-25 Envío a firma | HU-35 | UC-16 | OE-4 | integrations | Pendiente | Pendiente | Pendiente | Prototipo pantalla 5 | Especificado · credenciales pendientes |
 | RF-26 Entrega del documento final | HU-29 | UC-03 | OE-4 | portal | Pendiente | Pendiente | Pendiente | Prototipo pantalla 6 | Especificado |
 | RF-27 Seguimiento del estado | HU-28 | UC-02 | OE-4 | portal | Pendiente | Pendiente | Pendiente | Prototipo pantallas 5 y 6 | Especificado |
@@ -180,3 +180,4 @@ Los identificadores provienen de `CAT-001` y no se reutilizan.
 | 2.0 | 24-09-2026 | Reconstruida contra `MRQ-001 v2` y `CAT-001`; incorporada la columna de caso de uso; agregados los requerimientos nuevos y la tabla de requerimientos sin historia |
 | 2.1 | 09-10-2026 | Filas de RF-45, RF-46 y RNF-12; RF-27 especificado; HU-60 asociada a RF-07 (`ACTA-002`) |
 | 2.2 | 12-10-2026 | Issues y PR de la cuenta del cliente y de los pagos (backend #22 a #30, frontend #6 a #12); filas de RF-48 a RF-50 |
+| 2.3 | 14-10-2026 | Issues #35 a #39 (HU-08, HU-60, HU-65, HU-66 y HU-23) en RF-05, RF-07, RF-19 y RF-24; todas en ramas locales, sin PR |

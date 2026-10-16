@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MRQ-001 · Matriz de requerimientos |
-| **Versión** | 2.3 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 2.4 |
+| **Fecha** | 14 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo de la revisión** | Incorporación de las especificaciones formales entregadas por Easy Office |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -61,7 +61,7 @@ levantamiento · `T2` sesión 2 de levantamiento · `A2` reunión de validación
 | RF-04 | Restricción de eliminación | Los ejecutivos no pueden eliminar registros de la base de datos | ESP §4.2 | Must | Confirmado | Se expresa como permiso del rol |
 | RF-05 | Formulario de ingreso de clientes | Interfaz web sencilla para que los ejecutivos ingresen la información del cliente | ESP §4.4 | Must | Confirmado | Toma como referencia el formulario Excel con macros |
 | RF-06 | Validación previa al guardado | Validar campos obligatorios, formatos y posibles duplicidades antes de guardar | ESP §4.4 | Must | Confirmado | La acción de guardar debe ser claramente identificable |
-| RF-07 | Identificador único de cliente y folio de contrato | Cada cliente cuenta con un identificador único, y cada contrato con un folio `{sucursal}-{correlativo}-{año}` | ESP §4.5, A2 | Must | Confirmado | El folio identifica el contrato (RN-38, `ACTA-002` H2-02) |
+| RF-07 | Identificador único de cliente y folio de contrato | Cada cliente cuenta con un identificador único, y cada contrato con un folio `{sucursal}-{correlativo}-{año}` | ESP §4.5, A2 | Must | Confirmado | El folio identifica el contrato (RN-38, `ACTA-002` H2-02). El identificador del cliente es `codigo` (`CLI-000042`) |
 | RF-08 | Búsqueda de clientes | Búsqueda por RUT, nombre o razón social, teléfono, correo, folio y servicio contratado | ESP §4.5 | Must | Confirmado | — |
 | RF-09 | Filtros de listado | Filtros por estado, fechas, ejecutivo y otros criterios relevantes | ESP §4.5 | Must | Confirmado | — |
 | RF-10 | Ficha del cliente | Vista centralizada con datos, contacto, servicios, fechas, estados, documentos, historial de gestiones, ejecutivo responsable e historial de modificaciones | ESP §4.6 | Must | Confirmado | — |
@@ -82,7 +82,7 @@ levantamiento · `T2` sesión 2 de levantamiento · `A2` reunión de validación
 
 | ID | Nombre | Descripción | Fuente | Prioridad | Estado | Observaciones |
 |---|---|---|---|---|---|---|
-| RF-19 | Catálogo de servicios contratables | El cliente puede conocer y seleccionar los servicios disponibles | ESP §5.1 | Must | Confirmado | — |
+| RF-19 | Catálogo de servicios contratables | El cliente puede conocer y seleccionar los servicios disponibles | ESP §5.1 | Must | Confirmado | El portal muestra solo los servicios marcados para venta en línea |
 | RF-20 | Formularios dinámicos por servicio | Cada servicio solicita únicamente los datos necesarios; el formulario se adapta sin requerir un desarrollo nuevo para cada servicio | ESP §5.2 | Must | Confirmado | Requerimiento que sustenta el motor configurable |
 | RF-21 | Revisión y confirmación de datos | El cliente revisa y confirma sus antecedentes antes de continuar | ESP §5.1 | Must | Confirmado | — |
 | RF-22 | Pago en línea | El cliente paga el servicio dentro del flujo de contratación, después de revisar el borrador | ESP §5.1, §5.3, A2 | Must | Confirmado | Klap y Flow integrados en sandbox; Easy Office decide cuál ofrecer (IN-02) |
@@ -264,3 +264,4 @@ planteado como propuesta, en particular el motor configurable.
 | 2.1 | 09-10-2026 | Decisiones de la reunión del 08-10-2026 (`ACTA-002`): RF-45 cuenta del cliente, RF-46 acceso desde el sitio, RNF-12 identidad visual; RF-27 pasa a Confirmado; folio por contrato en RF-07; dashboard para ejecutivos en RF-14; solo dos roles en RF-02; momento del pago en RF-22; candidatos de pago en IN-02 | Equipo |
 | 2.2 | 12-10-2026 | RF-47 motivo de pendiente; estados Iniciado, Pendiente y Completado en RF-27; proveedores Klap y Flow en IN-02 (`ACTA-002`, sección 8) | Equipo |
 | 2.3 | 12-10-2026 | RF-48 a RF-50 (elección del medio de pago, compras del cliente y consulta de ventas), propuestos y ya implementados; observaciones de RF-22, RF-45 e IN-02 con el estado de la integración | Equipo |
+| 2.4 | 14-10-2026 | Observaciones de RF-07 (código del cliente) y RF-19 (servicios del portal) | Equipo |

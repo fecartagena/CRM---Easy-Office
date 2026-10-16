@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ACTA-002 · Reunión de validación con la contraparte |
-| **Versión** | 1.3 |
+| **Versión** | 1.4 |
 | **Fecha de la reunión** | Jueves 8 de octubre de 2026, 20:00 |
 | **Modalidad** | `[CONFIRMAR: remota o presencial]` |
 | **Participantes** | Por Easy Office: Natanael Escobar. Por el equipo: Fernando Cartagena `[CONFIRMAR asistencia de Nicolás Zapata y Marcos Álvarez]` |
@@ -99,6 +99,10 @@ la confirmación escrita de esta acta.
 | TA-13 | Lista de motivos por los que un trámite o documento queda Pendiente | Easy Office | Abierto |
 | TA-14 | Política de reembolsos de los pagos en línea | Easy Office y equipo | Abierto |
 | TA-15 | Lista de precios vigente de los servicios (los cargados en el portal son de ejemplo) | Easy Office | Abierto |
+| TA-16 | IVA: el anexo de `PLT-01` dice «MÁS I.V.A.», pero se informó que los precios lo incluyen (RN-44) | Easy Office | Abierto |
+| TA-17 | Si la renovación automática conserva el folio o genera uno nuevo | Easy Office | Abierto |
+| TA-18 | Si el correo y el celular de aviso son de la empresa o del representante | Easy Office | Abierto |
+| TA-19 | Texto de la unidad del SII por sucursal y región de la sucursal de Algarrobo | Easy Office | Abierto |
 
 ---
 
@@ -126,6 +130,8 @@ la confirmación escrita de esta acta.
 | `RSK-001` Registro de riesgos | 1.2 |
 | `GNT-001` Carta Gantt | 1.1 |
 | `13_plantillas` Catálogo de plantillas | 1.0 (nuevo) |
+
+Actualizaciones del 14-10-2026: `MOD-001` 1.4, `RN-001` 2.3, `BKL-001` 2.4, `TRZ-001` 2.3, `MRQ-001` 2.4, `RSK-001` 1.4, `13_plantillas` 1.1.
 
 Actualizaciones del 12-10-2026: `MRQ-001` 2.3, `BKL-001` 2.3, `TRZ-001` 2.2, `MOD-001` 1.3, `ARQ-001` 1.1, `DIS-001` 1.1, `UML-001` 1.2, `RSK-001` 1.3, `PLA-001` 1.1.
 

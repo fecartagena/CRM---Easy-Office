@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | CAT-001 · Catálogo de identificadores |
-| **Versión** | 1.2 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 1.3 |
+| **Fecha** | 14 de octubre de 2026 |
 | **Estado** | Vigente. Este documento es la fuente única de verdad de los identificadores del proyecto |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -49,7 +49,7 @@ vuelva a ocurrir.
   numeración correlativa a partir del último asignado.
 
 Los códigos actualmente asignados llegan hasta: `RF-50`, `RNF-12`, `RS-09`,
-`RE-07`, `IN-06`, `RN-44`, `HU-64`, `UC-17`, `R-15`, `PLT-05`.
+`RE-07`, `IN-06`, `RN-44`, `HU-66`, `UC-17`, `R-15`, `PLT-05`.
 
 ---
 
@@ -177,3 +177,4 @@ este catálogo y agregarse a esta tabla.
 | 1.0 | 24-09-2026 | Creación del catálogo tras detectar la reutilización de códigos entre las versiones 1.0 y 2.0 de `MRQ-001` |
 | 1.1 | 09-10-2026 | Últimos códigos asignados actualizados; nuevos prefijos `PLT`, `MD` y los de actas (`ACTA-002`) |
 | 1.2 | 12-10-2026 | Últimos códigos asignados: `RF-50`, `RN-44`, `HU-64` |
+| 1.3 | 14-10-2026 | Último código asignado: `HU-66` |

@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLT-000 · Catálogo de plantillas y diccionario de campos |
-| **Versión** | 1.0 |
-| **Fecha** | 9 de octubre de 2026 |
+| **Versión** | 1.1 |
+| **Fecha** | 14 de octubre de 2026 |
 | **Fuente** | Documentos entregados por Easy Office el 8 de octubre de 2026 (ver `ACTA-002`) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -121,9 +121,10 @@ LF-0152-2026
 | Unidad | Cada ingreso del formulario crea una fila y un folio nuevos: el folio identifica el **contrato**, no al cliente |
 
 La muestra de la base de datos usa `LF-01-2026` (dos dígitos), formato anterior a
-la macro actual. `[PENDIENTE DE VALIDAR CON EASY OFFICE]` confirmar que el formato
-vigente es el de cuatro dígitos y si los folios históricos se conservan tal cual
-en la migración.
+la macro actual. El sistema usa cuatro dígitos con un ancho configurable
+(`CONTRATO_FOLIO_ANCHO`), de modo que los folios históricos puedan conservarse.
+`[PENDIENTE DE VALIDAR CON EASY OFFICE]` cómo se tratan esos folios en la
+migración (TA-03).
 
 ---
 
@@ -139,6 +140,7 @@ en la migración.
 | OB-06 | PLT-03 | Usa marcadores `[CAMPO]`; las partes son el propietario del vehículo y la empresa cliente. Easy Office no es parte | Convertir marcadores en campos y modelar al propietario como persona |
 | OB-07 | PLT-04 | Solo tiene líneas en blanco; incluye datos del Conservador de Bienes Raíces y cuenta bancaria del arrendador | Definir el formulario completo con Easy Office antes de automatizarlo |
 | OB-08 | PLT-05 | Los artículos varían según el trámite (cambio de representante, razón social, nombre de fantasía, capital, etc.) y el original dice "constituida por 10.000 accionistas" en lugar del número de accionistas | Modelar las modificaciones como cláusulas opcionales; confirmar el texto con Easy Office |
+| OB-09 | PLT-01, PLT-02 | El anexo de servicios complementarios dice «TODOS LOS VALORES MÁS I.V.A.», pero Easy Office indicó que los precios incluyen IVA (RN-44) | Confirmar con Easy Office; cada servicio lleva el indicador `precio_incluye_iva` |
 
 ---
 

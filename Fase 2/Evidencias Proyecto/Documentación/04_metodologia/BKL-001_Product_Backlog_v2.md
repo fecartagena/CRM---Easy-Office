@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.3 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 2.4 |
+| **Fecha** | 14 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -202,13 +202,20 @@ ejecuta con datos personales reales en entornos de desarrollo.
 | HU-41 | Como administrador o ejecutivo, quiero ver un dashboard con clientes, servicios activos, próximos a vencer, vencidos, ventas totales, por servicio y por ejecutivo, trámites pendientes y documentos pendientes de firma, para dar seguimiento a la operación | Must | Confirmado | HU-10, HU-48 | RF-14 |
 | HU-61 | Como ejecutivo, quiero ver por qué un trámite o un documento está pendiente, para destrabarlo sin preguntarle al cliente | Must | Confirmado | HU-10 | RF-47 |
 | HU-42 | Como ejecutivo, quiero recibir alertas de los servicios próximos a vencer, para gestionar su renovación oportunamente | Must | Confirmado | HU-48, HU-53 | RF-13 |
+| HU-65 | Como administrador, quiero registrar los datos de Easy Office, sus marcas y las cuentas donde recibe pagos, para que los contratos los tomen de la configuración y no se escriban a mano | Must | Propuesto | — | RF-24 |
+| HU-66 | Como administrador, quiero registrar cada inmueble (oficina o bodega) con su sucursal y su dueño autorizante, para generar la autorización de domicilio sin datos escritos a mano | Must | Propuesto | — | RF-24, RN-43 |
 
 **Criterios de aceptación preliminares (HU-42):** la anticipación es configurable
 por tipo de servicio, con valores iniciales de 60, 30, 15 y 7 días; cada alerta
 queda registrada con su estado; el ejecutivo puede marcarla como gestionada.
 
-> Ambas historias pasaron de *Could / Propuesto* a *Must / Confirmado* en esta
-> versión: las especificaciones formales las incorporan en sus §4.8 y §4.9.
+> HU-41 y HU-42 pasaron de *Could / Propuesto* a *Must / Confirmado* en la versión
+> 2.0: las especificaciones formales las incorporan en sus §4.8 y §4.9.
+>
+> HU-65 y HU-66 se derivan de las plantillas `PLT-01` y `PLT-02`: los datos de Easy
+> Office, sus cuentas y el autorizante estaban escritos a mano en cada contrato.
+> Al 14-10-2026 están implementadas en ramas locales (issues #36 y #37), al igual
+> que HU-08 (#35), HU-60 (#38) y HU-23 (#39).
 
 ---
 
@@ -274,10 +281,10 @@ requisito central: evitar la duplicación de digitación entre el portal y el CR
 | Estado | Historias |
 |---|---|
 | Confirmado | 39 |
-| Propuesto | 25 |
+| Propuesto | 27 |
 | Pendiente de validación | 0 |
 
-**Total: 64 historias.**
+**Total: 66 historias.**
 
 Este backlog está clasificado con MoSCoW pero **no está ordenado ni estimado para
 sprint**. Ese orden se define en el Sprint Planning.
@@ -298,3 +305,4 @@ planilla Excel o las credenciales externas.
 | 2.1 | 09-10-2026 | Decisiones de `ACTA-002`: HU-03 confirmada con cuenta obligatoria del cliente (RF-45); HU-41 visible para administrador y ejecutivo; el rol "supervisor" se reemplaza por administrador (solo existen dos roles); HU-05 confirmada; nuevas HU-58 (enlace desde el sitio), HU-59 (identidad visual) y HU-60 (folio por contrato) |
 | 2.2 | 12-10-2026 | Nueva HU-61, motivo de pendiente visible para el ejecutivo (RF-47) |
 | 2.3 | 12-10-2026 | Nuevas HU-62 (elegir medio de pago), HU-63 (mis compras) y HU-64 (ventas en el CRM), ya implementadas; HU-38 pasa a interfaz con Klap y Flow; nota del momento del pago actualizada |
+| 2.4 | 14-10-2026 | Nuevas HU-65 (configuración de la empresa emisora, marcas y cuentas de pago) y HU-66 (inmuebles con tipo y autorizante); avance de HU-08, HU-23, HU-60, HU-65 y HU-66 en ramas locales |
