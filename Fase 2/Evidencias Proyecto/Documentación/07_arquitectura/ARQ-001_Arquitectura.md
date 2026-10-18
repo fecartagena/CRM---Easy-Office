@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ARQ-001 · Arquitectura de la solución |
-| **Versión** | 1.3 |
+| **Versión** | 1.4 |
 | **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Propuesta de arquitectura. Sujeta a ajustes al recibir la documentación técnica de la plataforma de firma electrónica |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -173,6 +173,15 @@ puerto, así que sin esta separación iniciar sesión en el panel cerraba la ses
 de la aplicación web en el mismo navegador, y viceversa. La cookie `csrftoken`
 sigue siendo compartida: un formulario del panel abierto mientras se inicia
 sesión en la aplicación web requiere recargar la página.
+
+**Cambio entre sesión de personal y de cliente.** Como la aplicación web usa una
+sola sesión, quien abre una pantalla del otro tipo ve un aviso con un único botón
+("Ingresar como cliente" o "Ingresar como personal") que cierra la sesión actual
+y lleva al ingreso que corresponde, volviendo después a la página donde estaba.
+Las pantallas de ingreso y de registro solo redirigen una sesión del mismo tipo;
+con una del otro tipo muestran el formulario y avisan que esa sesión se cerrará.
+No se separan las sesiones del personal y del cliente, porque exigiría cambiar
+el contrato de `/api/auth/me/`.
 
 ### 4.2 Procesamiento asíncrono
 
@@ -445,3 +454,4 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | 1.1 | 12-10-2026 | Módulo `ventas`; §4.4 pagos en línea con Klap y Flow; decisiones AD-08 a AD-12; pendientes actualizados | Equipo de proyecto |
 | 1.2 | 17-10-2026 | Conversión a PDF con Gotenberg en el despliegue; decisiones AD-13 (docxtpl) y AD-14 (Gotenberg); pendientes de fidelidad del PDF y firma con proveedor | Equipo de proyecto |
 | 1.3 | 17-10-2026 | Sesión separada para el panel de administración (§4.1, AD-15; PR #52 del backend) | Equipo de proyecto |
+| 1.4 | 17-10-2026 | Cambio entre sesión de personal y de cliente en la aplicación web (§4.1; PR #19 del frontend) | Equipo de proyecto |

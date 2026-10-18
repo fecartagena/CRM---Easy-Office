@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.4 |
+| **Versión** | 1.5 |
 | **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
@@ -302,6 +302,16 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
   panel de clientes falla al ejecutarse sola, también en la rama principal, y
   pasa en la suite completa. Queda registrada para corregirla.
 
+**Cambio de sesión entre personal y cliente (frontend, PR #19, abierto)**
+
+- Pruebas nuevas de guardias, ingreso y registro: el aviso ofrece la acción
+  correcta en ambos sentidos y, al usarla, cierra la sesión y lleva al ingreso
+  correcto volviendo a la página original; las pantallas de ingreso y registro
+  solo redirigen una sesión del mismo tipo.
+- 128 pruebas del frontend pasan; `typecheck` y `lint` limpios.
+- Verificado en el navegador contra el entorno local, con cuentas sintéticas
+  temporales: cambio de personal a cliente desde el aviso y desde el ingreso.
+
 Pendiente: pruebas de rendimiento y de seguridad, y las pruebas de aceptación con
 Easy Office.
 
@@ -316,3 +326,4 @@ Easy Office.
 | 1.2 | 17-10-2026 | Estado de las pruebas del domicilio tributario de punta a punta | Equipo de proyecto |
 | 1.3 | 17-10-2026 | Pruebas del frontend del domicilio tributario (123) y estado fusionado | Equipo de proyecto |
 | 1.4 | 17-10-2026 | Pruebas de la sesión separada del panel de administración (509 en total) y defecto conocido de una prueba aislada | Equipo de proyecto |
+| 1.5 | 17-10-2026 | Pruebas del cambio de sesión entre personal y cliente (128 en el frontend) | Equipo de proyecto |
