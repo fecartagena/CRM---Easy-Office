@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | DIS-001 · Documento de diseño |
-| **Versión** | 1.1 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 1.2 |
+| **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 | **Clasificación** | Uso interno del proyecto |
@@ -135,6 +135,8 @@ Decisiones de modelado que conviene destacar:
 | Base de datos | PostgreSQL | Integridad referencial y transacciones, con soporte JSONB indexable para la parte configurable |
 | Asíncrono | Celery + Redis | Generación documental, llamadas externas (creación y verificación de cobros) y detección programada de vencimientos |
 | Pagos en línea | Klap Checkout Flex y Flow, mediante adaptadores propios sobre `httpx` | Dos medios detrás de la misma interfaz; el cliente elige. La elección final la toma Easy Office |
+| Generación documental | `docxtpl` (sobre `python-docx`, `lxml` y `Jinja2`) | Llena la plantilla Word conservando su formato; la plantilla se edita en Word |
+| Conversión a PDF | Gotenberg (LibreOffice) en un contenedor aparte | Vista previa del documento real y PDF para firmar, sin agregar LibreOffice a la imagen de la aplicación |
 | Contenedores | Docker | Paridad entre entornos y portabilidad entre proveedores de alojamiento |
 
 La evaluación completa frente a los once criterios planteados por el cliente
@@ -200,6 +202,8 @@ El detalle de cada verificación está en `PLA-001 Plan de pruebas`.
 | AD-10 | Notificaciones de pago idempotentes con registro de eventos | Procesar cada notificación como nueva |
 | AD-11 | Verificación en segundo plano de las notificaciones sin firma | Confiar en el contenido de la notificación |
 | AD-12 | Túnel autorrenovable para webhooks en desarrollo local | URL pública manual por integrante |
+| AD-13 | Plantilla Word llenada con `docxtpl` | Editar el XML del Word en cada generación |
+| AD-14 | Conversión a PDF en un contenedor aparte (Gotenberg) | LibreOffice en la imagen del worker |
 
 El contexto y las consecuencias de cada una están en `ARQ-001 §8`.
 
@@ -249,3 +253,4 @@ el proyecto a un motor que no genera ningún documento real está registrado en
 |---|---|---|---|
 | 1.0 | 24-09-2026 | Emisión inicial | Equipo de proyecto |
 | 1.1 | 12-10-2026 | Módulo `ventas`, pagos con Klap y Flow, controles de seguridad de cuentas y cobros, decisiones AD-09 a AD-12 | Equipo de proyecto |
+| 1.2 | 17-10-2026 | Generación documental con `docxtpl` y conversión a PDF con Gotenberg; decisiones AD-13 y AD-14 | Equipo de proyecto |

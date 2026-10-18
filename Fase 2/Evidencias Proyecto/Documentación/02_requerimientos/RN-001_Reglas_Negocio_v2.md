@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RN-001 · Reglas de negocio |
-| **Versión** | 2.3 |
-| **Fecha** | 14 de octubre de 2026 |
+| **Versión** | 2.4 |
+| **Fecha** | 17 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | Las especificaciones formales de Easy Office confirman reglas que la versión 1.0 marcaba como propuesta, y agregan otras nuevas |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -101,6 +101,10 @@ meses, vencimiento 01-10-2027.
 del 12-10-2026)
 *La planilla actual registra el vencimiento a mano; la migración lo recalcula con
 esta regla e informa las diferencias.*
+*La fecha de inicio no puede quedar en el pasado: si ya pasó al confirmar, pagar
+o firmar, se pide una nueva y se regenera el documento, porque el contrato y la
+autorización llevan esa fecha. Se admite hasta 30 días a futuro*
+`[SUPUESTO – VALIDAR CON EASY OFFICE]`*.*
 *Implementación (issue #38): cuando el día de inicio no existe en el mes de
 vencimiento, se usa el último día de ese mes* `[SUPUESTO – VALIDAR CON EASY OFFICE]`.
 
@@ -138,6 +142,8 @@ ingreso manual a plataformas externas.*
 
 **RN-13.** Un trámite no avanza a la etapa de firma mientras el cliente no
 confirme que la información es correcta.
+*Implementada en el domicilio tributario (PR #51): sin la confirmación del
+borrador no se crea la venta ni se habilita la firma.*
 **Confirmada** · Proceso actual y propuesto · Levantamiento y ESP §5.1
 
 **RN-14.** Un trámite solo puede transitar entre estados según las transiciones
@@ -202,12 +208,17 @@ el propietario del inmueble (RN-43).*
 
 **RN-24.** Un trámite no se considera completado mientras existan firmas
 pendientes.
+*Implementada en el domicilio tributario (PR #51): el trámite pasa a Completado
+solo cuando un ejecutivo sube el documento firmado.*
 `[PROPUESTA – VALIDAR CON EASY OFFICE]` · Proceso propuesto
 
 **RN-39.** En el domicilio tributario firman el cliente, a través de su
 representante legal, y el dueño de la oficina, este último mediante firma
 desasistida. En los demás documentos firman el cliente y las partes
 involucradas.
+*Implementada en el domicilio tributario (PR #51): el documento registra como
+firmantes al representante legal del cliente y al autorizante. El orden de las
+firmas es un supuesto.*
 **Confirmada** · Proceso propuesto · `ACTA-002` (D2-03 y actualización del
 12-10-2026)
 *El orden de las firmas en el domicilio tributario está pendiente de
@@ -244,6 +255,7 @@ modalidad 50/50 se traslada al proceso en línea, dos cobros sucesivos.
 
 **RN-40.** En el proceso en línea, el cliente paga después de revisar y aprobar el
 borrador del documento.
+*Implementada (PR #51): la venta del plan se crea al confirmar el borrador.*
 **Confirmada** · Proceso propuesto · Reunión del 08-10-2026 (`ACTA-002`)
 
 ---
@@ -259,6 +271,9 @@ Completado**. Mientras está Pendiente, el trámite registra el motivo (por ejem
 falta de información, revisión del borrador, pago o firma), visible para el
 ejecutivo en el CRM.
 **Confirmada** · Proceso propuesto · `ACTA-002` (actualización del 12-10-2026)
+*Implementada (PR #51) con una tabla de transiciones en el código y cuatro
+motivos iniciales: falta de información, revisión del borrador, pago y firma;
+la lista definitiva depende de TA-13.*
 `[PENDIENTE DE VALIDAR CON EASY OFFICE: lista cerrada de motivos (TA-13)]`
 
 **RN-44.** Los precios de los servicios incluyen IVA y no existen precios
@@ -268,6 +283,9 @@ sin precio fijo recibe el precio acordado. El anexo de `PLT-01` dice «TODOS LOS
 VALORES MÁS I.V.A.», lo que contradice esta regla* `[DISCREPANCIA A RESOLVER CON
 EASY OFFICE]`*; mientras tanto, cada servicio lleva el indicador
 `precio_incluye_iva` y ningún precio está confirmado.*
+*En línea, el domicilio tributario se vende en dos planes publicados en el sitio
+web de Easy Office: anual (12 meses, 59.990, firma incluida) y semestral (6 meses,
+39.990, firma aparte a 5.000)* `[SUPUESTO – VALIDAR CON EASY OFFICE]`*.*
 **Confirmada** · Proceso actual y propuesto · `ACTA-002` (actualización del
 12-10-2026)
 
@@ -351,3 +369,4 @@ agenda de la próxima validación. RN-37 quedó confirmada el 12-10-2026.
 | 2.1 | 09-10-2026 | Reglas RN-37 a RN-43 a partir de `ACTA-002` y de los documentos entregados: vencimiento, folio, firmante, momento del pago, cuenta del cliente, estados y autorizante del domicilio. RN-29 pasa a confirmada; discrepancia de RN-23 resuelta; dashboard para el perfil Ejecutivo en RN-32 |
 | 2.2 | 12-10-2026 | RN-37 con la regla de inicio + duración − 1 día; RN-39 precisa los firmantes del domicilio tributario; RN-42 cambia a tres estados con motivo de pendiente; nueva RN-44 sobre precios con IVA |
 | 2.3 | 14-10-2026 | Notas de implementación en RN-37 (fin de mes), RN-38 (marcas, sucursal, ancho configurable, año de emisión, renovación), RN-43 (autorizante persona o empresa) y RN-44 (copia del precio y discrepancia del IVA con el anexo de `PLT-01`) |
+| 2.4 | 17-10-2026 | Notas de implementación del domicilio tributario (PR #51) en RN-13, RN-24, RN-37 (fecha de inicio no atrasada, hasta 30 días a futuro), RN-39, RN-40, RN-42 y RN-44 (planes del sitio web) |

@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ACTA-002 · Reunión de validación con la contraparte |
-| **Versión** | 1.4 |
+| **Versión** | 1.5 |
 | **Fecha de la reunión** | Jueves 8 de octubre de 2026, 20:00 |
 | **Modalidad** | `[CONFIRMAR: remota o presencial]` |
 | **Participantes** | Por Easy Office: Natanael Escobar. Por el equipo: Fernando Cartagena `[CONFIRMAR asistencia de Nicolás Zapata y Marcos Álvarez]` |
@@ -103,6 +103,10 @@ la confirmación escrita de esta acta.
 | TA-17 | Si la renovación automática conserva el folio o genera uno nuevo | Easy Office | Abierto |
 | TA-18 | Si el correo y el celular de aviso son de la empresa o del representante | Easy Office | Abierto |
 | TA-19 | Texto de la unidad del SII por sucursal y región de la sucursal de Algarrobo | Easy Office | Abierto |
+| TA-20 | Precios de los planes del sitio web (anual 59.990 con firma incluida, semestral 39.990) y precio de la firma electrónica (3.500, 5.900 o 5.000) | Easy Office | Abierto |
+| TA-21 | Si la fecha de inicio puede ser futura y hasta cuántos días (hoy, hasta 30) | Easy Office | Abierto |
+| TA-22 | Domicilio del autorizante y ciudad de firma, que siguen escritos en la plantilla | Easy Office | Abierto |
+| TA-23 | Si en línea solo contratan clientes empresa | Easy Office | Abierto |
 
 ---
 
@@ -130,6 +134,8 @@ la confirmación escrita de esta acta.
 | `RSK-001` Registro de riesgos | 1.2 |
 | `GNT-001` Carta Gantt | 1.1 |
 | `13_plantillas` Catálogo de plantillas | 1.0 (nuevo) |
+
+Actualizaciones del 17-10-2026: `MOD-001` 1.5, `RN-001` 2.4, `BKL-001` 2.5, `TRZ-001` 2.4, `ARQ-001` 1.2, `DIS-001` 1.2, `PLA-001` 1.2, `RSK-001` 1.5, `13_plantillas` 1.2.
 
 Actualizaciones del 14-10-2026: `MOD-001` 1.4, `RN-001` 2.3, `BKL-001` 2.4, `TRZ-001` 2.3, `MRQ-001` 2.4, `RSK-001` 1.4, `13_plantillas` 1.1.
 

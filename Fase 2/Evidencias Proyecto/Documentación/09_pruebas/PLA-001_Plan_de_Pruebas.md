@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.1 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 1.2 |
+| **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 
@@ -272,8 +272,19 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 | Pago exitoso con Flow (Webpay) | Correcto |
 | Pago de Klap aprobado y luego reversado | Detectó que el ambiente de pruebas repite el identificador de comercio en todos los pagos; se corrigió quitando la unicidad de `Pago.id_externo` |
 
-Pendiente: pruebas de punta a punta del domicilio tributario, de rendimiento y de
-seguridad, y las pruebas de aceptación con Easy Office.
+**Estado al 17-10-2026 (domicilio tributario, PR #51, sin fusionar)**
+
+- 498 pruebas del backend pasan; `ruff`, el esquema OpenAPI y
+  `makemigrations --check` quedan sin observaciones.
+- Verificado en el navegador con datos ficticios: formulario, PDF real de tres
+  páginas, edición del borrador (versión 2 con el mismo folio), confirmación,
+  pago aplicado por el mismo camino que un webhook, firma subida por un ejecutivo
+  y trámite completado con el contrato vigente.
+- No verificado: un pago real en los ambientes de prueba de Klap o Flow con los
+  planes nuevos, y la fidelidad del PDF frente al Word original.
+
+Pendiente: pruebas de rendimiento y de seguridad, y las pruebas de aceptación con
+Easy Office.
 
 ---
 
@@ -283,3 +294,4 @@ seguridad, y las pruebas de aceptación con Easy Office.
 |---|---|---|---|
 | 1.0 | 24-09-2026 | Emisión inicial | Equipo de proyecto |
 | 1.1 | 12-10-2026 | Estado actual con las pruebas de cuentas y pagos; nuevos casos de integración | Equipo de proyecto |
+| 1.2 | 17-10-2026 | Estado de las pruebas del domicilio tributario de punta a punta | Equipo de proyecto |

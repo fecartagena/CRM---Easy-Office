@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLT-000 · Catálogo de plantillas y diccionario de campos |
-| **Versión** | 1.1 |
-| **Fecha** | 14 de octubre de 2026 |
+| **Versión** | 1.2 |
+| **Fecha** | 17 de octubre de 2026 |
 | **Fuente** | Documentos entregados por Easy Office el 8 de octubre de 2026 (ver `ACTA-002`) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -123,6 +123,12 @@ LF-0152-2026
 La muestra de la base de datos usa `LF-01-2026` (dos dígitos), formato anterior a
 la macro actual. El sistema usa cuatro dígitos con un ancho configurable
 (`CONTRATO_FOLIO_ANCHO`), de modo que los folios históricos puedan conservarse.
+
+**Uso en el sistema.** El backend guarda su propia copia de `PLT-01`, convertida
+una sola vez desde esta versión anonimizada: los campos de combinación pasan a
+marcas propias, el anverso y el reverso de la cédula del autorizante quedan como
+imágenes que el sistema inserta al generar el documento, y el control de cambios
+se acepta. Esta carpeta sigue siendo la referencia; el sistema no la lee.
 `[PENDIENTE DE VALIDAR CON EASY OFFICE]` cómo se tratan esos folios en la
 migración (TA-03).
 
@@ -132,8 +138,8 @@ migración (TA-03).
 
 | # | Plantilla | Observación | Propuesta |
 |---|---|---|---|
-| OB-01 | PLT-01 | La cláusula PRIMERO solo nombra `SERVICIO_1` y `SERVICIO_2`; un tercer servicio aparece en la tabla de precios pero no en la cláusula | Generar la lista de servicios desde los servicios contratados, sin límite fijo |
-| OB-02 | PLT-01 | La autorización dice "UNIDAD DE SAN ANTONIO «COMUNA_SUCURSAL»" para la unidad del SII | Confirmar el texto correcto por sucursal y llevarlo a la configuración de la oficina |
+| OB-01 | PLT-01 | La cláusula PRIMERO solo nombra `SERVICIO_1` y `SERVICIO_2`; un tercer servicio aparece en la tabla de precios pero no en la cláusula | Generar la lista de servicios desde los servicios contratados, sin límite fijo · Resuelto en la plantilla convertida: las filas de servicio se repiten según los servicios del contrato |
+| OB-02 | PLT-01 | La autorización dice "UNIDAD DE SAN ANTONIO «COMUNA_SUCURSAL»" para la unidad del SII | Confirmar el texto correcto por sucursal y llevarlo a la configuración de la oficina · Resuelto en la plantilla convertida: la unidad del SII y la municipalidad salen de la sucursal `[supuesto: texto por sucursal]` |
 | OB-03 | PLT-01, PLT-02 | El vencimiento se digita a mano en la planilla; la muestra tiene vencimientos que no siguen una regla única | El sistema lo calcula: inicio + duración − 1 día (RN-37) |
 | OB-04 | PLT-01, PLT-02 | La tabla de servicios complementarios tiene precios "desde" escritos en el documento, distintos entre plantillas (contabilidad $15.900 y $19.900) | Llevar los precios a configuración `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
 | OB-05 | PLT-02 | La duración ("DOCE (12) MESES") y la dirección y rol de la bodega están escritos en el texto, no como campos | Convertirlos en campos de la oficina o bodega |
@@ -141,6 +147,7 @@ migración (TA-03).
 | OB-07 | PLT-04 | Solo tiene líneas en blanco; incluye datos del Conservador de Bienes Raíces y cuenta bancaria del arrendador | Definir el formulario completo con Easy Office antes de automatizarlo |
 | OB-08 | PLT-05 | Los artículos varían según el trámite (cambio de representante, razón social, nombre de fantasía, capital, etc.) y el original dice "constituida por 10.000 accionistas" en lugar del número de accionistas | Modelar las modificaciones como cláusulas opcionales; confirmar el texto con Easy Office |
 | OB-09 | PLT-01, PLT-02 | El anexo de servicios complementarios dice «TODOS LOS VALORES MÁS I.V.A.», pero Easy Office indicó que los precios incluyen IVA (RN-44) | Confirmar con Easy Office; cada servicio lleva el indicador `precio_incluye_iva` |
+| OB-10 | PLT-01, PLT-02 | El domicilio del autorizante (Valparaíso) y la ciudad de firma ("En Santiago") están escritos en el texto, no como campos | Siguen fijos en la plantilla convertida; confirmar con Easy Office si deben salir de la configuración (TA-22) |
 
 ---
 
