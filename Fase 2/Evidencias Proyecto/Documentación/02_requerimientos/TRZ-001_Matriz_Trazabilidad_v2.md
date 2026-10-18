@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | TRZ-001 · Matriz de trazabilidad |
-| **Versión** | 2.4 |
+| **Versión** | 2.5 |
 | **Fecha** | 17 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | La versión 1.0 referenciaba los identificadores de `MRQ-001 v1.0`, que la versión 2.0 reutilizó para requerimientos distintos. Esta versión está reconstruida contra el catálogo vigente `CAT-001` |
@@ -56,7 +56,7 @@ Según la versión reducida de objetivos (cinco específicos).
 | RF-12 Detección de vencimientos | HU-53 | UC-14 | OE-4 | servicios | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-13 Alertas configurables | HU-42 | UC-09 | OE-4 | servicios | Pendiente | Pendiente | Pendiente | Falta pantalla en prototipo | Especificado |
 | RF-14 Dashboard | HU-41 | UC-08 | OE-2 | backoffice | Pendiente | Pendiente | Pendiente | Prototipo pantalla 7 | Especificado |
-| RF-47 Motivo de pendiente | HU-61 | UC-11 | OE-2 | tramites | Backend #50 | PR #51, abierto | Motivo solo mientras está Pendiente | — | En PR, sin fusionar · motivos provisionales (TA-13) |
+| RF-47 Motivo de pendiente | HU-61 | UC-11 | OE-2 | tramites | Backend #50 · Frontend #17 | Backend PR #51 · Frontend PR #18 | Motivo solo mientras está Pendiente; 123 pruebas frontend | — | Implementado · motivos provisionales (TA-13) |
 | RF-50 Consulta de ventas | HU-64 | UC-17 | OE-2 | ventas, backoffice | Frontend #7 | Frontend #9, #10 | Pruebas de ListaVentas y DetalleVenta | — | Implementado en pruebas |
 | RF-15 Registro de auditoría | HU-30 | UC-13 | OE-2 | core | Pendiente | Pendiente | Pendiente | Prototipo pantalla 8 | Especificado |
 | RF-16 Protección del historial | HU-30 | UC-13 | OE-2 | core | Pendiente | Pendiente | Pendiente | — | Especificado |
@@ -68,14 +68,14 @@ Según la versión reducida de objetivos (cinco específicos).
 | Requerimiento | Historia | Caso de uso | Objetivo | Módulo | Issue | Commit / PR | Prueba | Evidencia | Estado |
 |---|---|---|---|---|---|---|---|---|---|
 | RF-19 Catálogo de servicios | HU-23 | UC-01 | OE-4 | portal, ventas | #39 | Rama local, sin PR | Semillas, idempotencia y restricción de servicio del portal con precio; 229 en su rama | Prototipo pantalla 1 | En rama local · precios sin confirmar (IVA) |
-| RF-20 Formularios dinámicos | HU-24 | UC-01 | OE-3 | portal, tramites | Backend #50 | PR #51, abierto | 498 pruebas backend; flujo verificado en el navegador con datos ficticios | Prototipo pantalla 2 | En PR, sin fusionar · formulario del domicilio tributario; el motor genérico sigue pendiente |
-| RF-21 Revisión y confirmación | HU-26, HU-27 | UC-01 | OE-4 | portal, tramites | Backend #50 | PR #51, abierto | Vista previa del PDF real, edición con versión nueva y confirmación | Prototipo pantalla 3 | En PR, sin fusionar |
+| RF-20 Formularios dinámicos | HU-24 | UC-01 | OE-3 | portal, tramites | Backend #50 · Frontend #17 | Backend PR #51 · Frontend PR #18 | 498 pruebas backend; flujo verificado en el navegador con datos ficticios; 123 pruebas frontend | Prototipo pantalla 2 | Implementado · formulario del domicilio tributario; el motor genérico sigue pendiente |
+| RF-21 Revisión y confirmación | HU-26, HU-27 | UC-01 | OE-4 | portal, tramites | Backend #50 · Frontend #17 | Backend PR #51 · Frontend PR #18 | Vista previa del PDF real, edición con versión nueva y confirmación; 123 pruebas frontend | Prototipo pantalla 3 | Implementado |
 | RF-22 Pago en línea | HU-39, HU-62 | UC-17 | OE-4 | integrations, ventas, portal | Backend #23, #27 · Frontend #7, #11 | Backend #25, #26, #28 · Frontend #9, #10, #12 | Pruebas unitarias y de integración (214 backend, 97 frontend); pagos de prueba con Klap y Flow en sandbox | Prototipo pantalla 4 | Implementado en pruebas · proveedor y precios por confirmar |
 | RF-23 Verificación del pago | HU-57 | UC-17 | OE-4 | integrations, ventas | Backend #23, #27 | Backend #25, #26, #28 | Pruebas de webhooks (duplicados, firma falsa, monto distinto, rechazo tardío) y de sincronización | — | Implementado en pruebas |
-| RF-24 Generación del documento | HU-19, HU-65, HU-66 | UC-15 | OE-4 | documentos, configuracion, inmuebles | #49 (prueba técnica) · #50 · #36 · #37 | PR #51, abierto · HU-65 y HU-66 fusionadas | Cada campo de `PLT-01` desde una sola fuente; sin campos sin llenar; sucursal incompleta rechazada | — | En PR, sin fusionar · `PLT-01` |
+| RF-24 Generación del documento | HU-19, HU-65, HU-66 | UC-15 | OE-4 | documentos, configuracion, inmuebles | #49 (prueba técnica) · #50 · #36 · #37 | Backend PR #51 · HU-65 y HU-66 fusionadas | Cada campo de `PLT-01` desde una sola fuente; sin campos sin llenar; sucursal incompleta rechazada | — | Implementado · `PLT-01` |
 | RF-25 Envío a firma | HU-35 | UC-16 | OE-4 | integrations | Pendiente | Pendiente | Pendiente | Prototipo pantalla 5 | Especificado · credenciales pendientes |
-| RF-26 Entrega del documento final | HU-29 | UC-03 | OE-4 | portal, documentos | Backend #50 | PR #51, abierto | Descarga del PDF firmado, sin caché; subida del firmado por un ejecutivo (firma asistida) | Prototipo pantalla 6 | En PR, sin fusionar |
-| RF-27 Seguimiento del estado | HU-28 | UC-02 | OE-4 | portal, tramites | Backend #50 | PR #51, abierto | Estados y motivo de pendiente en el portal | Prototipo pantallas 5 y 6 | En PR, sin fusionar |
+| RF-26 Entrega del documento final | HU-29 | UC-03 | OE-4 | portal, documentos | Backend #50 · Frontend #17 | Backend PR #51 · Frontend PR #18 | Descarga del PDF firmado, sin caché; subida del firmado por un ejecutivo (firma asistida); 123 pruebas frontend | Prototipo pantalla 6 | Implementado |
+| RF-27 Seguimiento del estado | HU-28 | UC-02 | OE-4 | portal, tramites | Backend #50 · Frontend #17 | Backend PR #51 · Frontend PR #18 | Estados y motivo de pendiente en el portal; 123 pruebas frontend | Prototipo pantallas 5 y 6 | Implementado |
 | RF-45 Cuenta del cliente | HU-03 | UC-01 | OE-4 | clientes, portal | Backend #22 · Frontend #6 | Backend #24 · Frontend #8 | Pruebas de registro, vinculación por RUT y guardias de ruta | — | Implementado |
 | RF-46 Acceso desde el sitio web | HU-58 | UC-01 | OE-4 | portal | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-48 Elección del medio de pago | HU-62 | UC-17 | OE-4 | portal | Frontend #11 | Frontend #12 | Pruebas del selector y del checkout de Klap y Flow | — | Implementado en pruebas |
@@ -89,7 +89,7 @@ Según la versión reducida de objetivos (cinco específicos).
 | RF-28 Registro automático de la operación | HU-54 | UC-01 | OE-4 | tramites | Pendiente | Pendiente | HU-44 | — | Especificado |
 | RF-29 Creación o actualización del cliente | HU-54 | UC-01 | OE-4 | clientes | Pendiente | Pendiente | HU-44 | — | Especificado |
 | RF-30 Registro del servicio contratado | HU-55 | UC-01 | OE-4 | servicios | Pendiente | Pendiente | HU-44 | — | Especificado |
-| RF-31 Asociación del documento firmado | HU-56 | UC-16 | OE-4 | documentos | Pendiente | Pendiente | Pendiente | — | Especificado |
+| RF-31 Asociación del documento firmado | HU-56 | UC-16 | OE-4 | documentos | Backend #50 · Frontend #17 | Backend PR #51 · Frontend PR #18 | Subida del PDF firmado en el backoffice, con su permiso y SHA-256 | Prototipo pantalla 8 | Implementado como firma asistida; la firma con proveedor sigue pendiente (IN-01) |
 | RF-32 Inicio del seguimiento | HU-55 | UC-01 | OE-4 | servicios | Pendiente | Pendiente | Pendiente | — | Especificado |
 
 ## Matriz · Motor configurable y documentos
@@ -100,8 +100,8 @@ Según la versión reducida de objetivos (cinco específicos).
 | RF-34 Incorporación modular de documentos | HU-15 | UC-11 | OE-3 | documentos | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-35 Incorporación de nuevos servicios | HU-14 | UC-11 | OE-3 | servicios | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-36 Sistema de plantillas | HU-18 | UC-12 | OE-3 | documentos | Pendiente | Pendiente | Pendiente | Falta pantalla en prototipo | Especificado |
-| RF-37 Versionado de plantillas | HU-18, HU-20 | UC-12 | OE-3 | documentos | Backend #50 | PR #51, abierto | Versión inmutable una vez usada | Prototipo pantalla 3 | En PR, sin fusionar |
-| RF-38 Copia congelada de los datos | HU-21 | UC-15 | OE-4 | documentos | Backend #50 | PR #51, abierto | HU-43 · copia congelada y SHA-256 por archivo | — | En PR, sin fusionar |
+| RF-37 Versionado de plantillas | HU-18, HU-20 | UC-12 | OE-3 | documentos | Backend #50 | Backend PR #51 | Versión inmutable una vez usada | Prototipo pantalla 3 | Implementado |
+| RF-38 Copia congelada de los datos | HU-21 | UC-15 | OE-4 | documentos | Backend #50 | Backend PR #51 | HU-43 · copia congelada y SHA-256 por archivo | — | Implementado |
 | RF-39 Verificación de integridad | HU-22 | UC-16 | OE-4 | documentos | Pendiente | Pendiente | Pendiente | — | Propuesto |
 | RF-40 Múltiples firmantes | HU-36 | UC-16 | OE-4 | documentos | Pendiente | Pendiente | Pendiente | Prototipo pantallas 5 y 8 | Especificado |
 | RF-41 Máquina de estados | HU-12, HU-17 | UC-11 | OE-3 | tramites | Pendiente | Pendiente | Pendiente | — | Propuesto |
@@ -182,3 +182,4 @@ Los identificadores provienen de `CAT-001` y no se reutilizan.
 | 2.2 | 12-10-2026 | Issues y PR de la cuenta del cliente y de los pagos (backend #22 a #30, frontend #6 a #12); filas de RF-48 a RF-50 |
 | 2.3 | 14-10-2026 | Issues #35 a #39 (HU-08, HU-60, HU-65, HU-66 y HU-23) en RF-05, RF-07, RF-19 y RF-24; todas en ramas locales, sin PR |
 | 2.4 | 17-10-2026 | Domicilio tributario de punta a punta (issue #50, PR #51) en RF-20, RF-21, RF-24, RF-26, RF-27, RF-37, RF-38 y RF-47; prueba técnica #49 en RF-24 |
+| 2.5 | 17-10-2026 | Domicilio tributario fusionado: backend PR #51 y frontend PR #18 (issue #17) en RF-20, RF-21, RF-24, RF-26, RF-27, RF-31, RF-37, RF-38 y RF-47 |
