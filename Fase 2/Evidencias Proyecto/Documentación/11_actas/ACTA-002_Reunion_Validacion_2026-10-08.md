@@ -135,7 +135,7 @@ la confirmación escrita de esta acta.
 | `GNT-001` Carta Gantt | 1.1 |
 | `13_plantillas` Catálogo de plantillas | 1.0 (nuevo) |
 
-Actualizaciones del 17-10-2026: `MOD-001` 1.5, `RN-001` 2.4, `BKL-001` 2.5, `TRZ-001` 2.4, `ARQ-001` 1.2, `DIS-001` 1.2, `PLA-001` 1.2, `RSK-001` 1.5, `13_plantillas` 1.2.
+Actualizaciones del 17-10-2026: `MOD-001` 1.5, `RN-001` 2.4, `BKL-001` 2.5, `TRZ-001` 2.4, `ARQ-001` 1.2, `DIS-001` 1.2, `PLA-001` 1.2, `RSK-001` 1.5, `13_plantillas` 1.2. Con los PR del backend (#51) y del frontend (#18) fusionados: `MOD-001` 1.6, `TRZ-001` 2.5, `BKL-001` 2.6, `PLA-001` 1.3, `DIS-001` 1.3.
 
 Actualizaciones del 14-10-2026: `MOD-001` 1.4, `RN-001` 2.3, `BKL-001` 2.4, `TRZ-001` 2.3, `MRQ-001` 2.4, `RSK-001` 1.4, `13_plantillas` 1.1.
 

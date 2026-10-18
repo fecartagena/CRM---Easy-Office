@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | DIS-001 · Documento de diseño |
-| **Versión** | 1.2 |
+| **Versión** | 1.3 |
 | **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
@@ -161,6 +161,7 @@ proveedores) está en `REC-001`.
 | Desarrollo | Datos anonimizados; ningún dato real se versiona |
 | Cuenta del cliente | Sin rol ni acceso al backoffice; el registro tiene límite de intentos y un RUT ya registrado no se revela (mismo error genérico ante cualquier rechazo) |
 | Cobros | El precio sale del servidor; el estado cambia solo en el servicio de dominio; los resultados se verifican contra el proveedor y no contra el navegador |
+| Documentos del trámite | Sin URL pública: el portal y el backoffice piden cada archivo con la sesión del usuario y lo muestran desde una URL local del navegador; las respuestas no se guardan en caché. El cliente solo ve sus propios trámites |
 | Notificaciones de pago | Firma verificada cuando el proveedor la ofrece (Klap); verificación en segundo plano consultando al proveedor cuando no (Flow); registro de eventos con clave de deduplicación; monto distinto del esperado deja la orden en error |
 | Llaves de proveedores | Solo en archivos de entorno ignorados por Git; el ejemplo versionado lleva marcadores vacíos |
 | Túnel de webhooks | Solo en desarrollo local, que usa datos ficticios, porque expone la API local a internet mientras corre |
@@ -254,3 +255,4 @@ el proyecto a un motor que no genera ningún documento real está registrado en
 | 1.0 | 24-09-2026 | Emisión inicial | Equipo de proyecto |
 | 1.1 | 12-10-2026 | Módulo `ventas`, pagos con Klap y Flow, controles de seguridad de cuentas y cobros, decisiones AD-09 a AD-12 | Equipo de proyecto |
 | 1.2 | 17-10-2026 | Generación documental con `docxtpl` y conversión a PDF con Gotenberg; decisiones AD-13 y AD-14 | Equipo de proyecto |
+| 1.3 | 17-10-2026 | Control de acceso a los documentos del trámite en el portal y el backoffice | Equipo de proyecto |
