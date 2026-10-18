@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | TRZ-001 · Matriz de trazabilidad |
-| **Versión** | 2.5 |
+| **Versión** | 2.6 |
 | **Fecha** | 17 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | La versión 1.0 referenciaba los identificadores de `MRQ-001 v1.0`, que la versión 2.0 reutilizó para requerimientos distintos. Esta versión está reconstruida contra el catálogo vigente `CAT-001` |
@@ -42,7 +42,7 @@ Según la versión reducida de objetivos (cinco específicos).
 
 | Requerimiento | Historia | Caso de uso | Objetivo | Módulo | Issue | Commit / PR | Prueba | Evidencia | Estado |
 |---|---|---|---|---|---|---|---|---|---|
-| RF-01 Autenticación individual | HU-01 | — | OE-2 | core | Pendiente | Pendiente | Pendiente | — | Especificado |
+| RF-01 Autenticación individual | HU-01 | — | OE-2 | core | #14 | PR #15 · corrección de sesión del panel en PR #52, abierto | 5 pruebas de convivencia de las sesiones del panel y de la aplicación web | — | Implementado · corrección en revisión |
 | RF-02 Permisos por roles | HU-04 | UC-10 | OE-2 | core | Pendiente | Pendiente | HU-45 | — | Especificado |
 | RF-03 Administración de usuarios | HU-02 | UC-10 | OE-2 | core | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-04 Restricción de eliminación | HU-05 | UC-10 | OE-2 | core | Pendiente | Pendiente | HU-45 | — | Especificado |
@@ -76,7 +76,7 @@ Según la versión reducida de objetivos (cinco específicos).
 | RF-25 Envío a firma | HU-35 | UC-16 | OE-4 | integrations | Pendiente | Pendiente | Pendiente | Prototipo pantalla 5 | Especificado · credenciales pendientes |
 | RF-26 Entrega del documento final | HU-29 | UC-03 | OE-4 | portal, documentos | Backend #50 · Frontend #17 | Backend PR #51 · Frontend PR #18 | Descarga del PDF firmado, sin caché; subida del firmado por un ejecutivo (firma asistida); 123 pruebas frontend | Prototipo pantalla 6 | Implementado |
 | RF-27 Seguimiento del estado | HU-28 | UC-02 | OE-4 | portal, tramites | Backend #50 · Frontend #17 | Backend PR #51 · Frontend PR #18 | Estados y motivo de pendiente en el portal; 123 pruebas frontend | Prototipo pantallas 5 y 6 | Implementado |
-| RF-45 Cuenta del cliente | HU-03 | UC-01 | OE-4 | clientes, portal | Backend #22 · Frontend #6 | Backend #24 · Frontend #8 | Pruebas de registro, vinculación por RUT y guardias de ruta | — | Implementado |
+| RF-45 Cuenta del cliente | HU-03 | UC-01 | OE-4 | clientes, portal | Backend #22 · Frontend #6 | Backend #24 · Frontend #8 · PR #52, abierto (sesión del panel) | Pruebas de registro, vinculación por RUT y guardias de ruta | — | Implementado |
 | RF-46 Acceso desde el sitio web | HU-58 | UC-01 | OE-4 | portal | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-48 Elección del medio de pago | HU-62 | UC-17 | OE-4 | portal | Frontend #11 | Frontend #12 | Pruebas del selector y del checkout de Klap y Flow | — | Implementado en pruebas |
 | RF-49 Compras del cliente | HU-63 | UC-01 | OE-4 | portal | Frontend #7 | Frontend #9, #10 | Pruebas de pantallas de pago | — | Implementado en pruebas |
@@ -183,3 +183,4 @@ Los identificadores provienen de `CAT-001` y no se reutilizan.
 | 2.3 | 14-10-2026 | Issues #35 a #39 (HU-08, HU-60, HU-65, HU-66 y HU-23) en RF-05, RF-07, RF-19 y RF-24; todas en ramas locales, sin PR |
 | 2.4 | 17-10-2026 | Domicilio tributario de punta a punta (issue #50, PR #51) en RF-20, RF-21, RF-24, RF-26, RF-27, RF-37, RF-38 y RF-47; prueba técnica #49 en RF-24 |
 | 2.5 | 17-10-2026 | Domicilio tributario fusionado: backend PR #51 y frontend PR #18 (issue #17) en RF-20, RF-21, RF-24, RF-26, RF-27, RF-31, RF-37, RF-38 y RF-47 |
+| 2.6 | 17-10-2026 | RF-01 y RF-45: corrección de la sesión del panel de administración (PR #52, abierto); RF-01 con su issue y PR originales (#14, PR #15) |

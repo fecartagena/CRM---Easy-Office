@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.3 |
+| **Versión** | 1.4 |
 | **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
@@ -285,9 +285,22 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
   páginas, edición del borrador (versión 2 con el mismo folio), confirmación,
   pago aplicado por el mismo camino que un webhook, firma subida por un ejecutivo
   y trámite completado con el contrato vigente.
-- Verificado manualmente por el equipo: el checkout en el ambiente de pruebas
-  del proveedor de pago con los planes nuevos.
+- Verificado manualmente por el equipo desde el entorno local: el checkout en el
+  ambiente de pruebas del proveedor de pago con los planes nuevos, con el resultado
+  recibido por webhook a través del túnel.
 - No verificado: la fidelidad del PDF frente al Word original.
+
+**Corrección de la sesión del panel de administración (PR #52, abierto)**
+
+- 5 pruebas nuevas: las sesiones del panel y de la aplicación web conviven en
+  ambos órdenes; una sesión web del personal no da acceso al panel; cerrar sesión
+  en el panel mantiene la sesión web; nombre, ruta y HttpOnly de la cookie del
+  panel.
+- La suite completa del backend pasa: 509 pruebas. Verificado además contra el
+  servidor local con cuentas sintéticas temporales.
+- Defecto conocido, sin relación con este cambio: una prueba de búsqueda del
+  panel de clientes falla al ejecutarse sola, también en la rama principal, y
+  pasa en la suite completa. Queda registrada para corregirla.
 
 Pendiente: pruebas de rendimiento y de seguridad, y las pruebas de aceptación con
 Easy Office.
@@ -302,3 +315,4 @@ Easy Office.
 | 1.1 | 12-10-2026 | Estado actual con las pruebas de cuentas y pagos; nuevos casos de integración | Equipo de proyecto |
 | 1.2 | 17-10-2026 | Estado de las pruebas del domicilio tributario de punta a punta | Equipo de proyecto |
 | 1.3 | 17-10-2026 | Pruebas del frontend del domicilio tributario (123) y estado fusionado | Equipo de proyecto |
+| 1.4 | 17-10-2026 | Pruebas de la sesión separada del panel de administración (509 en total) y defecto conocido de una prueba aislada | Equipo de proyecto |

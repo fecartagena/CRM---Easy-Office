@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ARQ-001 · Arquitectura de la solución |
-| **Versión** | 1.2 |
+| **Versión** | 1.3 |
 | **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Propuesta de arquitectura. Sujeta a ajustes al recibir la documentación técnica de la plataforma de firma electrónica |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -163,7 +163,16 @@ tokens en almacenamiento del navegador: el sistema maneja datos personales de
 clientes reales y una cookie httpOnly no es legible por scripts de la página.
 
 Los dos frontends consumen la misma API. Las diferencias de acceso se resuelven
-por permisos del rol, no por endpoints separados.
+por permisos del rol, no por endpoints separados. Dentro de la aplicación web, el
+personal y los clientes comparten un único mecanismo de sesión.
+
+**Sesión del panel de administración.** El panel de administración de Django
+usa su propia cookie de sesión (`sessionid_admin`, y `__Secure-sessionid_admin`
+en producción), limitada a la ruta del panel. Las cookies no distinguen el
+puerto, así que sin esta separación iniciar sesión en el panel cerraba la sesión
+de la aplicación web en el mismo navegador, y viceversa. La cookie `csrftoken`
+sigue siendo compartida: un formulario del panel abierto mientras se inicia
+sesión en la aplicación web requiere recargar la página.
 
 ### 4.2 Procesamiento asíncrono
 
@@ -411,6 +420,7 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | AD-12 | Túnel de Cloudflare autorrenovable para recibir webhooks en desarrollo local | URL pública manual por integrante | Los túneles rápidos expiran en uno o dos días y cada integrante necesita una URL viva |
 | AD-13 | Llenar la plantilla Word con una librería de plantillas (`docxtpl`), tras convertir una vez los campos de combinación de `PLT-01` a marcas propias | Editar el XML del Word directamente en cada generación | La plantilla queda como configuración editable en Word, no como código por plantilla. Elegida en la prueba técnica del issue #49 |
 | AD-14 | Convertir a PDF en un contenedor aparte (Gotenberg, con LibreOffice) | LibreOffice dentro de la imagen del worker; no generar PDF | Vista previa del documento real y PDF para la firma, sin dependencia de Python adicional ni una imagen de aplicación más pesada |
+| AD-15 | Cookie de sesión propia para el panel de administración, mediante un middleware que extiende el de sesiones de Django y solo cambia el nombre y la ruta de la cookie | Copiar el código del middleware de Django; mantener una sola sesión | Iniciar sesión en el panel no debe cerrar la sesión de la aplicación web; extender en vez de copiar evita romper con versiones futuras de Django |
 
 ---
 
@@ -434,3 +444,4 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | 1.0 | 24-09-2026 | Emisión inicial | Equipo de proyecto |
 | 1.1 | 12-10-2026 | Módulo `ventas`; §4.4 pagos en línea con Klap y Flow; decisiones AD-08 a AD-12; pendientes actualizados | Equipo de proyecto |
 | 1.2 | 17-10-2026 | Conversión a PDF con Gotenberg en el despliegue; decisiones AD-13 (docxtpl) y AD-14 (Gotenberg); pendientes de fidelidad del PDF y firma con proveedor | Equipo de proyecto |
+| 1.3 | 17-10-2026 | Sesión separada para el panel de administración (§4.1, AD-15; PR #52 del backend) | Equipo de proyecto |

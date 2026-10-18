@@ -35,17 +35,17 @@ Documentación/
 | BKL-001 | Product Backlog | 04 | 2.6 |
 | SPR-001 | Sprint Backlog · Sprint 1 | 04 | 1.1 |
 | DOD-001 | Definition of Done | 04 | 1.0 |
-| DIS-001 | Documento de diseño | 07 | 1.3 |
+| DIS-001 | Documento de diseño | 07 | 1.4 |
 | RET-001 | Registro de retrospectivas | 04 | 1.0 |
 | GNT-001 | Carta Gantt, hitos, plan de trabajo y sprints (.xlsx + .pdf) | 05 | 1.1 |
-| PLA-001 | Plan de pruebas | 09 | 1.3 |
+| PLA-001 | Plan de pruebas | 09 | 1.4 |
 
 ### Elementos obligatorios independientes de la metodología
 
 | Código | Documento | Carpeta | Versión |
 |---|---|---|---|
 | DIP-001 | Documento de inicio de proyecto | 03 | 1.0 |
-| ARQ-001 | Arquitectura: diagrama, componentes, comunicación, secuencia | 07 | 1.2 |
+| ARQ-001 | Arquitectura: diagrama, componentes, comunicación, secuencia | 07 | 1.3 |
 | MOD-001 | Modelo de datos (ER) | 08 | 1.6 |
 | UML-001 | Casos de uso | 07 | 1.2 |
 | MRQ-001 | Requerimientos, incluidos los no funcionales | 02 | 2.4 |
@@ -58,7 +58,7 @@ Documentación/
 | ESP-DOC | Especificaciones de documentos entregadas por Easy Office | 01 | — |
 | CAT-001 | Catálogo de identificadores | 02 | 1.4 |
 | RN-001 | Reglas de negocio | 02 | 2.4 |
-| TRZ-001 | Matriz de trazabilidad | 02 | 2.5 |
+| TRZ-001 | Matriz de trazabilidad | 02 | 2.6 |
 | ALC-001 | Alcance del MVP | 03 | 2.0 |
 | FUN-001 | Ficha funcional del servicio piloto | 03 | 1.0 |
 | REC-001 | Recomendación técnica | 07 | 1.0 |

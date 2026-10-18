@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | DIS-001 · Documento de diseño |
-| **Versión** | 1.3 |
+| **Versión** | 1.4 |
 | **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
@@ -152,7 +152,7 @@ proveedores) está en `REC-001`.
 |---|---|
 | Autenticación | Credenciales individuales; sin cuentas compartidas |
 | Autorización | Permisos por rol, con la restricción de que el perfil ejecutivo no elimina registros |
-| Sesión | Cookies httpOnly; no se usa almacenamiento del navegador para datos de sesión ni de negocio |
+| Sesión | Cookies httpOnly; no se usa almacenamiento del navegador para datos de sesión ni de negocio. El panel de administración usa una cookie de sesión propia, limitada a su ruta, de modo que su inicio y cierre de sesión no afectan a la aplicación web. `DJANGO_ADMIN_FORCE_ALLAUTH` debe quedar desactivado: con él, el ingreso al panel usaría la cookie de la aplicación web |
 | Transporte | HTTPS obligatorio |
 | Secretos | Variables de entorno, fuera del código y del repositorio |
 | Datos en reposo | Cifrado de los documentos almacenados |
@@ -205,6 +205,7 @@ El detalle de cada verificación está en `PLA-001 Plan de pruebas`.
 | AD-12 | Túnel autorrenovable para webhooks en desarrollo local | URL pública manual por integrante |
 | AD-13 | Plantilla Word llenada con `docxtpl` | Editar el XML del Word en cada generación |
 | AD-14 | Conversión a PDF en un contenedor aparte (Gotenberg) | LibreOffice en la imagen del worker |
+| AD-15 | Cookie de sesión propia para el panel de administración | Una sola cookie de sesión para el panel y la aplicación web |
 
 El contexto y las consecuencias de cada una están en `ARQ-001 §8`.
 
@@ -256,3 +257,4 @@ el proyecto a un motor que no genera ningún documento real está registrado en
 | 1.1 | 12-10-2026 | Módulo `ventas`, pagos con Klap y Flow, controles de seguridad de cuentas y cobros, decisiones AD-09 a AD-12 | Equipo de proyecto |
 | 1.2 | 17-10-2026 | Generación documental con `docxtpl` y conversión a PDF con Gotenberg; decisiones AD-13 y AD-14 | Equipo de proyecto |
 | 1.3 | 17-10-2026 | Control de acceso a los documentos del trámite en el portal y el backoffice | Equipo de proyecto |
+| 1.4 | 17-10-2026 | Sesión separada para el panel de administración (AD-15) | Equipo de proyecto |
