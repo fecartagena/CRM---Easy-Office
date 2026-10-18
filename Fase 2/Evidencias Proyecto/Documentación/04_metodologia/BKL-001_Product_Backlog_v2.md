@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.4 |
-| **Fecha** | 14 de octubre de 2026 |
+| **Versión** | 2.5 |
+| **Fecha** | 17 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -286,6 +286,13 @@ requisito central: evitar la duplicación de digitación entre el portal y el CR
 
 **Total: 66 historias.**
 
+**Avance al 17-10-2026.** HU-24 (domicilio tributario de punta a punta) está
+implementada junto con HU-19, HU-20, HU-21, HU-26, HU-27, HU-28, HU-29 y HU-61 en
+el issue #50, con el PR #51 abierto y sin revisar. La prueba técnica de
+generación de `PLT-01` (HU-19) quedó en el issue #49; no se fusiona. La firma es
+asistida: un ejecutivo sube el documento firmado mientras no haya credenciales
+del proveedor.
+
 Este backlog está clasificado con MoSCoW pero **no está ordenado ni estimado para
 sprint**. Ese orden se define en el Sprint Planning.
 
@@ -306,3 +313,4 @@ planilla Excel o las credenciales externas.
 | 2.2 | 12-10-2026 | Nueva HU-61, motivo de pendiente visible para el ejecutivo (RF-47) |
 | 2.3 | 12-10-2026 | Nuevas HU-62 (elegir medio de pago), HU-63 (mis compras) y HU-64 (ventas en el CRM), ya implementadas; HU-38 pasa a interfaz con Klap y Flow; nota del momento del pago actualizada |
 | 2.4 | 14-10-2026 | Nuevas HU-65 (configuración de la empresa emisora, marcas y cuentas de pago) y HU-66 (inmuebles con tipo y autorizante); avance de HU-08, HU-23, HU-60, HU-65 y HU-66 en ramas locales |
+| 2.5 | 17-10-2026 | Avance del domicilio tributario de punta a punta (issue #50, PR #51) y de la prueba técnica de `PLT-01` (issue #49) |

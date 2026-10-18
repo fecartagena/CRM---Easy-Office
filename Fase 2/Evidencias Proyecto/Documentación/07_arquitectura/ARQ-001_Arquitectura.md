@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ARQ-001 · Arquitectura de la solución |
-| **Versión** | 1.1 |
-| **Fecha** | 12 de octubre de 2026 |
+| **Versión** | 1.2 |
+| **Fecha** | 17 de octubre de 2026 |
 | **Estado** | Propuesta de arquitectura. Sujeta a ajustes al recibir la documentación técnica de la plataforma de firma electrónica |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -334,6 +334,7 @@ graph TB
             B[Celery beat]
             PG[(PostgreSQL)]
             R[(Redis)]
+            G[Gotenberg<br/>Word a PDF]
         end
     end
 
@@ -346,10 +347,18 @@ graph TB
     W --> PG
     W --> R
     B --> R
+    W --> G
     APP --> ST
     PG --> BK
     ST --> BK
 ```
+
+**Conversión a PDF.** El documento se genera en Word desde la plantilla y se
+convierte a PDF en un contenedor aparte, Gotenberg (`gotenberg/gotenberg:8.37.0-libreoffice`),
+que solo es accesible desde el worker de Celery: no tiene puerto publicado ni ruta
+en el proxy. La llamada pasa por una interfaz en `integrations/`, de modo que el
+conversor puede cambiarse por configuración (`PDF_CONVERTER`, `GOTENBERG_URL`,
+`PDF_CONVERSION_TIMEOUT_SECONDS`).
 
 Toda la configuración se inyecta por variables de entorno. Ninguna credencial
 vive en el código ni en el repositorio, que es público.
@@ -400,6 +409,8 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | AD-10 | Notificaciones de pago idempotentes, con registro de eventos y clave de deduplicación | Procesar cada notificación como nueva | Los proveedores reintentan y notifican fuera de orden |
 | AD-11 | Verificar en segundo plano las notificaciones sin firma (Flow) consultando al proveedor | Confiar en el contenido de la notificación | Flow solo envía un token; la verdad la tiene el proveedor |
 | AD-12 | Túnel de Cloudflare autorrenovable para recibir webhooks en desarrollo local | URL pública manual por integrante | Los túneles rápidos expiran en uno o dos días y cada integrante necesita una URL viva |
+| AD-13 | Llenar la plantilla Word con una librería de plantillas (`docxtpl`), tras convertir una vez los campos de combinación de `PLT-01` a marcas propias | Editar el XML del Word directamente en cada generación | La plantilla queda como configuración editable en Word, no como código por plantilla. Elegida en la prueba técnica del issue #49 |
+| AD-14 | Convertir a PDF en un contenedor aparte (Gotenberg, con LibreOffice) | LibreOffice dentro de la imagen del worker; no generar PDF | Vista previa del documento real y PDF para la firma, sin dependencia de Python adicional ni una imagen de aplicación más pesada |
 
 ---
 
@@ -410,6 +421,8 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 - Decisión de la pasarela de pago: Klap y Flow están integrados y el cliente elige; falta que Easy Office decida cuáles ofrecerá `[PENDIENTE — Easy Office, §5.3]`
 - Política de reembolsos: Klap lo soporta en el adaptador, Flow aún no, y la aplicación no expone la operación `[PENDIENTE — Easy Office]`
 - Proveedor de alojamiento `[PENDIENTE]`
+- Fidelidad del PDF frente al Word original: las plantillas usan Times New Roman y LibreOffice la reemplaza por una fuente de iguales medidas; falta compararlos con Easy Office
+- Firma con proveedor: hoy es asistida (un ejecutivo sube el PDF firmado) `[PENDIENTE — credenciales, TA-07]`
 - ~~Formato de las plantillas de contratos~~: cerrado el 08-10-2026, son documentos Word con campos de combinación (`13_plantillas`)
 
 ---
@@ -420,3 +433,4 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 |---|---|---|---|
 | 1.0 | 24-09-2026 | Emisión inicial | Equipo de proyecto |
 | 1.1 | 12-10-2026 | Módulo `ventas`; §4.4 pagos en línea con Klap y Flow; decisiones AD-08 a AD-12; pendientes actualizados | Equipo de proyecto |
+| 1.2 | 17-10-2026 | Conversión a PDF con Gotenberg en el despliegue; decisiones AD-13 (docxtpl) y AD-14 (Gotenberg); pendientes de fidelidad del PDF y firma con proveedor | Equipo de proyecto |

@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MOD-001 · Modelo de datos |
-| **Versión** | 1.4 |
-| **Fecha** | 14 de octubre de 2026 |
+| **Versión** | 1.5 |
+| **Fecha** | 17 de octubre de 2026 |
 | **Motor** | PostgreSQL (ver `REC-001` para la justificación) |
 | **Estado** | Actualizado con la muestra de 34 campos, las plantillas y las decisiones de la reunión del 08-10-2026 (`ACTA-002`). Pendientes en la sección 7 |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -63,6 +63,8 @@ erDiagram
     SERVICIO ||--o{ SERVICIO_CONTRATADO : "se contrata como"
     CICLO_PAGO ||--o{ SERVICIO_CONTRATADO : "se cobra"
     CICLO_PAGO ||--o{ SERVICIO : "por defecto"
+    SERVICIO ||--o{ PLAN_SERVICIO : "se ofrece en"
+    PLAN_SERVICIO ||--o{ SERVICIO_CONTRATADO : "contratado con"
     CUENTA_PAGO ||--o{ CONTRATO : "indica"
     CLIENTE ||--o{ TRAMITE : "solicita"
 
@@ -79,6 +81,7 @@ erDiagram
     TRAMITE ||--o{ EVENTO_TRAMITE : "registra"
     TRAMITE ||--o{ DOCUMENTO : "produce"
     TRAMITE }o--o| VENTA : "se cobra con"
+    TRAMITE }o--o| CONTRATO : "formaliza"
     TRAMITE }o--o| SERVICIO_CONTRATADO : "activa"
 
     PLANTILLA_DOCUMENTO ||--o{ VERSION_PLANTILLA : "tiene"
@@ -130,8 +133,8 @@ Responde a los §4.6, §4.7 y §4.8.
 | Entidad | Campos principales | Notas |
 |---|---|---|
 | `TIPO_SERVICIO` | `nombre`, `descripcion`, `precio_base`, `duracion_meses`, `es_automatizable`, `requiere_pago`, `requiere_firma`, `activo` | `es_automatizable` distingue los procesos automatizados de los asistidos |
-| `CONTRATO` | `folio` (único), `anio_folio`, `correlativo`, `codigo_sucursal`, `marca`, `cliente`, `representante`, `cuenta_pago`, `fecha_inicio`, `duracion_meses`, `fecha_vencimiento` (calculada), `renovacion_automatica`, `dias_aviso_termino` (30), `correo_aviso`, `celular_aviso`, `ejecutivo_responsable`, `estado` (vigente, terminado, anulado), `terminado_en`, `contrato_anterior` | Agrupa los servicios contratados en un mismo acto y equivale a una fila de la planilla. Folio según RN-38, con restricción única (año, correlativo); vencimiento según RN-37. Una renovación se registra como contrato nuevo que apunta al anterior `[supuesto]`. El representante puede agregarse después `[supuesto]`. El correo y el celular de aviso se guardan en el contrato `[supuesto: falta confirmar si son de la empresa o del representante]`. La API permite listar, ver y crear, sin editar ni borrar. **Implementado** (rama `feature/HU-60-contrato-folio`, issue #38) |
-| `SERVICIO_CONTRATADO` | `contrato`, `servicio`, `nombre`, `descripcion`, `precio`, `precio_incluye_iva`, `ciclo_pago`, `inmueble` (opcional) | Nombre, descripción, precio e indicador de IVA se **copian** del catálogo al contratar (RN-44): un cambio posterior del catálogo no altera contratos ya hechos, y el precio de lista no se puede cambiar; solo un servicio sin precio fijo recibe el precio acordado. Solo el primer servicio de `PLT-01` tiene ubicación, por eso el inmueble es opcional. Sin límite fijo de tres (TA-12). **Implementado** (issue #38). Previstos para el seguimiento: `fecha_termino`, `estado`, `ejecutivo_responsable`, `caracteristicas` (JSONB) |
+| `CONTRATO` | `folio` (único), `anio_folio`, `correlativo`, `codigo_sucursal`, `marca`, `cliente`, `representante`, `cuenta_pago`, `fecha_inicio`, `duracion_meses`, `fecha_vencimiento` (calculada), `renovacion_automatica`, `dias_aviso_termino` (30), `correo_aviso`, `celular_aviso`, `ejecutivo_responsable`, `estado` (borrador, vigente, terminado, anulado), `terminado_en`, `contrato_anterior` | Agrupa los servicios contratados en un mismo acto y equivale a una fila de la planilla. Folio según RN-38, con restricción única (año, correlativo); vencimiento según RN-37. Una renovación se registra como contrato nuevo que apunta al anterior `[supuesto]`. El representante puede agregarse después `[supuesto]`. El correo y el celular de aviso se guardan en el contrato `[supuesto: falta confirmar si son de la empresa o del representante]`. La API permite listar, ver y crear, sin editar ni borrar. **Implementado** (rama `feature/HU-60-contrato-folio`, issue #38) El trámite crea el contrato en **borrador** al enviar el formulario, y ahí se asigna el folio: un borrador abandonado o anulado lo conserva, de modo que el correlativo puede tener números sin contrato vigente `[supuesto]`. En borrador, el folio y la sucursal no cambian `[supuesto]`. El contrato pasa a vigente al completarse el trámite (`activar_contrato`). **Borrador implementado** (migración 0004, HU-24 · issue #50 · PR #51, abierto) |
+| `SERVICIO_CONTRATADO` | `contrato`, `servicio`, `plan` (opcional), `nombre`, `descripcion`, `precio`, `precio_incluye_iva`, `ciclo_pago`, `inmueble` (opcional) | Nombre, descripción, precio e indicador de IVA se **copian** del catálogo al contratar (RN-44): un cambio posterior del catálogo no altera contratos ya hechos, y el precio de lista no se puede cambiar; solo un servicio sin precio fijo recibe el precio acordado. Solo el primer servicio de `PLT-01` tiene ubicación, por eso el inmueble es opcional. Sin límite fijo de tres (TA-12). **Implementado** (issue #38). Previstos para el seguimiento: `fecha_termino`, `estado`, `ejecutivo_responsable`, `caracteristicas` (JSONB) |
 | `CICLO_PAGO` | `codigo`, `nombre`, `activo` | Catálogo: único, mensual, trimestral, semestral, anual (formulario de Easy Office). **Implementado** en `ventas` (issue #39) |
 | `DURACION_CONTRATO` | `meses`, `activa` | Catálogo: 1, 3, 4, 6 y 12 meses (formulario de Easy Office). **Implementado** (issue #38) |
 | `CORRELATIVO_FOLIO` | `anio`, `ultimo` | Un correlativo por año, común a sucursales y marcas. Se bloquea su fila durante la transacción que crea el contrato, para que dos contratos simultáneos no reciban el mismo número ni queden huecos. **Implementado** (issue #38) |
@@ -149,7 +152,7 @@ ubicación del inmueble, su rol de avalúo y la autorización de su dueño.
 | Entidad | Campos principales | Notas |
 |---|---|---|
 | `OFICINA` (cualquier inmueble) | `nombre`, `tipo` (oficina / bodega), `codigo_sucursal` (`LF`, `VL`, `SA`), `calle`, `numero`, `unidad`, `comuna`, `region`, `rol_avaluo`, `unidad_sii`, `municipalidad`, `activa` | Representa oficinas y bodegas: en `PLT-02` la bodega es un inmueble con dirección y rol propios. El código de sucursal es único entre las sucursales y queda vacío en las bodegas (restricción en la base de datos); forma parte del folio. `unidad_sii` y `municipalidad` alimentan el texto de la autorización (OB-02) `[supuesto: texto por sucursal]`. Las tres sucursales se cargan con dirección y rol de relleno (`PENDIENTE-LF`, etc.); los datos reales se ingresan en el panel de administración. **Implementado** (rama `feature/HU-66-inmueble-autorizante`, issue #37) |
-| `AUTORIZANTE` | `inmueble`, `persona` o `empresa` con su `representante` (exactamente uno, con restricciones en la base de datos), `vigente_desde`, `vigente_hasta`, `documento_identidad` (archivo protegido) | Propietario que autoriza el uso del inmueble (RN-43). En `PLT-01` es una empresa con su representante; en `PLT-02`, una persona natural. Antes se modelaba como tres columnas de `OFICINA`; ahora es una entidad. La cédula de identidad se guarda fuera de los archivos públicos, sin URL, y solo se descarga con un permiso propio que tiene el Administrador (`[supuesto]`: JPG, PNG o PDF de hasta 5 MB). **Implementado** (issue #37) |
+| `AUTORIZANTE` | `inmueble`, `persona` o `empresa` con su `representante` (exactamente uno, con restricciones en la base de datos), `vigente_desde`, `vigente_hasta`, `documento_identidad` (archivo protegido) | Propietario que autoriza el uso del inmueble (RN-43). En `PLT-01` es una empresa con su representante; en `PLT-02`, una persona natural. Antes se modelaba como tres columnas de `OFICINA`; ahora es una entidad. La cédula de identidad se guarda fuera de los archivos públicos, sin URL, y solo se descarga con un permiso propio que tiene el Administrador (`[supuesto]`: JPG, PNG o PDF de hasta 5 MB). **Implementado** (issue #37) Se agrega `documento_identidad_reverso`, con el mismo almacenamiento privado y las mismas validaciones: `PLT-01` imprime el anverso y el reverso de la cédula (migración 0006). Una sucursal solo se ofrece para el domicilio tributario si tiene todo lo que imprime `PLT-01`: dirección, rol, unidad del SII, municipalidad y un autorizante empresa vigente, con su representante completo y la cédula por ambos lados en JPG o PNG; el panel de administración muestra lo que falta (HU-24 · issue #50 · PR #51, abierto) |
 
 **Ocupación del domicilio.** `ASIGNACION_DOMICILIO` se eliminó. Qué empresas
 ocupan un inmueble en una fecha se obtiene de los servicios contratados vigentes
@@ -175,12 +178,12 @@ nuevo) y al §8.2 (incorporar tipos de documentos de forma modular).
 
 | Entidad | Campos principales | Notas |
 |---|---|---|
-| `TIPO_TRAMITE` | `nombre`, `tipo_servicio`, `plantilla`, `configuracion` (JSONB: campos, validaciones, orden), `requiere_pago`, `requiere_firma`, `activo`, `version` | El corazón del motor. Un tipo de trámite se define como dato |
-| `ESTADO_TRAMITE` | `codigo`, `nombre`, `es_final` | Valores iniciales según RN-42: Iniciado, Pendiente, Completado |
-| `MOTIVO_PENDIENTE` | `codigo`, `nombre`, `aplica_a` (trámite / documento), `activo` | Catálogo de motivos por los que un trámite o documento queda Pendiente (RF-47). Lista inicial propuesta: falta información, revisión del borrador, pago, firma `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
+| `TIPO_TRAMITE` | `nombre`, `tipo_servicio`, `plantilla`, `configuracion` (JSONB: campos, validaciones, orden), `requiere_pago`, `requiere_firma`, `activo`, `version` | El corazón del motor. Un tipo de trámite se define como dato **Implementado** con su configuración en JSONB (HU-24 · issue #50 · PR #51, abierto) |
+| `ESTADO_TRAMITE` | `codigo`, `nombre`, `es_final` | Valores iniciales según RN-42: Iniciado, Pendiente, Completado **Implementación:** los estados y las transiciones válidas viven hoy en una tabla `TRANSICIONES` dentro del servicio de dominio de `tramites`, no como filas de `ESTADO_TRAMITE` y `TRANSICION_ESTADO` (ver MD-17) |
+| `MOTIVO_PENDIENTE` | `codigo`, `nombre`, `aplica_a` (trámite / documento), `activo` | Catálogo de motivos por los que un trámite o documento queda Pendiente (RF-47). Lista inicial propuesta: falta información, revisión del borrador, pago, firma `[PENDIENTE DE VALIDAR CON EASY OFFICE]` **Implementado** con cuatro motivos iniciales: falta de información, revisión del borrador, pago y firma `[supuesto hasta TA-13]` |
 | `TRANSICION_ESTADO` | `tipo_tramite`, `estado_origen`, `estado_destino`, `rol_autorizado`, `condicion` | La máquina de estados es una tabla, no condicionales repartidos por el código |
-| `TRAMITE` | `folio`, `cliente`, `tipo_tramite`, `servicio_contratado`, `estado_actual`, `motivo_pendiente`, `canal_origen` (portal / backoffice), `ejecutivo`, `datos` (JSONB), `creado_en` | `canal_origen` permite medir cuántos trámites se completan sin intervención de un ejecutivo |
-| `EVENTO_TRAMITE` | `tramite`, `estado_anterior`, `estado_nuevo`, `usuario`, `fecha`, `observacion` | Línea de tiempo del trámite |
+| `TRAMITE` | `folio`, `cliente`, `tipo_tramite`, `servicio_contratado`, `estado_actual`, `motivo_pendiente`, `canal_origen` (portal / backoffice), `ejecutivo`, `datos` (JSONB), `creado_en` | `canal_origen` permite medir cuántos trámites se completan sin intervención de un ejecutivo **Implementado** con folio `TRA-000001`. El motivo solo existe mientras el trámite está Pendiente. Enlaza el contrato y la venta (MD-10). Si falta un dato para generar el documento, el trámite queda Pendiente por falta de información, con el motivo visible para el ejecutivo |
+| `EVENTO_TRAMITE` | `tramite`, `estado_anterior`, `estado_nuevo`, `usuario`, `fecha`, `observacion` | Línea de tiempo del trámite **Implementado**, solo inserción |
 
 La `configuracion` en JSONB guarda la definición del formulario. PostgreSQL
 permite indexar y consultar dentro de ese campo, de modo que no se pierde
@@ -190,11 +193,11 @@ capacidad de consulta al usarlo.
 
 | Entidad | Campos principales | Notas |
 |---|---|---|
-| `PLANTILLA_DOCUMENTO` | `nombre`, `tipo_documento`, `activa` | Easy Office ya tiene formatos definidos (§6) |
-| `VERSION_PLANTILLA` | `plantilla`, `numero_version`, `archivo`, `campos_requeridos` (JSONB), `vigente_desde`, `creada_por` | Inmutable una vez emitido un documento con ella |
-| `DOCUMENTO` | `tramite`, `version_plantilla`, `archivo_generado`, `hash_generado`, `archivo_firmado`, `hash_firmado`, `datos_snapshot` (JSONB), `estado`, `generado_en` | Un trámite puede producir más de un documento: por ejemplo contrato y autorización, o una regeneración tras corregir datos. Ver decisiones 1 a 3 |
-| `FIRMANTE` | `documento`, `persona`, `rol_firmante`, `orden`, `estado`, `firmado_en` | Un documento puede requerir más de una firma |
-| `SOLICITUD_FIRMA` | `documento`, `proveedor`, `id_externo`, `estado`, `enviada_en`, `respuesta` (JSONB) | `id_externo` único para idempotencia |
+| `PLANTILLA_DOCUMENTO` | `nombre`, `tipo_documento`, `activa` | Easy Office ya tiene formatos definidos (§6) **Implementado** |
+| `VERSION_PLANTILLA` | `plantilla`, `numero_version`, `archivo`, `campos_requeridos` (JSONB), `vigente_desde`, `creada_por` | Inmutable una vez emitido un documento con ella **Implementado.** La migración carga `PLT-01` versión 1, convertida una vez a plantilla con marcas propias desde el Word anonimizado (`manage.py convertir_plt01`) |
+| `DOCUMENTO` | `tramite`, `version_plantilla`, `archivo_generado`, `hash_generado`, `archivo_firmado`, `hash_firmado`, `datos_snapshot` (JSONB), `estado`, `generado_en` | Un trámite puede producir más de un documento: por ejemplo contrato y autorización, o una regeneración tras corregir datos. Ver decisiones 1 a 3 **Implementado:** guarda el Word y el PDF generados, cada uno con su SHA-256, la copia congelada de los datos y el PDF firmado con su propio SHA-256. Editar el borrador genera una versión nueva del documento con el mismo folio |
+| `FIRMANTE` | `documento`, `persona`, `rol_firmante`, `orden`, `estado`, `firmado_en` | Un documento puede requerir más de una firma **Implementado** según RN-39 `[supuesto: orden de firmas]` |
+| `SOLICITUD_FIRMA` | `documento`, `proveedor`, `id_externo`, `estado`, `enviada_en`, `respuesta` (JSONB) | `id_externo` único para idempotencia No implementado: hoy la firma es asistida (un ejecutivo sube el PDF firmado) |
 
 ### 3.7 Ventas y pagos
 
@@ -206,6 +209,7 @@ reintentar con otro medio sin duplicar la venta (RN-28).
 | Entidad | Campos principales | Notas |
 |---|---|---|
 | `SERVICIO` | `codigo` (único), `nombre`, `descripcion`, `precio_base` (CLP, puede ir vacío), `precio_incluye_iva`, `ciclo_pago_default`, `se_vende_en_portal`, `precio_confirmado`, `activo` | Catálogo vendible, editable desde el panel de administración. Cargado desde el formulario de Easy Office con sus descripciones textuales: Domicilio tributario 59.990 anual (se vende en el portal), Creación de empresas 49.990 único y Web mail + dominio 14.990 anual (fuera del portal), y Contabilidad inactiva, sin precio ni descripción. La restricción `servicio_portal_con_precio` impide un servicio del portal sin precio. `precio_confirmado` sigue falso en todos mientras no se resuelva el IVA (RN-44). **Implementado** (rama `feature/HU-23-catalogo-servicios`, issue #39) |
+| `PLAN_SERVICIO` | `servicio`, `codigo`, `nombre`, `duracion`, `ciclo_pago`, `precio`, `precio_incluye_iva`, `precio_confirmado`, `firma_incluida`, `se_vende_en_portal`, `orden`, `activo` | Lo que el cliente elige al contratar en línea: el precio depende del plazo. Carga inicial según el sitio web de Easy Office: plan anual, 12 meses, 59.990, firma electrónica incluida; y plan semestral, 6 meses, 39.990, con la firma aparte. La firma electrónica avanzada del catálogo pasa de 3.500 a 5.000 `[supuesto: planes, precios y firma pendientes de confirmar, IVA incluido]`. **Implementado** (migraciones 0011 y 0012, HU-24 · issue #50 · PR #51, abierto) |
 | `VENTA` | `folio` (VEN-000001), `cliente`, `estado`, `total`, `pagada_en` | Estados: pendiente de pago, pagada, reembolsada, anulada. Su estado solo cambia mediante el servicio de dominio de `ventas`, nunca por escritura directa |
 | `ITEM_VENTA` | `venta`, `servicio`, `nombre`, `precio_unitario`, `cantidad`, `subtotal` | Nombre y precio se **copian al comprar** (RN-08): un cambio posterior del catálogo no altera ventas ya hechas. El precio sale siempre del servidor, nunca de la petición del cliente |
 | `ORDEN_PAGO` | `venta`, `proveedor`, `referencia` (UUID único, es lo que ve el proveedor), `id_externo` (único, nulo hasta que el proveedor responde), `monto`, `estado`, `redirect_url`, `detalle_error`, `sincronizada_en` | Un intento de cobro (RN-28). Estados: creando, pendiente, pagada, rechazada, expirada, cancelada, reembolsada, error. Solo hay transiciones hacia adelante; el dinero recibido prevalece sobre un rechazo anterior y un monto distinto del esperado deja la orden en error |
@@ -268,7 +272,8 @@ Lo que cada hash permite verificar:
 
 **4 · Máquina de estados como datos.** Las transiciones válidas viven en
 `TRANSICION_ESTADO`, con el rol autorizado para cada una. Agregar un estado a un
-servicio nuevo no requiere tocar código.
+servicio nuevo no requiere tocar código. La primera implementación las define en
+una tabla dentro del código de `tramites` (MD-17).
 
 **5 · Idempotencia en operaciones externas.** `EVENTO_PAGO` lleva una clave de
 deduplicación única y `SOLICITUD_FIRMA` un identificador externo único; ambos
@@ -373,13 +378,14 @@ que es público.
 | MD-07 | Campos variables de cada documento a automatizar | Definidos para PLT-01 y PLT-02; pendientes PLT-03 a PLT-05 y el poder simple |
 | MD-08 | ~~Regla exacta del vencimiento~~ | Cerrado 12-10-2026: inicio + duración − 1 día (RN-37) |
 | MD-09 | Tratamiento de los folios históricos de dos dígitos (TA-03) | El formato vigente es de cuatro dígitos; el ancho es configurable (`CONTRATO_FOLIO_ANCHO`) para poder conservar los históricos |
-| MD-10 | Vínculo de `VENTA` con `TRAMITE` y `CONTRATO`, ejecutivo de la venta y relación entre `SERVICIO` y `TIPO_SERVICIO` | Cierra el flujo del piloto y habilita las ventas reales del dashboard |
+| MD-10 | ~~Vínculo de `VENTA` con `TRAMITE` y `CONTRATO`~~ | Cerrado en el código (PR #51): el trámite enlaza contrato y venta. Siguen abiertos el ejecutivo de la venta y la relación entre `SERVICIO` y `TIPO_SERVICIO` |
 | MD-11 | Política de reembolsos | El adaptador de Klap soporta el reembolso; el de Flow no, y no existe operación de reembolso en la aplicación |
-| MD-12 | Precios definitivos e IVA | Precios cargados desde el formulario de Easy Office; queda resolver si incluyen IVA (RN-44 frente al anexo de `PLT-01`, que dice «MÁS I.V.A.») y la lista vigente (TA-15) |
-| MD-13 | Retención y cifrado en reposo de la cédula del autorizante | Ley 21.719 de protección de datos personales; depende del alojamiento (TA-09) |
+| MD-12 | Precios definitivos e IVA | Precios cargados desde el formulario de Easy Office; queda resolver si incluyen IVA (RN-44 frente al anexo de `PLT-01`, que dice «MÁS I.V.A.») y la lista vigente (TA-15) Precios por plan cargados desde el sitio web; precio de la firma: 3.500 (carga anterior), 5.900 (anexo) o 5.000 (sitio web) |
+| MD-13 | Retención y cifrado en reposo de la cédula del autorizante | Ley 21.719 de protección de datos personales; depende del alojamiento (TA-09) Incluye la conservación de los borradores de contrato abandonados |
 | MD-14 | Si la renovación conserva el folio | Hoy una renovación es un contrato nuevo con folio nuevo que apunta al anterior |
 | MD-15 | Dueño del correo y del celular de aviso (empresa o representante) | Define dónde se guardan; hoy viven en `CONTRATO` |
 | MD-16 | Registro en auditoría de los modelos nuevos (RF-15) | Contratos, inmuebles, autorizantes y configuración aún no quedan en el registro de auditoría |
+| MD-17 | Transiciones de estado en el código frente a la tabla `TRANSICION_ESTADO` | La decisión 4 y el `CLAUDE.md` prevén una tabla de datos; la primera implementación usa una tabla en el código |
 
 ---
 
@@ -392,3 +398,4 @@ que es público.
 | 1.2 | 12-10-2026 | Estados Iniciado, Pendiente y Completado; catálogo `MOTIVO_PENDIENTE` y campo `TRAMITE.motivo_pendiente` (RF-47); MD-08 cerrado |
 | 1.3 | 12-10-2026 | Modelo implementado de cuentas de cliente (`CUENTA_CLIENTE` ligada a `USUARIO`) y de ventas y pagos (`SERVICIO`, `VENTA`, `ITEM_VENTA`, `ORDEN_PAGO`, `PAGO`, `EVENTO_PAGO`); pendientes MD-10 a MD-12 |
 | 1.4 | 14-10-2026 | Modelo implementado en ramas locales (issues #35 a #39): datos civiles de `PERSONA` y personería en `REPRESENTACION` con sus nombres reales; `CLIENTE.folio` pasa a `codigo`; inmuebles con tipo y código de sucursal; `AUTORIZANTE` como entidad; `ASIGNACION_DOMICILIO` eliminada; `CONFIG_EMPRESA`, `MARCA` y `CUENTA_PAGO`; `CONTRATO`, `SERVICIO_CONTRATADO`, `DURACION_CONTRATO`, `CORRELATIVO_FOLIO` y `CICLO_PAGO`; catálogo de servicios del formulario; decisiones 9 y 10; pendientes MD-13 a MD-16 |
+| 1.5 | 17-10-2026 | Domicilio tributario de punta a punta (issue #50, PR #51, sin fusionar): `PLAN_SERVICIO`; contrato en borrador; `plan` en `SERVICIO_CONTRATADO`; reverso de la cédula del autorizante; `TIPO_TRAMITE`, `MOTIVO_PENDIENTE`, `TRAMITE`, `EVENTO_TRAMITE`, `PLANTILLA_DOCUMENTO`, `VERSION_PLANTILLA`, `DOCUMENTO` y `FIRMANTE` implementados; MD-10 cerrado en el código; nuevo MD-17 |
