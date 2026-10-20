@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.6 |
-| **Fecha** | 17 de octubre de 2026 |
+| **Versión** | 2.8 |
+| **Fecha** | 20 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -214,7 +214,7 @@ queda registrada con su estado; el ejecutivo puede marcarla como gestionada.
 >
 > HU-65 y HU-66 se derivan de las plantillas `PLT-01` y `PLT-02`: los datos de Easy
 > Office, sus cuentas y el autorizante estaban escritos a mano en cada contrato.
-> Al 14-10-2026 están implementadas en ramas locales (issues #36 y #37), al igual
+> Están implementadas y fusionadas (issues #36 y #37, PR #43 y #42), al igual
 > que HU-08 (#35), HU-60 (#38) y HU-23 (#39).
 
 ---
@@ -295,6 +295,10 @@ asistida: un ejecutivo sube el documento firmado mientras no haya credenciales
 del proveedor. Falta la pantalla de configuración de tipos de trámite
 (HU-14, HU-16).
 
+HU-41 pasa a datos reales en el backend (issue #53, PR #54) y el frontend
+(issue #20, PR #21), ambos fusionados: se eliminan las cifras de ejemplo, el Ejecutivo accede al
+dashboard y se agrega el desglose de trámites pendientes por motivo (HU-61).
+
 Este backlog está clasificado con MoSCoW pero **no está ordenado ni estimado para
 sprint**. Ese orden se define en el Sprint Planning.
 
@@ -317,3 +321,5 @@ planilla Excel o las credenciales externas.
 | 2.4 | 14-10-2026 | Nuevas HU-65 (configuración de la empresa emisora, marcas y cuentas de pago) y HU-66 (inmuebles con tipo y autorizante); avance de HU-08, HU-23, HU-60, HU-65 y HU-66 en ramas locales |
 | 2.5 | 17-10-2026 | Avance del domicilio tributario de punta a punta (issue #50, PR #51) y de la prueba técnica de `PLT-01` (issue #49) |
 | 2.6 | 17-10-2026 | Domicilio tributario fusionado en backend (PR #51) y frontend (PR #18) |
+| 2.7 | 18-10-2026 | Avance de HU-41 con datos reales (issue #53) |
+| 2.8 | 20-10-2026 | HU-41 con datos reales fusionada; HU-65 y HU-66 fusionadas |

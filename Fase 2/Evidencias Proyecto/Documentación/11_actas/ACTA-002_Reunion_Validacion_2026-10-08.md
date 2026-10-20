@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ACTA-002 · Reunión de validación con la contraparte |
-| **Versión** | 1.5 |
+| **Versión** | 1.7 |
 | **Fecha de la reunión** | Jueves 8 de octubre de 2026, 20:00 |
 | **Modalidad** | `[CONFIRMAR: remota o presencial]` |
 | **Participantes** | Por Easy Office: Natanael Escobar. Por el equipo: Fernando Cartagena `[CONFIRMAR asistencia de Nicolás Zapata y Marcos Álvarez]` |
@@ -107,6 +107,7 @@ la confirmación escrita de esta acta.
 | TA-21 | Si la fecha de inicio puede ser futura y hasta cuántos días (hoy, hasta 30) | Easy Office | Abierto |
 | TA-22 | Domicilio del autorizante y ciudad de firma, que siguen escritos en la plantilla | Easy Office | Abierto |
 | TA-23 | Si en línea solo contratan clientes empresa | Easy Office | Abierto |
+| TA-24 | Quién es el ejecutivo de una venta en línea: hoy las ventas del portal no tienen ejecutivo y el dashboard las muestra como "En línea (sin ejecutivo)" | Easy Office | Abierto |
 
 ---
 
@@ -118,7 +119,7 @@ la confirmación escrita de esta acta.
 | CE-02 | Actualizar la documentación afectada (sección 7) | Equipo | 10-10-2026 |
 | CE-03 | Dejar las plantillas anonimizadas y el diccionario de campos | Equipo | 10-10-2026 |
 | CE-04 | Implementar el flujo de domicilio tributario con la plantilla `PLT-01` | Equipo | Sprint 2 y 3 |
-| CE-05 | Corregir el acceso del dashboard para el rol Ejecutivo | Marcos | Sprint 2 |
+| CE-05 | Corregir el acceso del dashboard para el rol Ejecutivo | Marcos | Sprint 2 · Cumplido: backend PR #54 y frontend PR #21 |
 
 ---
 

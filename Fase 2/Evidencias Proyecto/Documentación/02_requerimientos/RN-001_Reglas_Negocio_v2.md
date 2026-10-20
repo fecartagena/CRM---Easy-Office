@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RN-001 · Reglas de negocio |
-| **Versión** | 2.4 |
-| **Fecha** | 17 de octubre de 2026 |
+| **Versión** | 2.5 |
+| **Fecha** | 18 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | Las especificaciones formales de Easy Office confirman reglas que la versión 1.0 marcaba como propuesta, y agregan otras nuevas |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -93,6 +93,10 @@ anticipación configurable.
 anterior.
 `[PROPUESTA – VALIDAR CON EASY OFFICE]` · Proceso propuesto
 *Necesaria para el historial que exige el §4.6.*
+*En el dashboard (issue #53), un contrato se considera renovado si existe otro
+contrato no anulado que lo indica como anterior. Un contrato con renovación
+automática sigue activo después de su primer término y no vuelve a aparecer como
+por vencer* `[SUPUESTO – VALIDAR CON EASY OFFICE, TA-17]`*.*
 
 **RN-37.** La fecha de vencimiento de un servicio contratado es la fecha de inicio
 más la duración contratada, menos un día. Ejemplo: inicio 02-10-2026 por 12
@@ -307,6 +311,7 @@ y dashboards.
 información autorizada, registrar servicios y gestiones, consultar clientes,
 estados y vencimientos, y consultar el dashboard de indicadores. **No puede
 eliminar registros de la base de datos.**
+*El permiso del dashboard se otorga al Ejecutivo en el issue #53 (`ACTA-002`, D2-06).*
 **Confirmada** · Proceso propuesto · ESP §4.2 · Dashboard: Reunión del 08-10-2026 (`ACTA-002`)
 
 **RN-33.** El modelo de permisos debe permitir crear nuevos perfiles sin
@@ -370,3 +375,4 @@ agenda de la próxima validación. RN-37 quedó confirmada el 12-10-2026.
 | 2.2 | 12-10-2026 | RN-37 con la regla de inicio + duración − 1 día; RN-39 precisa los firmantes del domicilio tributario; RN-42 cambia a tres estados con motivo de pendiente; nueva RN-44 sobre precios con IVA |
 | 2.3 | 14-10-2026 | Notas de implementación en RN-37 (fin de mes), RN-38 (marcas, sucursal, ancho configurable, año de emisión, renovación), RN-43 (autorizante persona o empresa) y RN-44 (copia del precio y discrepancia del IVA con el anexo de `PLT-01`) |
 | 2.4 | 17-10-2026 | Notas de implementación del domicilio tributario (PR #51) en RN-13, RN-24, RN-37 (fecha de inicio no atrasada, hasta 30 días a futuro), RN-39, RN-40, RN-42 y RN-44 (planes del sitio web) |
+| 2.5 | 18-10-2026 | Notas de implementación del dashboard en RN-10 (renovación) y RN-32 (acceso del Ejecutivo) |

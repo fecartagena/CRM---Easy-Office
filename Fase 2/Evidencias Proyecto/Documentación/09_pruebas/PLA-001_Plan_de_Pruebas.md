@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.5 |
-| **Fecha** | 17 de octubre de 2026 |
+| **Versión** | 1.7 |
+| **Fecha** | 20 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 
@@ -290,7 +290,7 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
   recibido por webhook a través del túnel.
 - No verificado: la fidelidad del PDF frente al Word original.
 
-**Corrección de la sesión del panel de administración (PR #52, abierto)**
+**Corrección de la sesión del panel de administración (PR #52, fusionado)**
 
 - 5 pruebas nuevas: las sesiones del panel y de la aplicación web conviven en
   ambos órdenes; una sesión web del personal no da acceso al panel; cerrar sesión
@@ -302,7 +302,7 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
   panel de clientes falla al ejecutarse sola, también en la rama principal, y
   pasa en la suite completa. Queda registrada para corregirla.
 
-**Cambio de sesión entre personal y cliente (frontend, PR #19, abierto)**
+**Cambio de sesión entre personal y cliente (frontend, PR #19, fusionado)**
 
 - Pruebas nuevas de guardias, ingreso y registro: el aviso ofrece la acción
   correcta en ambos sentidos y, al usarla, cierra la sesión y lleva al ingreso
@@ -311,6 +311,21 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 - 128 pruebas del frontend pasan; `typecheck` y `lint` limpios.
 - Verificado en el navegador contra el entorno local, con cuentas sintéticas
   temporales: cambio de personal a cliente desde el aviso y desde el ingreso.
+
+**Dashboard con datos reales (backend PR #54 y frontend PR #21, fusionados)**
+
+- Pruebas nuevas de vencimientos de contratos, indicadores de trámites,
+  documentos pendientes de firma y ventas pagadas; la API del dashboard se
+  reescribe para cubrir la forma de la respuesta, las cifras reales, la fecha de
+  referencia, el acceso por rol, el Excel sin "Valor de ejemplo" y un número de
+  consultas acotado.
+- 545 pruebas del backend pasan.
+- Frontend: el panel no muestra textos de ejemplo; muestra la fecha de las cifras,
+  el desglose de pendientes por motivo, el grupo "En línea (sin ejecutivo)", la
+  nota de que solo cuentan las ventas pagadas en línea y el estado vacío. 131
+  pruebas del frontend pasan; `typecheck` y `lint` sin errores.
+- Verificado en el navegador como Administrador y como Ejecutivo con datos locales
+  ficticios.
 
 Pendiente: pruebas de rendimiento y de seguridad, y las pruebas de aceptación con
 Easy Office.
@@ -327,3 +342,5 @@ Easy Office.
 | 1.3 | 17-10-2026 | Pruebas del frontend del domicilio tributario (123) y estado fusionado | Equipo de proyecto |
 | 1.4 | 17-10-2026 | Pruebas de la sesión separada del panel de administración (509 en total) y defecto conocido de una prueba aislada | Equipo de proyecto |
 | 1.5 | 17-10-2026 | Pruebas del cambio de sesión entre personal y cliente (128 en el frontend) | Equipo de proyecto |
+| 1.6 | 18-10-2026 | Pruebas del dashboard con datos reales (545 en el backend, 131 en el frontend) | Equipo de proyecto |
+| 1.7 | 20-10-2026 | Estados de los PR de sesión y del dashboard: fusionados | Equipo de proyecto |

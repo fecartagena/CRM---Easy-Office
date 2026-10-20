@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MRQ-001 · Matriz de requerimientos |
-| **Versión** | 2.4 |
-| **Fecha** | 14 de octubre de 2026 |
+| **Versión** | 2.6 |
+| **Fecha** | 20 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo de la revisión** | Incorporación de las especificaciones formales entregadas por Easy Office |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -68,7 +68,7 @@ levantamiento · `T2` sesión 2 de levantamiento · `A2` reunión de validación
 | RF-11 | Gestión de servicios contratados | Un cliente puede tener uno o varios servicios, con tipo, fechas, estado, precio, características, documentos, observaciones y responsable | ESP §4.7 | Must | Confirmado | — |
 | RF-12 | Detección de vencimientos | El sistema detecta automáticamente los servicios con fecha de vencimiento próxima | ESP §4.8 | Must | Confirmado | Proceso programado |
 | RF-13 | Alertas internas configurables | Generación de alertas con anticipación configurable, inicialmente 60, 30, 15 y 7 días | ESP §4.8 | Must | Confirmado | Ejemplo dado por la contraparte: renovación de domicilio tributario |
-| RF-14 | Dashboard de indicadores | Total de clientes, nuevos por período, servicios activos, próximos a vencer, vencidos, ventas, ventas por servicio, ventas por ejecutivo, trámites pendientes y documentos pendientes de firma | ESP §4.9 | Must | Confirmado | Con filtros por período y otros criterios. Visible para Administrador y Ejecutivo (A2) |
+| RF-14 | Dashboard de indicadores | Total de clientes, nuevos por período, servicios activos, próximos a vencer, vencidos, ventas, ventas por servicio, ventas por ejecutivo, trámites pendientes y documentos pendientes de firma | ESP §4.9 | Must | Confirmado | Con filtros por período y otros criterios. Visible para Administrador y Ejecutivo (A2). Implementación (issue #53): cifras reales; los servicios se cuentan como contratos `[supuesto]`; las ventas son las pagadas en línea, sin los contratos del backoffice sin pago en línea; ventana de 30 días para "por vencer" |
 | RF-47 | Motivo de pendiente | El ejecutivo puede ver en el CRM por qué un trámite o un documento está en estado Pendiente | A2 | Must | Confirmado | Motivos según TA-13, pendiente de lista cerrada |
 | RF-50 | Consulta de ventas | El administrador y el ejecutivo consultan las ventas y su estado de pago, en modo solo lectura | EQ | Should | Propuesto | Implementado; la venta aún no tiene ejecutivo asociado |
 | RF-15 | Registro de auditoría | Registrar usuario, fecha y hora, registro afectado, acción realizada, y valor anterior y nuevo cuando corresponda | ESP §4.3 | Must | Confirmado | — |
@@ -82,7 +82,7 @@ levantamiento · `T2` sesión 2 de levantamiento · `A2` reunión de validación
 
 | ID | Nombre | Descripción | Fuente | Prioridad | Estado | Observaciones |
 |---|---|---|---|---|---|---|
-| RF-19 | Catálogo de servicios contratables | El cliente puede conocer y seleccionar los servicios disponibles | ESP §5.1 | Must | Confirmado | El portal muestra solo los servicios marcados para venta en línea |
+| RF-19 | Catálogo de servicios contratables | El cliente puede conocer y seleccionar los servicios disponibles | ESP §5.1 | Must | Confirmado | La landing lee el catálogo desde la API: muestra los servicios visibles; los contratables en línea aparecen como "Disponible ahora" y el resto como "Próximamente" |
 | RF-20 | Formularios dinámicos por servicio | Cada servicio solicita únicamente los datos necesarios; el formulario se adapta sin requerir un desarrollo nuevo para cada servicio | ESP §5.2 | Must | Confirmado | Requerimiento que sustenta el motor configurable |
 | RF-21 | Revisión y confirmación de datos | El cliente revisa y confirma sus antecedentes antes de continuar | ESP §5.1 | Must | Confirmado | — |
 | RF-22 | Pago en línea | El cliente paga el servicio dentro del flujo de contratación, después de revisar el borrador | ESP §5.1, §5.3, A2 | Must | Confirmado | Klap y Flow integrados en sandbox; Easy Office decide cuál ofrecer (IN-02) |
@@ -265,3 +265,5 @@ planteado como propuesta, en particular el motor configurable.
 | 2.2 | 12-10-2026 | RF-47 motivo de pendiente; estados Iniciado, Pendiente y Completado en RF-27; proveedores Klap y Flow en IN-02 (`ACTA-002`, sección 8) | Equipo |
 | 2.3 | 12-10-2026 | RF-48 a RF-50 (elección del medio de pago, compras del cliente y consulta de ventas), propuestos y ya implementados; observaciones de RF-22, RF-45 e IN-02 con el estado de la integración | Equipo |
 | 2.4 | 14-10-2026 | Observaciones de RF-07 (código del cliente) y RF-19 (servicios del portal) | Equipo |
+| 2.5 | 18-10-2026 | Observación de RF-14 con los criterios del dashboard con datos reales | Equipo |
+| 2.6 | 20-10-2026 | Observación de RF-19 con la landing desde la API | Equipo |
