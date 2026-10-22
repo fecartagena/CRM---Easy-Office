@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Archivos temporales de Office
+~$*
+
+# Parches y respaldos locales
+*.patch
+*.orig

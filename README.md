@@ -52,11 +52,12 @@ transcripción manual y sus errores, y la ausencia de trazabilidad.
 
 | Capa | Tecnología |
 |---|---|
-| Frontend | React |
-| Backend | Python · Django · Django REST Framework |
-| Base de datos | PostgreSQL |
+| Frontend | React 19 · TypeScript · Material UI · Vite · Vitest |
+| Backend | Python 3.14 · Django 6 · Django REST Framework |
+| Base de datos | PostgreSQL 17 |
 | Procesamiento asíncrono | Celery · Redis |
-| API | REST |
+| Generación documental | docxtpl (plantillas Word) · Gotenberg con LibreOffice (Word a PDF) |
+| API | REST, con esquema OpenAPI |
 | Contenedores | Docker · Docker Compose |
 | Control de versiones | Git · GitHub |
 | Alojamiento | Por definir con la contraparte |
@@ -68,9 +69,12 @@ está en `REC-001 Recomendación técnica`.
 
 **Integraciones externas.** Firma electrónica avanzada y pasarela de pago se
 consumen a través de interfaces definidas por el sistema, con implementaciones
-intercambiables. El proveedor de firma es el que utiliza Easy Office. En pagos
-están integrados Klap y Flow, y el cliente elige entre los medios habilitados; la
-elección de cuáles ofrecer en producción está pendiente de la contraparte.
+intercambiables. El proveedor de firma es el que utiliza Easy Office; mientras no
+se reciban sus credenciales, la firma es asistida: un ejecutivo sube el PDF
+firmado y el sistema registra su huella SHA-256. En pagos están integrados Klap y
+Flow, y el cliente elige entre los medios habilitados; la elección de cuáles
+ofrecer en producción está pendiente de la contraparte. La conversión de Word a
+PDF corre en un contenedor aparte (Gotenberg), alcanzable solo desde el worker.
 
 ---
 
@@ -80,68 +84,67 @@ elección de cuáles ofrecer en producción está pendiente de la contraparte.
 
 - Docker y Docker Compose
 - Git
+- Node.js 22.12 o superior, solo si el frontend se levanta sin Docker
 
-No se requiere instalar Python, Node ni PostgreSQL en el equipo: todo corre en
+No se requiere instalar Python ni PostgreSQL en el equipo: el backend corre en
 contenedores.
 
-### Pasos
+### Backend
 
 ```bash
-# 1. Clonar el repositorio de backend
 git clone git@github.com:Nicozapata1811/crm-easyoffice-backend.git
 cd crm-easyoffice-backend
+cp -R .envs.example .envs
+docker compose -f docker-compose.local.yml build
+docker compose -f docker-compose.local.yml up -d
 
-# 2. Preparar las variables de entorno
-cp .envs/.local/.django.example .envs/.local/.django
-cp .envs/.local/.postgres.example .envs/.local/.postgres
-# editar ambos archivos con los valores locales
-
-# 3. Levantar el entorno
-docker compose -f docker-compose.local.yml up --build
-
-# 4. Aplicar las migraciones
-docker compose -f docker-compose.local.yml run --rm django python manage.py migrate
-
-# 5. Crear un usuario administrador
+# usuario administrador
 docker compose -f docker-compose.local.yml run --rm django python manage.py createsuperuser
+
+# datos ficticios para desarrollo (solo con DEBUG activo)
+docker compose -f docker-compose.local.yml run --rm django python manage.py seed_demo_clientes
+docker compose -f docker-compose.local.yml run --rm django python manage.py seed_demo_bodega
+
+# pruebas
+docker compose -f docker-compose.local.yml run --rm django pytest
 ```
 
-La aplicación queda disponible en `http://localhost:8000` y el panel de
-administración en `http://localhost:8000/admin`.
+Levanta Django, PostgreSQL, Redis, el worker y el planificador de Celery, Flower,
+Mailpit, Gotenberg y el túnel para webhooks de pago. Las migraciones se aplican al
+iniciar.
 
-### Variables de entorno
-
-| Variable | Descripción |
+| Servicio | URL |
 |---|---|
-| `DJANGO_SECRET_KEY` | Clave de firma de la aplicación |
-| `DJANGO_DEBUG` | Modo depuración. `False` en cualquier entorno distinto del local |
-| `DJANGO_ALLOWED_HOSTS` | Dominios autorizados |
-| `DATABASE_URL` | Cadena de conexión a PostgreSQL |
-| `CELERY_BROKER_URL` | Conexión a Redis |
-| `SIGNATURE_PROVIDER` | Implementación de firma a utilizar: `simulado` o el proveedor real |
-| `SIGNATURE_API_KEY` | Credencial del proveedor de firma |
-| `PAYMENT_PROVIDERS` | Medios de pago habilitados para el cliente (`klap`, `flow`) |
-| `KLAP_API_KEY` | Credencial de Klap |
-| `FLOW_API_KEY`, `FLOW_SECRET_KEY` | Credenciales de Flow |
-| `PAYMENT_WEBHOOK_BASE_URL` | URL pública a la que los proveedores notifican (en local, la entrega el túnel) |
-| `PORTAL_BASE_URL` | URL del portal a la que se devuelve al cliente tras pagar |
-| `DOCUMENT_STORAGE_PATH` | Ubicación del almacenamiento de documentos |
-
-**Ninguna credencial se versiona.** Los archivos de entorno están excluidos del
-control de versiones. Los ejemplos incluidos contienen solo nombres de variables y
-valores de marcador.
+| Aplicación y API | `http://localhost:8000` |
+| Panel de administración | `http://localhost:8000/admin/` |
+| Documentación de la API | `http://localhost:8000/api/docs/` |
+| Correo de prueba (Mailpit) | `http://localhost:8025` |
+| Monitor de Celery (Flower) | `http://localhost:5555` |
 
 ### Frontend
 
 ```bash
 git clone git@github.com:Nicozapata1811/crm-easyoffice-frontend.git
 cd crm-easyoffice-frontend
-cp .env.example .env    # definir la URL base de la API
-docker compose up --build
+npm install
+cp .env.example .env
+npm run dev          # http://localhost:5173
+npm test             # pruebas
 ```
 
-> **Estado.** Los repositorios de código están en preparación. Esta sección se
-> actualiza con los comandos verificados al completarse el entorno.
+También puede levantarse con `docker compose -f docker-compose.local.yml up`.
+
+### Variables de entorno
+
+Cada repositorio documenta sus variables en su propio README: `.envs.example/` en
+el backend y `.env.example` en el frontend. Las principales del backend son las
+de Django y la base de datos, los medios de pago habilitados
+(`PAYMENT_PROVIDERS`), las credenciales de Klap y Flow, y la conversión a PDF
+(`PDF_CONVERTER`, `GOTENBERG_URL`).
+
+**Ninguna credencial se versiona.** Los archivos de entorno reales están
+excluidos del control de versiones. Los ejemplos incluidos contienen solo valores
+de desarrollo local o marcadores `CHANGEME`.
 
 ---
 
@@ -203,25 +206,28 @@ módulos de fronteras explícitas por dentro.
 Portal cliente (React)  ─┐
                          ├─→  API REST (Django + DRF)  ─→  PostgreSQL
 Backoffice CRM (React)  ─┘             │
-                                       ├─→  Celery + Redis   (documentos, webhooks, vencimientos)
+                                       ├─→  Celery + Redis   (documentos, pagos, vencimientos)
+                                       │       └─→  Gotenberg (Word a PDF)
                                        ├─→  Almacenamiento de documentos
                                        ├─→  SignatureService  ─→  Proveedor de firma
-                                       └─→  PaymentService    ─→  Pasarela de pago
+                                       └─→  PaymentService    ─→  Klap · Flow
 ```
 
 ### Módulos
 
 | Módulo | Responsabilidad |
 |---|---|
-| `core` | Usuarios, roles, permisos, auditoría |
-| `clientes` | Personas, empresas, representación legal |
-| `servicios` | Servicios contratados, vigencias, alertas de vencimiento |
-| `inmuebles` | Oficinas, rol de avalúo, domicilios asignados |
-| `tramites` | Tipos de trámite configurables, trámites, máquina de estados |
-| `documentos` | Plantillas versionadas, generación, firmantes, integridad |
-| `ventas` | Catálogo vendible, ventas, órdenes de pago y pagos |
-| `integrations` | Interfaces e implementaciones de firma y pago (Klap y Flow) |
-| `migracion` | Carga de información desde planillas |
+| `users` · `core` | Usuarios, roles (Administrador y Ejecutivo) y permisos. La auditoría se agrega aquí (HU-30, pendiente) |
+| `clientes` | Personas, empresas, representación legal y cuentas de cliente del portal |
+| `configuracion` | Datos de Easy Office, marcas y cuentas donde recibe pagos |
+| `inmuebles` | Oficinas y bodegas, rol de avalúo y autorizantes |
+| `contratos` | Contratos con folio, servicios contratados, vigencias y vencimientos |
+| `tramites` | Tipos de trámite configurables, trámites, estados y motivos de pendiente |
+| `documentos` | Plantillas versionadas, generación Word y PDF, firmantes, integridad |
+| `ventas` | Catálogo de servicios y planes, ventas, órdenes de pago y pagos |
+| `panel` | Indicadores del dashboard y exportación a Excel |
+| `integrations` | Interfaces e implementaciones de firma, pago (Klap y Flow) y conversión a PDF (Gotenberg) |
+| `migracion` | Carga de información desde planillas (a la espera de la planilla anonimizada) |
 
 ### Decisiones de diseño
 
@@ -236,7 +242,8 @@ Backoffice CRM (React)  ─┘             │
 - **Auditoría de solo escritura.** No existe funcionalidad de modificación ni
   eliminación del historial.
 
-El detalle está en `ARQ-001 Arquitectura` y `DIS-001 Documento de diseño`.
+El detalle está en `ARQ-001 Arquitectura` (componentes UML y secuencia del
+trámite), `UML-002 Diagrama de clases` y `DIS-001 Documento de diseño`.
 
 ---
 
@@ -276,14 +283,22 @@ Los repositorios de código se mantienen separados:
 | DOD-001 | Definition of Done |
 | RET-001 | Registro de retrospectivas |
 | DIS-001 | Documento de diseño |
-| ARQ-001 | Arquitectura |
+| ARQ-001 | Arquitectura: componentes, comunicación, secuencia y despliegue |
 | MOD-001 | Modelo de datos |
 | UML-001 | Casos de uso |
+| UML-002 | Diagrama de clases |
 | REC-001 | Recomendación técnica |
 | PLA-001 | Plan de pruebas |
 | RSK-001 | Registro de riesgos |
 | ACTA-001 | Acta de levantamiento |
+| ACTA-002 | Reunión de validación con Easy Office, 08-10-2026 |
+| CHK-001 | Checklist de validación con la contraparte |
+| PLT-000 | Catálogo de plantillas, diccionario de campos y regla del folio (`13_plantillas`) |
+| PLT-01 a PLT-05 | Plantillas documentales anonimizadas (`13_plantillas`) |
 | GNT-001 | Carta Gantt, hitos y calendario de sprints |
+
+El índice con versiones y orden de lectura está en
+`Fase 2/Evidencias Proyecto/Documentación/README.md`.
 
 ---
 
@@ -291,7 +306,8 @@ Los repositorios de código se mantienen separados:
 
 Este repositorio es público. **No se versiona ningún dato personal real ni
 credencial**, en ningún formato: fixtures, pruebas, capturas, comentarios o
-migraciones. Los entornos de desarrollo operan con datos anonimizados.
+migraciones. Los entornos de desarrollo operan con datos ficticios, y las
+plantillas de Easy Office se versionan solo anonimizadas (`PLT-01` a `PLT-05`).
 
 El sistema trata datos personales de clientes de Easy Office. El diseño incorpora
 control de acceso por rol, minimización de campos, cifrado de documentos en reposo
