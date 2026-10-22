@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.9 |
+| **Versión** | 1.10 |
 | **Fecha** | 22 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
@@ -142,10 +142,10 @@ Casos representativos:
 | Caso | Verifica |
 |---|---|
 | Un ejecutivo intenta eliminar un cliente | RF-04, RN-32 |
-| Un ejecutivo intenta consultar el registro de auditoría | RN-31 |
+| Un ejecutivo intenta consultar el registro de auditoría | RN-31 · automatizado (HU-30) |
 | Un usuario no autenticado accede a un endpoint protegido | RS-01 |
 | Un cliente del portal intenta consultar el expediente de otro | RS-02 |
-| Intento de modificación de un registro de auditoría | RF-16, RN-35 |
+| Intento de modificación de un registro de auditoría | RF-16, RN-35 · automatizado (HU-30) |
 | Búsqueda de credenciales en el historial del repositorio | RS-08 |
 | Revisión de vulnerabilidades conocidas en dependencias | RS-03 |
 | Validación de que las cookies de sesión son httpOnly | AD-03 |
@@ -360,8 +360,34 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 - Pendiente: recorrer en el navegador los flujos de la bodega en el portal y en el
   backoffice.
 
-Pendiente: pruebas de rendimiento y de seguridad, y las pruebas de aceptación con
-Easy Office.
+**Auditoría (HU-30 y API de HU-31, rama `feature/HU-30-auditoria`, sin fusionar)**
+
+- 59 pruebas nuevas; 696 del backend pasan sobre una base creada desde cero.
+  `ruff` y `makemigrations --check` sin observaciones. Las migraciones se
+  revirtieron y se volvieron a aplicar en la base local.
+- Cubren:
+  - creación, modificación y eliminación con el usuario, la IP y el origen
+    correctos desde la API del personal, el portal, el admin y una tarea de
+    Celery;
+  - que una modificación sin cambios no registre nada;
+  - que la contraseña y los demás campos excluidos nunca aparezcan;
+  - que `UPDATE`, `DELETE` y `TRUNCATE` directos fallen, y que el modelo y el
+    admin no permitan modificar ni eliminar;
+  - que el contexto no pase de una petición a la siguiente en la misma conexión,
+    y que una escritura fuera de transacción quede sin usuario;
+  - la matriz de acceso de la API (Administrador 200; Ejecutivo, cliente y
+    anónimo 403), los filtros, el historial agrupado y el número de consultas;
+  - ingreso, ingreso fallido, cierre de sesión, descarga de documentos y acceso a
+    la cédula;
+  - que los disparadores de la base coincidan con la lista de tablas auditadas y
+    que todo modelo esté declarado como auditado o no auditado.
+- Verificado en la base local: un cambio a un cliente aparece en su historial con
+  usuario, fecha, valor anterior y nuevo; el Ejecutivo recibe 403; un `DELETE`
+  directo en psql falla.
+- Pendiente: las pantallas de consulta (HU-31, frontend).
+
+Pendiente: pruebas de rendimiento, el resto de las pruebas de seguridad y las
+pruebas de aceptación con Easy Office.
 
 ---
 
@@ -379,3 +405,4 @@ Easy Office.
 | 1.7 | 20-10-2026 | Estados de los PR de sesión y del dashboard: fusionados | Equipo de proyecto |
 | 1.8 | 21-10-2026 | Pruebas de la bodega virtual con `PLT-02` (637 en el backend, 150 en el frontend) y un defecto conocido de tiempo en una prueba del frontend | Equipo de proyecto |
 | 1.9 | 22-10-2026 | Estado de los PR de la bodega virtual: fusionados | Equipo de proyecto |
+| 1.10 | 22-10-2026 | Pruebas de la auditoría (696 en el backend, sin fusionar); dos casos de seguridad de §3.4 automatizados | Equipo de proyecto |

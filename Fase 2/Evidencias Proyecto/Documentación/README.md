@@ -32,22 +32,22 @@ Documentación/
 | Código | Documento | Carpeta | Versión |
 |---|---|---|---|
 | PV-001 | Product Vision | 03 | 2.0 |
-| BKL-001 | Product Backlog | 04 | 2.10 |
-| SPR-001 | Sprint Backlog · sprints 1 a 3 | 04 | 2.0 |
+| BKL-001 | Product Backlog | 04 | 2.11 |
+| SPR-001 | Sprint Backlog · sprints 1 a 3 | 04 | 2.1 |
 | DOD-001 | Definition of Done | 04 | 1.0 |
-| DIS-001 | Documento de diseño | 07 | 1.4 |
+| DIS-001 | Documento de diseño | 07 | 1.5 |
 | RET-001 | Registro de retrospectivas | 04 | 1.1 |
 | GNT-001 | Carta Gantt, hitos, plan de trabajo y sprints (.xlsx + .pdf) | 05 | 1.1 |
-| PLA-001 | Plan de pruebas | 09 | 1.9 |
+| PLA-001 | Plan de pruebas | 09 | 1.10 |
 
 ### Elementos obligatorios independientes de la metodología
 
 | Código | Documento | Carpeta | Versión |
 |---|---|---|---|
 | DIP-001 | Documento de inicio de proyecto | 03 | 1.0 |
-| ARQ-001 | Arquitectura: diagrama, componentes UML, comunicación, secuencia | 07 | 1.5 |
-| MOD-001 | Modelo de datos (ER) | 08 | 1.9 |
-| UML-002 | Diagrama de clases | 07 | 1.0 |
+| ARQ-001 | Arquitectura: diagrama, componentes UML, comunicación, secuencia | 07 | 1.6 |
+| MOD-001 | Modelo de datos (ER) | 08 | 1.10 |
+| UML-002 | Diagrama de clases | 07 | 1.1 |
 | UML-001 | Casos de uso | 07 | 1.2 |
 | MRQ-001 | Requerimientos, incluidos los no funcionales | 02 | 2.6 |
 
@@ -58,8 +58,8 @@ Documentación/
 | ACTA-001 | Acta de levantamiento de requerimientos | 01 | 1.0 |
 | ESP-DOC | Especificaciones de documentos entregadas por Easy Office | 01 | — |
 | CAT-001 | Catálogo de identificadores | 02 | 1.5 |
-| RN-001 | Reglas de negocio | 02 | 2.7 |
-| TRZ-001 | Matriz de trazabilidad | 02 | 2.11 |
+| RN-001 | Reglas de negocio | 02 | 2.8 |
+| TRZ-001 | Matriz de trazabilidad | 02 | 2.12 |
 | ALC-001 | Alcance del MVP | 03 | 2.0 |
 | FUN-001 | Ficha funcional del servicio piloto | 03 | 1.0 |
 | REC-001 | Recomendación técnica | 07 | 1.0 |

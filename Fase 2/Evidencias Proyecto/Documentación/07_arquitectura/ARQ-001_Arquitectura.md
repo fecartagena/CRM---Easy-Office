@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ARQ-001 · Arquitectura de la solución |
-| **Versión** | 1.5 |
+| **Versión** | 1.6 |
 | **Fecha** | 22 de octubre de 2026 |
 | **Estado** | Propuesta de arquitectura. Sujeta a ajustes al recibir la documentación técnica de la plataforma de firma electrónica |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -162,7 +162,7 @@ graph TB
 
 | Módulo | Responsabilidad | Depende de |
 |---|---|---|
-| `users`, `core` | Usuarios (inicio de sesión con correo), roles Administrador y Ejecutivo, permisos del sistema, modelo base con fechas. La auditoría se agregará aquí (HU-30) | Nada |
+| `users`, `core` | Usuarios (inicio de sesión con correo), roles Administrador y Ejecutivo, permisos del sistema, modelo base con fechas, registro de auditoría (HU-30, sin fusionar) | Nada |
 | `clientes` | Personas, empresas, representación legal, código del cliente y cuentas del portal | `core`, `users` |
 | `configuracion` | Datos de Easy Office, marcas y cuentas donde recibe pagos | `core` |
 | `inmuebles` | Oficinas y bodegas, rol de avalúo y autorizantes con su cédula | `core`, `clientes`, `configuracion` |
@@ -491,7 +491,7 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | AD-05 | Generación documental y llamadas externas en cola asíncrona | Dentro del ciclo de petición | Latencia y fallas de terceros no deben afectar al usuario |
 | AD-06 | Tipos de trámite y servicios definidos por configuración | Desarrollo por cada documento | Lo exigen los §5.2, §8.2, §8.3 y §11 del encargo |
 | AD-07 | Almacenamiento de documentos fuera del contenedor | Volumen local del contenedor | Persistencia entre despliegues y respaldo independiente |
-| AD-08 | Auditoría mediante disparadores de base de datos | Señales de la aplicación | Ver `DIS-001 §7` |
+| AD-08 | Auditoría mediante disparadores de base de datos | Señales de la aplicación; `django-pghistory` con `django-pgtrigger` | Ver `DIS-001 §7`. Implementada con disparadores escritos a mano en migraciones, sin dependencias nuevas. El usuario, la IP y el origen llegan a la base con `set_config(..., true)` antes de la primera escritura de cada transacción (HU-30) |
 | AD-09 | El estado de una venta cambia solo en el servicio de dominio de `ventas`, y el precio sale siempre del servidor | Cambiar el estado desde cada endpoint o webhook; aceptar el precio del cliente | Tres caminos (webhook, retorno, sincronización) llegan al mismo resultado y una petición manipulada no debe alterar un cobro |
 | AD-10 | Notificaciones de pago idempotentes, con registro de eventos y clave de deduplicación | Procesar cada notificación como nueva | Los proveedores reintentan y notifican fuera de orden |
 | AD-11 | Verificar en segundo plano las notificaciones sin firma (Flow) consultando al proveedor | Confiar en el contenido de la notificación | Flow solo envía un token; la verdad la tiene el proveedor |
@@ -525,3 +525,4 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | 1.3 | 17-10-2026 | Sesión separada para el panel de administración (§4.1, AD-15; PR #52 del backend) | Equipo de proyecto |
 | 1.4 | 17-10-2026 | Cambio entre sesión de personal y de cliente en la aplicación web (§4.1; PR #19 del frontend) | Equipo de proyecto |
 | 1.5 | 22-10-2026 | §3 diagrama de componentes en notación UML con los módulos reales (`configuracion`, `contratos`, `panel`) y Gotenberg; dependencias verificadas en el código; §5 secuencia real del trámite con firma asistida | Equipo de proyecto |
+| 1.6 | 22-10-2026 | AD-08 implementada (HU-30, sin fusionar): disparadores escritos a mano y contexto por transacción; `core` con el registro de auditoría | Equipo de proyecto |

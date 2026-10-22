@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MOD-001 · Modelo de datos |
-| **Versión** | 1.9 |
+| **Versión** | 1.10 |
 | **Fecha** | 22 de octubre de 2026 |
 | **Motor** | PostgreSQL (ver `REC-001` para la justificación) |
 | **Estado** | Actualizado con la muestra de 34 campos, las plantillas y las decisiones de la reunión del 08-10-2026 (`ACTA-002`). Pendientes en la sección 7 |
@@ -234,13 +234,51 @@ modificación importante.
 
 | Entidad | Campos principales |
 |---|---|
-| `REGISTRO_AUDITORIA` | `usuario`, `accion`, `entidad`, `registro_id`, `valor_anterior` (JSONB), `valor_nuevo` (JSONB), `fecha_hora`, `direccion_ip` |
+| `REGISTRO_AUDITORIA` | `usuario`, `origen`, `accion`, `entidad`, `registro_id`, `valor_anterior` (JSONB), `valor_nuevo` (JSONB), `fecha_hora`, `direccion_ip` |
 
 El encargo exige que el historial esté protegido para impedir que usuarios
 normales lo alteren o eliminen. Se implementa como tabla **append-only**: sin
 operaciones de actualización ni borrado, y con la escritura mediante disparadores
 de base de datos en lugar de señales de la aplicación, porque un disparador es
 más difícil de eludir y más fácil de demostrar ante una auditoría.
+
+**Implementado en el backend** (HU-30, rama `feature/HU-30-auditoria`, sin
+fusionar) como `core.RegistroAuditoria`:
+
+- `fecha_hora` toma por defecto la hora de la base; `usuario` es una referencia
+  opcional que impide eliminar a un usuario que aparece en el registro (solo se
+  desactiva); `direccion_ip` es de tipo `inet`.
+- `origen` es un campo nuevo respecto de este modelo: `api`, `portal`, `admin` o
+  `sistema`, para distinguir una tarea de Celery o una notificación de pago de un
+  usuario vacío.
+- `accion`: `crear`, `modificar`, `eliminar`, `inicio_sesion`, `cierre_sesion`,
+  `inicio_sesion_fallido`, `descarga_documento` y `acceso_documento_identidad`.
+- `entidad` tiene la forma `app.modelo` (por ejemplo `clientes.cliente`) y
+  `registro_id` es numérico. En un intento de ingreso fallido, `registro_id`
+  apunta a la cuenta y `usuario` queda vacío, porque no se sabe quién lo intentó.
+- Al crear se guarda la fila nueva; al eliminar, la anterior; al modificar, solo
+  los campos que cambiaron. Si solo cambia `updated_at`, no se registra nada. El
+  disparador capta también las actualizaciones en lote, el panel de
+  administración y el SQL directo.
+- Se audita todo `clientes`, `configuracion` e `inmuebles`; `CONTRATO`,
+  `SERVICIO_CONTRATADO` y `DURACION_CONTRATO`; `TIPO_TRAMITE`, `MOTIVO_PENDIENTE` y
+  `TRAMITE`; las plantillas, versiones, documentos y firmantes; el catálogo, las
+  ventas, sus ítems, órdenes y pagos; los usuarios, los roles y la pertenencia a
+  roles y permisos, guardada por nombre. No se auditan `EVENTO_TRAMITE`,
+  `EVENTO_PAGO` ni `CORRELATIVO_FOLIO`, porque ya son registros o solo generan
+  ruido, ni las tablas de sesiones, Celery y allauth.
+- Nunca se guardan `last_login`, `Pago.respuesta`, `OrdenPago.redirect_url` ni
+  `Documento.datos_snapshot`. La contraseña se registra como `***` y los archivos
+  solo por su nombre.
+- La base rechaza `UPDATE`, `DELETE` y `TRUNCATE` sobre el registro, también para
+  el usuario de base de datos de la aplicación. El dueño de la base sí podría
+  eliminar los disparadores: separar ese rol queda para el despliegue (TA-09).
+- Migraciones `core/0004` (tabla, funciones y protección), `core/0005`
+  (disparadores en las tablas auditadas) y `core/0006` (permiso
+  `core.consultar_auditoria`, solo para el Administrador).
+- `ASSUMPTION: pending validation with Easy Office`: plazo de conservación del
+  registro (hoy indefinido; Ley 21.719) y conservar los intentos fallidos con el
+  correo escrito.
 
 ---
 
@@ -389,7 +427,7 @@ que es público.
 | MD-13 | Retención y cifrado en reposo de la cédula del autorizante | Ley 21.719 de protección de datos personales; depende del alojamiento (TA-09) Incluye la conservación de los borradores de contrato abandonados |
 | MD-14 | Si la renovación conserva el folio | Hoy una renovación es un contrato nuevo con folio nuevo que apunta al anterior |
 | MD-15 | Dueño del correo y del celular de aviso (empresa o representante) | Define dónde se guardan; hoy viven en `CONTRATO` |
-| MD-16 | Registro en auditoría de los modelos nuevos (RF-15) | Contratos, inmuebles, autorizantes y configuración aún no quedan en el registro de auditoría |
+| MD-16 | ~~Registro en auditoría de los modelos nuevos (RF-15)~~ | Cerrado en el backend (HU-30, sin fusionar): contratos, inmuebles, autorizantes y configuración quedan en el registro |
 | MD-17 | Transiciones de estado en el código frente a la tabla `TRANSICION_ESTADO` | La decisión 4 y el `CLAUDE.md` prevén una tabla de datos; la primera implementación usa una tabla en el código |
 
 ---
@@ -408,3 +446,4 @@ que es público.
 | 1.7 | 20-10-2026 | `SERVICIO` con `visible_en_portal` y `orden` (PR #48) |
 | 1.8 | 21-10-2026 | Bodega virtual con `PLT-02` (issue #59, PR #60, abierto): tipo de trámite `bodega` y claves de `configuracion`; permiso `tramites.iniciar_tramite`; planes de la bodega; línea del domicilio incluida en el plan; requisitos de la bodega; ocupación de inmuebles exclusivos; `PLT-02` v1; MD-04 ampliado |
 | 1.9 | 22-10-2026 | PR #60 del backend y PR #23 del frontend fusionados: lo descrito de la bodega virtual en la versión 1.8 ya está en la rama principal. Diagrama de clases en `UML-002`. Corrección: `SERVICIO_CONTRATADO` no tiene `plan`; el plan queda en `TRAMITE.datos` |
+| 1.10 | 22-10-2026 | Auditoría implementada en el backend (HU-30, rama `feature/HU-30-auditoria`, sin fusionar): `REGISTRO_AUDITORIA` con `origen`, acciones, tablas auditadas y excluidas, campos que nunca se guardan y protección en la base; MD-16 cerrado |

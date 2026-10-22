@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | TRZ-001 · Matriz de trazabilidad |
-| **Versión** | 2.11 |
+| **Versión** | 2.12 |
 | **Fecha** | 22 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | La versión 1.0 referenciaba los identificadores de `MRQ-001 v1.0`, que la versión 2.0 reutilizó para requerimientos distintos. Esta versión está reconstruida contra el catálogo vigente `CAT-001` |
@@ -51,16 +51,16 @@ Según la versión reducida de objetivos (cinco específicos).
 | RF-07 Identificador único y folio de contrato | HU-51, HU-60 | UC-04 | OE-2 | clientes, contratos | #17 · #38 (HU-60) | PR #18 (código del cliente) · PR #45 (HU-60) | Folio común entre sucursales y marcas, reinicio anual, ancho configurable, creación concurrente, alias `folio` | — | Implementado |
 | RF-08 Búsqueda de clientes | HU-47 | UC-05 | OE-2 | clientes | #17 | Backend PR #18 · Frontend PR #5 | Búsqueda por cada palabra, RUT con o sin puntos; pruebas de `ListaClientes` | — | Implementado parcial · RUT, nombre, razón social, nombre de fantasía, correo y teléfono; faltan folio y servicio contratado |
 | RF-09 Filtros de listado | HU-50 | UC-05 | OE-2 | clientes | #17 | Backend PR #18 · Frontend PR #5 | Filtros por tipo (persona o empresa) y por estado activo | — | Implementado parcial · faltan fechas y ejecutivo |
-| RF-10 Ficha del cliente | HU-49 | UC-05 | OE-2 | clientes | #17 | Backend PR #18 · Frontend PR #5 | Pruebas de `FichaCliente` | — | Implementado parcial · datos del cliente y representantes legales; servicios, documentos e historial pendientes (HU-48, RF-15) |
+| RF-10 Ficha del cliente | HU-49 | UC-05 | OE-2 | clientes | #17 | Backend PR #18 · Frontend PR #5 | Pruebas de `FichaCliente` | — | Implementado parcial · datos del cliente y representantes legales; servicios y documentos pendientes (HU-48); el historial ya tiene API (`/api/auditoria/historial/`, sin fusionar) y falta la pantalla (HU-31) |
 | RF-11 Gestión de servicios contratados | HU-48 | UC-06 | OE-2 | servicios | Pendiente | Pendiente | Pendiente | Falta pantalla en prototipo | Especificado |
 | RF-12 Detección de vencimientos | HU-53 | UC-14 | OE-4 | servicios | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-13 Alertas configurables | HU-42 | UC-09 | OE-4 | servicios | Pendiente | Pendiente | Pendiente | Falta pantalla en prototipo | Especificado |
 | RF-14 Dashboard | HU-41 | UC-08 | OE-2 | panel, backoffice | Backend #53 · Frontend #20 | Backend PR #54 · Frontend PR #21 | Indicadores con datos reales, fecha de referencia, acceso por rol (Administrador y Ejecutivo), Excel sin valores de ejemplo, número de consultas acotado (545 pruebas backend); panel sin rótulos de ejemplo, desglose por motivo, nota de ventas y estado vacío (131 pruebas frontend) | Prototipo pantalla 7 | Implementado |
 | RF-47 Motivo de pendiente | HU-61 | UC-11 | OE-2 | tramites | Backend #50 · Frontend #17 · Backend #53 y Frontend #20 (dashboard) | Backend PR #51 · Frontend PR #18 | Motivo solo mientras está Pendiente; 123 pruebas frontend; pendientes por motivo en el dashboard | — | Implementado · motivos provisionales (TA-13) |
 | RF-50 Consulta de ventas | HU-64 | UC-17 | OE-2 | ventas, backoffice | Frontend #7 | Frontend #9, #10 | Pruebas de ListaVentas y DetalleVenta | — | Implementado en pruebas |
-| RF-15 Registro de auditoría | HU-30 | UC-13 | OE-2 | core | Pendiente | Pendiente | Pendiente | Prototipo pantalla 8 | Especificado |
-| RF-16 Protección del historial | HU-30 | UC-13 | OE-2 | core | Pendiente | Pendiente | Pendiente | — | Especificado |
-| RF-17 Consulta de auditoría | HU-31 | UC-13 | OE-2 | core | Pendiente | Pendiente | Pendiente | Prototipo pantalla 8 | Especificado |
+| RF-15 Registro de auditoría | HU-30 | UC-13 | OE-2 | core | Sin issue todavía | Backend, rama `feature/HU-30-auditoria`, sin fusionar | `core/tests/test_auditoria_*.py`: creación, modificación y eliminación con usuario, IP y origen desde la API, el portal, el admin y Celery; sin fila si no hay cambios; campos excluidos (59 pruebas nuevas, 696 en total) | Prototipo pantalla 8 (interfaz pendiente, HU-31) | Implementado en el backend · sin fusionar |
+| RF-16 Protección del historial | HU-30 | UC-13 | OE-2 | core | Sin issue todavía | Backend, rama `feature/HU-30-auditoria`, sin fusionar | `UPDATE`, `DELETE` y `TRUNCATE` directos fallan en la base; el modelo y el admin no permiten modificar ni eliminar | — | Implementado en el backend · sin fusionar |
+| RF-17 Consulta de auditoría | HU-31 | UC-13 | OE-2 | core | Sin issue todavía | Backend, rama `feature/HU-30-auditoria`, sin fusionar | Matriz de acceso (Administrador 200; Ejecutivo, cliente y anónimo 403), filtros, historial agrupado y número de consultas acotado | Prototipo pantalla 8 (pantallas pendientes) | API implementada · pantallas pendientes |
 | RF-18 Procesos asistidos | HU-13 | UC-07 | OE-2 | tramites | Pendiente | Pendiente | Pendiente | — | Especificado |
 
 ## Matriz · Portal de contratación
@@ -122,7 +122,7 @@ Según la versión reducida de objetivos (cinco específicos).
 | RNF-10 Rendimiento | HU-46 | — | OE-5 | — | Pendiente | Pendiente | Pendiente | — | Propuesto |
 | RS-01 Acceso individual | HU-01 | — | OE-2 | core | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RS-02 Control de permisos | HU-04 | UC-10 | OE-2 | core | Pendiente | Pendiente | HU-45 | — | Especificado |
-| RS-04 Registro de accesos | HU-30 | UC-13 | OE-2 | core | Pendiente | Pendiente | Pendiente | — | Especificado |
+| RS-04 Registro de accesos | HU-30 | UC-13 | OE-2 | core | Sin issue todavía | Backend, rama `feature/HU-30-auditoria`, sin fusionar | Ingreso, ingreso fallido y cierre de sesión (personal, portal y admin); descarga de documentos; acceso a la cédula del autorizante | — | Implementado en el backend · sin fusionar |
 | RS-08 Datos reales fuera del repositorio | — | — | OE-2 | — | — | `DOD-001` | Revisión en PR | `DOD-001` | Vigente |
 | RS-09 Anonimización en desarrollo | — | — | OE-2 | migracion | Pendiente | Pendiente | Pendiente | — | Propuesto |
 | IN-01 Firma electrónica | HU-34, HU-35, HU-37 | UC-16 | OE-4 | integrations | Pendiente | Pendiente | Pendiente | — | Dependencia externa |
@@ -189,3 +189,4 @@ Los identificadores provienen de `CAT-001` y no se reutilizan.
 | 2.9 | 20-10-2026 | Estados al día: RF-05 (PR #40), RF-07 (PR #45), RF-19 (PR #44, #48 y frontend #16) y RF-14 (PR #54 y #21) implementados; IN-02 con el PR #30 fusionado |
 | 2.10 | 21-10-2026 | HU-15, bodega virtual con `PLT-02` (backend #59 y PR #60, frontend #22 y PR #23, abiertos) en RF-19, RF-24, RF-33, RF-34 y RF-36; cobertura de OE-3 |
 | 2.11 | 22-10-2026 | HU-15, bodega virtual: backend PR #60 y frontend PR #23 fusionados el 21-10-2026 (RF-24, RF-33, RF-34, RF-36 y OE-3). RF-06, RF-08, RF-09 y RF-10 al día con lo que entregó el PR #18 del backend y el #5 del frontend (10-10-2026), que no se había registrado |
+| 2.12 | 22-10-2026 | Auditoría (HU-30 y API de HU-31) implementada en el backend, en la rama `feature/HU-30-auditoria`, sin issue ni PR todavía: RF-15, RF-16, RF-17, RS-04 y el historial de RF-10 |

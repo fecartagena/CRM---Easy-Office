@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | DIS-001 · Documento de diseño |
-| **Versión** | 1.4 |
-| **Fecha** | 17 de octubre de 2026 |
+| **Versión** | 1.5 |
+| **Fecha** | 22 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 | **Clasificación** | Uso interno del proyecto |
@@ -157,7 +157,7 @@ proveedores) está en `REC-001`.
 | Secretos | Variables de entorno, fuera del código y del repositorio |
 | Datos en reposo | Cifrado de los documentos almacenados |
 | Minimización | Solo se solicitan los campos que el servicio requiere |
-| Trazabilidad | Registro inalterable de acciones sobre información de clientes |
+| Trazabilidad | Registro inalterable de acciones sobre la información, con disparadores de PostgreSQL (AD-08) y consulta solo para el Administrador. Es inalterable para la aplicación y su usuario de base de datos; el dueño de la base podría eliminar los disparadores, y separar ese rol es tarea del despliegue (TA-09). Implementado en el backend, sin fusionar (HU-30) |
 | Desarrollo | Datos anonimizados; ningún dato real se versiona |
 | Cuenta del cliente | Sin rol ni acceso al backoffice; el registro tiene límite de intentos y un RUT ya registrado no se revela (mismo error genérico ante cualquier rechazo) |
 | Cobros | El precio sale del servidor; el estado cambia solo en el servicio de dominio; los resultados se verifican contra el proveedor y no contra el navegador |
@@ -258,3 +258,4 @@ el proyecto a un motor que no genera ningún documento real está registrado en
 | 1.2 | 17-10-2026 | Generación documental con `docxtpl` y conversión a PDF con Gotenberg; decisiones AD-13 y AD-14 | Equipo de proyecto |
 | 1.3 | 17-10-2026 | Control de acceso a los documentos del trámite en el portal y el backoffice | Equipo de proyecto |
 | 1.4 | 17-10-2026 | Sesión separada para el panel de administración (AD-15) | Equipo de proyecto |
+| 1.5 | 22-10-2026 | §7 Trazabilidad: auditoría con disparadores y alcance de su protección (HU-30) | Equipo de proyecto |

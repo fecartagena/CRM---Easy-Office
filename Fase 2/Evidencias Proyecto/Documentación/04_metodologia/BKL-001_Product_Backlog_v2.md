@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.10 |
+| **Versión** | 2.11 |
 | **Fecha** | 22 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
@@ -139,6 +139,12 @@ configuración; ningún cambio en la configuración altera trámites ya emitidos
 **Criterios de aceptación preliminares (HU-30):** cada creación, modificación y
 eliminación queda registrada; el registro no admite modificación ni eliminación;
 incluye usuario, fecha, entidad afectada, valor anterior y valor nuevo.
+
+**Avance al 22-10-2026.** HU-30 está implementada en el backend, en la rama
+`feature/HU-30-auditoria`, todavía sin issue ni PR: registro con disparadores de
+PostgreSQL, protección en la base, ingresos y descargas, y 59 pruebas nuevas. De
+HU-31 está la API de consulta, solo para el Administrador; las pantallas van en
+otra rama del frontend, después de fusionar el backend.
 
 ---
 
@@ -338,3 +344,4 @@ planilla Excel o las credenciales externas.
 | 2.8 | 20-10-2026 | HU-41 con datos reales fusionada; HU-65 y HU-66 fusionadas |
 | 2.9 | 21-10-2026 | Avance de HU-15 con la bodega virtual y `PLT-02` (issues #59 y #22, PR #60 y #23, abiertos) |
 | 2.10 | 22-10-2026 | HU-15: bodega virtual con `PLT-02` fusionada (PR #60 del backend y #23 del frontend) |
+| 2.11 | 22-10-2026 | Avance de HU-30 y de la API de HU-31 (auditoría, rama sin fusionar) |

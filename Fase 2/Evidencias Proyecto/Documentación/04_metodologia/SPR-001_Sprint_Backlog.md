@@ -7,7 +7,7 @@
 | **Documento** | SPR-001 · Sprint Backlog |
 | **Sprints** | 1 · Núcleo de datos y accesos — cerrado<br>2 · Domicilio tributario de punta a punta — cerrado<br>3 · Segundo documento y motor configurable — en ejecución |
 | **Período** | 22 de septiembre – 31 de octubre de 2026 |
-| **Versión** | 2.0 |
+| **Versión** | 2.1 |
 | **Fecha** | 22 de octubre de 2026 |
 | **Preparado por** | Equipo de proyecto |
 
@@ -213,7 +213,7 @@ presentación. `[CONFIRMAR responsables y alcance en la planificación]`
 
 | ID | Elemento | Resp. | Estado |
 |---|---|---|---|
-| HU-30, HU-31 | Registro de auditoría de solo escritura y su consulta (RF-15 a RF-17) | `[CONFIRMAR]` | Pendiente |
+| HU-30, HU-31 | Registro de auditoría de solo escritura y su consulta (RF-15 a RF-17) | `[CONFIRMAR]` | En curso: backend listo en `feature/HU-30-auditoria` (696 pruebas), sin PR; faltan las pantallas |
 | HU-14, HU-16 | Pantalla para configurar tipos de trámite: campos, plantilla, pago y firma | `[CONFIRMAR]` | Pendiente |
 | HU-59 | Identidad visual de Easy Office en el portal y el backoffice (RNF-12) | Marcos | Pendiente |
 | HU-45 | Pruebas de control de acceso por rol y pruebas de seguridad | Marcos | Pendiente |
@@ -261,3 +261,4 @@ presentación. `[CONFIRMAR responsables y alcance en la planificación]`
 | 1.0 | 24-09-2026 | Emisión inicial: Sprint 1 | Equipo de proyecto |
 | 1.1 | 12-10-2026 | Nota de avance: trabajo adelantado fuera del compromiso del sprint | Equipo de proyecto |
 | 2.0 | 22-10-2026 | Cierre del Sprint 1 con su resultado real; sprints 2 y 3 reconstruidos desde issues, PR y commits; corrección de la nota de la versión 1.1; suma de capacidad corregida | Equipo de proyecto |
+| 2.1 | 22-10-2026 | Sprint 3: avance de HU-30 y HU-31 | Equipo de proyecto |

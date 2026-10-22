@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RN-001 · Reglas de negocio |
-| **Versión** | 2.7 |
+| **Versión** | 2.8 |
 | **Fecha** | 22 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | Las especificaciones formales de Easy Office confirman reglas que la versión 1.0 marcaba como propuesta, y agregan otras nuevas |
@@ -339,14 +339,23 @@ reconstruir el sistema.
 **RN-34.** Toda modificación importante registra el usuario que la realizó, la
 fecha y hora, el registro afectado, la acción realizada y, cuando corresponda, el
 valor anterior y el nuevo.
+*Implementada en el backend (HU-30, sin fusionar) con disparadores de
+PostgreSQL: al modificar se guardan solo los campos que cambiaron, y el origen
+distingue al sistema (tareas y pagos) de un usuario.*
 **Confirmada** · Proceso propuesto · ESP §4.3
 
 **RN-35.** El historial de auditoría está protegido para impedir que usuarios
 normales lo alteren o eliminen.
+*Implementada en el backend (HU-30, sin fusionar): la base rechaza modificar,
+eliminar y vaciar el registro, también para el usuario de base de datos de la
+aplicación. Solo el Administrador lo consulta (RN-31); el Ejecutivo no.*
 **Confirmada** · Proceso propuesto · ESP §4.3
 
 **RN-36.** Se registran también los accesos al sistema y las acciones relevantes,
 además de las modificaciones.
+*Implementada en el backend (HU-30, sin fusionar): ingresos, cierres de sesión e
+intentos fallidos del personal, del portal y del panel de administración;
+descargas de documentos del trámite y accesos a la cédula del autorizante.*
 **Confirmada** · Proceso propuesto · ESP §4.3
 
 ---
@@ -392,3 +401,4 @@ agenda de la próxima validación. RN-37 quedó confirmada el 12-10-2026.
 | 2.5 | 18-10-2026 | Notas de implementación del dashboard en RN-10 (renovación) y RN-32 (acceso del Ejecutivo) |
 | 2.6 | 21-10-2026 | Notas de implementación de la bodega virtual (PR #60, abierto) en RN-13, RN-37, RN-39, RN-43 y RN-44 |
 | 2.7 | 22-10-2026 | PR #60 fusionado el 21-10-2026: las notas de la bodega virtual describen la rama principal |
+| 2.8 | 22-10-2026 | Notas de implementación de la auditoría (HU-30, sin fusionar) en RN-34, RN-35 y RN-36 |

@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | UML-002 · Diagrama de clases |
-| **Versión** | 1.0 |
+| **Versión** | 1.1 |
 | **Fecha** | 22 de octubre de 2026 |
 | **Estado** | Refleja el código de la rama principal del backend al 22-10-2026 (después del PR #60) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -16,8 +16,9 @@
 
 Este diagrama muestra las clases **implementadas** en el backend
 (`crm_easyoffice/*/models.py` e `integrations/`), no el modelo conceptual. El
-modelo conceptual, con las entidades previstas que aún no existen (auditoría,
-alertas de vencimiento, migración), está en `MOD-001`.
+modelo conceptual, con las entidades previstas que aún no existen (alertas de
+vencimiento, migración), está en `MOD-001`. La auditoría (sección 5 bis) está
+en una rama sin fusionar.
 
 - Cada clase es un modelo de Django y una tabla de PostgreSQL. Salvo
   `CorrelativoFolio`, `ServicioContratado`, `Firmante`, `ItemVenta`,
@@ -499,6 +500,60 @@ classDiagram
 
 ---
 
+## 5 bis. Auditoría
+
+En la rama `feature/HU-30-auditoria`, sin fusionar al 22-10-2026.
+
+```mermaid
+classDiagram
+    class RegistroAuditoria {
+        +datetime fecha_hora
+        +OrigenAuditoria origen
+        +AccionAuditoria accion
+        +str entidad
+        +int registro_id
+        +json valor_anterior
+        +json valor_nuevo
+        +inet direccion_ip
+        +save() prohibido si ya existe
+        +delete() prohibido
+    }
+    class OrigenAuditoria {
+        <<enumeration>>
+        api
+        portal
+        admin
+        sistema
+    }
+    class AccionAuditoria {
+        <<enumeration>>
+        crear
+        modificar
+        eliminar
+        inicio_sesion
+        cierre_sesion
+        inicio_sesion_fallido
+        descarga_documento
+        acceso_documento_identidad
+    }
+    RegistroAuditoria "*" --> "0..1" User : usuario
+    RegistroAuditoria ..> OrigenAuditoria
+    RegistroAuditoria ..> AccionAuditoria
+```
+
+- Las filas las escriben disparadores de PostgreSQL en las tablas auditadas
+  (`crear`, `modificar`, `eliminar`) y la función `core.auditoria.registrar_evento`
+  para los accesos (ingresos, descargas, cédula). La lista de tablas auditadas
+  está en un solo lugar, `core/auditoria/registro.py`.
+- `entidad` y `registro_id` identifican el registro afectado sin una clave
+  foránea, porque puede pertenecer a cualquier tabla y seguir en el historial
+  después de eliminado.
+- El usuario se protege (`PROTECT`): quien aparece en el registro no se elimina,
+  se desactiva.
+- La base rechaza `UPDATE`, `DELETE` y `TRUNCATE` sobre esta tabla.
+
+---
+
 ## 6. Interfaces de integración
 
 Las dependencias externas se consumen detrás de una interfaz abstracta con
@@ -593,7 +648,7 @@ emite `venta_pagada` y `tramites` la escucha; `tramites` emite
 
 | Tema | `MOD-001` | Código |
 |---|---|---|
-| Auditoría | `REGISTRO_AUDITORIA` | No implementada (HU-30); el código marca dónde se registrará |
+| Auditoría | `REGISTRO_AUDITORIA` | `RegistroAuditoria` en `core`, con el campo `origen` agregado (HU-30, sin fusionar) |
 | Alertas de vencimiento | `ALERTA_VENCIMIENTO` | No implementada (HU-42, HU-53) |
 | Plan de la línea del contrato | `PLAN_SERVICIO` asociado a `SERVICIO_CONTRATADO` | El plan elegido queda en `Tramite.datos`; la línea no lo referencia |
 | Nombre del inmueble | `OFICINA` | La clase se llama `Oficina` y representa oficinas y bodegas (`tipo`) |
@@ -605,3 +660,4 @@ emite `venta_pagada` y `tramites` la escucha; `tramites` emite
 | Versión | Fecha | Descripción | Autor |
 |---|---|---|---|
 | 1.0 | 22-10-2026 | Emisión inicial, desde el código de la rama principal del backend al 22-10-2026 | Equipo de proyecto |
+| 1.1 | 22-10-2026 | Sección 5 bis: `RegistroAuditoria` (HU-30, sin fusionar); §8 actualizada | Equipo de proyecto |
