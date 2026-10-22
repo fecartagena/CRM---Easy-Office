@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLT-000 · Catálogo de plantillas y diccionario de campos |
-| **Versión** | 1.2 |
-| **Fecha** | 17 de octubre de 2026 |
+| **Versión** | 1.3 |
+| **Fecha** | 20 de octubre de 2026 |
 | **Fuente** | Documentos entregados por Easy Office el 8 de octubre de 2026 (ver `ACTA-002`) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -44,7 +44,7 @@ carpeta; los originales no.
 | Código | Plantilla | Formato de origen | Estado de la plantilla | Prioridad |
 |---|---|---|---|---|
 | PLT-01 | Contrato de servicios con autorización de domicilio (oficina) | Word con campos de combinación | Lista para generación | **Trámite piloto: domicilio tributario** |
-| PLT-02 | Contrato de servicios con autorización de uso de bodega | Word con campos de combinación | Requiere ajustes (ver observaciones) | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
+| PLT-02 | Contrato de servicios con autorización de uso de bodega | Word con campos de combinación | Lista para generación (backend PR #60, abierto) | Segundo caso, antes del motor configurable (HU-15) |
 | PLT-03 | Contrato de arriendo de vehículo | Word con marcadores `[ ]` | Requiere convertir marcadores en campos | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
 | PLT-04 | Contrato de arriendo de estacionamiento | Word con espacios en blanco | Requiere definir cada campo | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
 | PLT-05 | Acuerdo de accionistas para SpA | Word con texto variable en negrita | Requiere cláusulas variables | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
@@ -96,6 +96,7 @@ la planilla de Easy Office (`MUESTRA DE CAMPOS BB DD`, 34 columnas).
 | `EO_REPRESENTANTE`, `EO_REP_RUT`, `EO_REP_NACIONALIDAD`, `EO_REP_ESTADO_CIVIL`, `EO_REP_PROFESION` | Representante legal de Easy Office | `CONFIG_EMPRESA` |
 | `AUTORIZANTE_RAZON_SOCIAL`, `AUTORIZANTE_RUT`, `AUTORIZANTE_REPRESENTANTE`, `AUTORIZANTE_REP_*` | Propietario del inmueble que autoriza el domicilio | `OFICINA` |
 | `AUTORIZANTE_NOMBRE`, `AUTORIZANTE_NACIONALIDAD`, `AUTORIZANTE_ESTADO_CIVIL`, `AUTORIZANTE_PROFESION` | Autorizante persona natural (caso de la bodega) | `OFICINA` |
+| `«BODEGA_DIRECCION»`, `«BODEGA_COMUNA»`, `«BODEGA_ROL_AVALUO»` | Ubicación y rol de la bodega en `PLT-02`; son marcadores de texto, no campos de combinación (OB-05) | `OFICINA` de tipo bodega |
 
 En el contrato original estos datos estaban escritos directamente en el texto. La
 autorización de domicilio la firma el **propietario del inmueble**, que puede ser
@@ -124,11 +125,13 @@ La muestra de la base de datos usa `LF-01-2026` (dos dígitos), formato anterior
 la macro actual. El sistema usa cuatro dígitos con un ancho configurable
 (`CONTRATO_FOLIO_ANCHO`), de modo que los folios históricos puedan conservarse.
 
-**Uso en el sistema.** El backend guarda su propia copia de `PLT-01`, convertida
+**Uso en el sistema.** El backend guarda su propia copia de `PLT-01` y de `PLT-02`
+(esta última idéntica byte a byte al archivo de esta carpeta), convertida
 una sola vez desde esta versión anonimizada: los campos de combinación pasan a
 marcas propias, el anverso y el reverso de la cédula del autorizante quedan como
 imágenes que el sistema inserta al generar el documento, y el control de cambios
-se acepta. Esta carpeta sigue siendo la referencia; el sistema no la lee.
+se acepta. El comando es `manage.py convertir_plantilla`, para `PLT-01` o
+`PLT-02`. Esta carpeta sigue siendo la referencia; el sistema no la lee.
 `[PENDIENTE DE VALIDAR CON EASY OFFICE]` cómo se tratan esos folios en la
 migración (TA-03).
 
@@ -142,7 +145,7 @@ migración (TA-03).
 | OB-02 | PLT-01 | La autorización dice "UNIDAD DE SAN ANTONIO «COMUNA_SUCURSAL»" para la unidad del SII | Confirmar el texto correcto por sucursal y llevarlo a la configuración de la oficina · Resuelto en la plantilla convertida: la unidad del SII y la municipalidad salen de la sucursal `[supuesto: texto por sucursal]` |
 | OB-03 | PLT-01, PLT-02 | El vencimiento se digita a mano en la planilla; la muestra tiene vencimientos que no siguen una regla única | El sistema lo calcula: inicio + duración − 1 día (RN-37) |
 | OB-04 | PLT-01, PLT-02 | La tabla de servicios complementarios tiene precios "desde" escritos en el documento, distintos entre plantillas (contabilidad $15.900 y $19.900) | Llevar los precios a configuración `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
-| OB-05 | PLT-02 | La duración ("DOCE (12) MESES") y la dirección y rol de la bodega están escritos en el texto, no como campos | Convertirlos en campos de la oficina o bodega |
+| OB-05 | PLT-02 | La duración ("DOCE (12) MESES") está escrita en el texto, no como campo. La dirección, la comuna y el rol de avalúo de la bodega se reemplazaron el 20-10-2026 por los marcadores de texto «BODEGA_DIRECCION», «BODEGA_COMUNA» y «BODEGA_ROL_AVALUO», porque identificaban un inmueble real de una persona natural | La duración sale del plan elegido y se imprime en palabras y en cifras; la dirección, la comuna y el rol, del inmueble tipo bodega. Implementado en el backend (PR #60, abierto) |
 | OB-06 | PLT-03 | Usa marcadores `[CAMPO]`; las partes son el propietario del vehículo y la empresa cliente. Easy Office no es parte | Convertir marcadores en campos y modelar al propietario como persona |
 | OB-07 | PLT-04 | Solo tiene líneas en blanco; incluye datos del Conservador de Bienes Raíces y cuenta bancaria del arrendador | Definir el formulario completo con Easy Office antes de automatizarlo |
 | OB-08 | PLT-05 | Los artículos varían según el trámite (cambio de representante, razón social, nombre de fantasía, capital, etc.) y el original dice "constituida por 10.000 accionistas" en lugar del número de accionistas | Modelar las modificaciones como cláusulas opcionales; confirmar el texto con Easy Office |
