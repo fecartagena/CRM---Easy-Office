@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.9 |
-| **Fecha** | 21 de octubre de 2026 |
+| **Versión** | 2.10 |
+| **Fecha** | 22 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -301,7 +301,8 @@ dashboard y se agrega el desglose de trámites pendientes por motivo (HU-61).
 
 **Avance al 21-10-2026.** HU-15 avanza con `PLT-02` (contrato de servicios con
 autorización de uso de bodega) como segundo caso real antes del motor
-configurable: backend issue #59 y PR #60, frontend issue #22 y PR #23, abiertos.
+configurable: backend issue #59 y PR #60, frontend issue #22 y PR #23, fusionados el
+21-10-2026.
 El tipo de trámite "Bodega virtual" usa las mismas funciones genéricas que el
 domicilio tributario, lo inicia un ejecutivo desde el backoffice o el cliente
 desde el portal, y se contrata en tres planes con precios provisorios. En el
@@ -336,3 +337,4 @@ planilla Excel o las credenciales externas.
 | 2.7 | 18-10-2026 | Avance de HU-41 con datos reales (issue #53) |
 | 2.8 | 20-10-2026 | HU-41 con datos reales fusionada; HU-65 y HU-66 fusionadas |
 | 2.9 | 21-10-2026 | Avance de HU-15 con la bodega virtual y `PLT-02` (issues #59 y #22, PR #60 y #23, abiertos) |
+| 2.10 | 22-10-2026 | HU-15: bodega virtual con `PLT-02` fusionada (PR #60 del backend y #23 del frontend) |

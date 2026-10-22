@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ARQ-001 · Arquitectura de la solución |
-| **Versión** | 1.4 |
-| **Fecha** | 17 de octubre de 2026 |
+| **Versión** | 1.5 |
+| **Fecha** | 22 de octubre de 2026 |
 | **Estado** | Propuesta de arquitectura. Sujeta a ajustes al recibir la documentación técnica de la plataforma de firma electrónica |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -73,84 +73,114 @@ microservicios a monolito, es mucho más costoso.
 
 ## 3. Vista de componentes
 
+### 3.1 Diagrama de componentes
+
+Notación UML de componentes expresada en Mermaid: cada caja es un
+«component»; los círculos son interfaces provistas; una flecha continua es una
+dependencia de uso y una punteada, una comunicación por evento (señal de Django)
+o por cola. Entre módulos se dibujan solo las dependencias directas que no se
+deducen de otras; la lista completa está en la tabla de la sección 3.2. Refleja
+la rama principal al 22-10-2026.
+
 ```mermaid
 graph TB
-    subgraph PRES[Capa de presentación]
-        SPA1[Portal cliente<br/>React]
-        SPA2[Backoffice<br/>React]
+    subgraph FE["«subsystem» Frontend · React 19 + TypeScript"]
+        PORTAL["«component»<br/>Portal del cliente"]
+        BACK["«component»<br/>Backoffice CRM"]
     end
 
-    subgraph APP[Aplicación · Django + DRF]
-        AUTH[core<br/>usuarios, roles,<br/>permisos, auditoría]
-        CLI[clientes<br/>personas, empresas,<br/>representación]
-        SRV[servicios<br/>contratación, vigencias,<br/>vencimientos]
-        INM[inmuebles<br/>oficinas, rol de avalúo,<br/>domicilios asignados]
-        TRA[tramites<br/>tipos configurables,<br/>máquina de estados]
-        DOC[documentos<br/>plantillas versionadas,<br/>generación, integridad]
-        VEN[ventas<br/>ventas, órdenes<br/>y pagos]
-        INT[integrations<br/>SignatureService<br/>PaymentService<br/>Klap · Flow]
-        MIG[migracion<br/>carga desde Excel]
+    REST(("API REST<br/>/api"))
+    ADMIN(("Panel de<br/>administración"))
+    PORTAL --> REST
+    BACK --> REST
+
+    subgraph BE["«subsystem» Backend · Django 6 + DRF"]
+        PAN["«component»<br/>panel"]
+        DOC["«component»<br/>documentos"]
+        TRA["«component»<br/>tramites"]
+        CON["«component»<br/>contratos"]
+        VEN["«component»<br/>ventas"]
+        INM["«component»<br/>inmuebles"]
+        CLI["«component»<br/>clientes"]
+        CFG["«component»<br/>configuracion"]
+        USR["«component»<br/>users · core"]
     end
 
-    subgraph ASYNC[Procesamiento asíncrono]
-        CEL[Celery workers]
-        BEAT[Celery beat<br/>vencimientos]
-    end
+    REST --- BE
+    ADMIN --- BE
 
-    subgraph DATA[Persistencia]
-        PG[(PostgreSQL)]
-        OBJ[Almacenamiento<br/>de documentos]
-        RDS[(Redis)]
-    end
-
-    SPA1 --> AUTH
-    SPA2 --> AUTH
-    AUTH --> CLI
-    CLI --> SRV
-    SRV --> INM
-    TRA --> CLI
-    TRA --> SRV
+    PAN --> DOC
     DOC --> TRA
-    INT --> DOC
+    TRA --> CON
+    CON --> INM
+    CON --> VEN
+    INM --> CLI
+    INM --> CFG
     VEN --> CLI
-    VEN --> INT
-    MIG --> CLI
+    CLI --> USR
+    CFG --> USR
 
-    DOC --> CEL
-    INT --> CEL
-    VEN --> CEL
-    BEAT --> SRV
-    CEL --> RDS
-    BEAT --> RDS
+    VEN -.->|venta_pagada| TRA
+    TRA -.->|documento_requerido| DOC
 
-    AUTH --> PG
-    CLI --> PG
-    SRV --> PG
-    TRA --> PG
-    VEN --> PG
-    DOC --> PG
-    DOC --> OBJ
+    subgraph INT["«component» integrations"]
+        IPAY(("PaymentProvider"))
+        IPDF(("PdfConverter"))
+        ISIG(("SignatureProvider"))
+    end
+
+    VEN --> IPAY
+    DOC --> IPDF
+
+    subgraph RUN["«subsystem» Procesamiento asíncrono"]
+        RDS[("Redis")]
+        WORKER["«component»<br/>Celery worker"]
+        BEAT["«component»<br/>Celery beat"]
+    end
+
+    VEN -.->|tareas de pago| RDS
+    DOC -.->|tarea de generación| RDS
+    RDS -.-> WORKER
+    BEAT -.-> RDS
+
+    KLAP["«external»<br/>Klap"]
+    FLOW["«external»<br/>Flow"]
+    GOT["«component»<br/>Gotenberg"]
+    FIRMA["«external»<br/>Proveedor de firma<br/>(pendiente)"]
+    IPAY --> KLAP
+    IPAY --> FLOW
+    IPDF --> GOT
+    ISIG -.-> FIRMA
+
+    PG[("PostgreSQL")]
+    ST[("Almacenamiento<br/>de documentos")]
+    BE --> PG
+    DOC --> ST
 ```
 
-### Responsabilidad de cada módulo
+### 3.2 Responsabilidad de cada módulo
 
-| Módulo | Responsabilidad | Puede depender de |
+| Módulo | Responsabilidad | Depende de |
 |---|---|---|
-| `core` | Usuarios, roles, permisos, registro de auditoría | Nada |
-| `clientes` | Personas, empresas, representación legal, ficha del cliente | `core` |
-| `servicios` | Servicios contratados, precios, vigencias, alertas de vencimiento | `core`, `clientes` |
-| `inmuebles` | Oficinas, rol de avalúo, asignación de domicilios | `core`, `servicios` |
-| `tramites` | Tipos de trámite configurables, trámites, máquina de estados | `core`, `clientes`, `servicios` |
-| `documentos` | Plantillas versionadas, generación, firmantes, integridad | `core`, `tramites` |
-| `ventas` | Catálogo vendible, ventas, órdenes de pago y pagos. Es el único lugar donde cambia el estado de una venta | `core`, `clientes`, `integrations` |
-| `integrations` | Interfaces e implementaciones de firma y pago (Klap y Flow) | `core` |
-| `migracion` | Carga de la información desde Excel | `clientes`, `servicios` |
+| `users`, `core` | Usuarios (inicio de sesión con correo), roles Administrador y Ejecutivo, permisos del sistema, modelo base con fechas. La auditoría se agregará aquí (HU-30) | Nada |
+| `clientes` | Personas, empresas, representación legal, código del cliente y cuentas del portal | `core`, `users` |
+| `configuracion` | Datos de Easy Office, marcas y cuentas donde recibe pagos | `core` |
+| `inmuebles` | Oficinas y bodegas, rol de avalúo y autorizantes con su cédula | `core`, `clientes`, `configuracion` |
+| `ventas` | Catálogo de servicios y planes, ventas, órdenes de pago y pagos. Es el único lugar donde cambia el estado de una venta | `core`, `clientes`, `integrations` |
+| `contratos` | Contratos con folio, líneas copiadas del catálogo, vigencia, ocupación de inmuebles | `core`, `users`, `clientes`, `configuracion`, `inmuebles`, `ventas` |
+| `tramites` | Tipos de trámite configurables, trámites, estados, motivos de pendiente e historial | `core`, `users`, `clientes`, `configuracion`, `inmuebles`, `contratos`, `ventas` |
+| `documentos` | Plantillas versionadas, generación Word y PDF, firmantes, firma asistida e integridad | Todos los anteriores, más `integrations` |
+| `panel` | Indicadores del dashboard y exportación a Excel. Solo lee | `clientes`, `contratos`, `documentos`, `tramites`, `ventas` |
+| `integrations` | Interfaces de pago, firma y conversión a PDF, con sus implementaciones | Nada |
 
 **Regla de dependencia.** Los módulos se comunican mediante funciones de servicio
-públicas, no consultando directamente los modelos de otro módulo. La dirección de
-dependencia es estrictamente descendente en la tabla: `documentos` puede depender
-de `tramites`, pero `tramites` nunca de `documentos`. Ningún módulo depende de
-`ventas`.
+públicas. La dirección de dependencia es descendente en la tabla y no hay ciclos
+(verificado en el código el 22-10-2026). Donde un módulo de abajo necesita avisar
+a uno de arriba, usa una señal: `ventas` no conoce a `tramites`, pero emite
+`venta_pagada`, y `tramites` no conoce a `documentos`, pero emite
+`documento_requerido`.
+
+El detalle de las clases de cada módulo está en `UML-002 Diagrama de clases`.
 
 ---
 
@@ -296,47 +326,86 @@ desde internet mientras corre, en local solo se usan datos ficticios.
 
 ## 5. Flujo del servicio piloto
 
-Secuencia del domicilio tributario, que Easy Office define como servicio piloto
-en el §15.
+Secuencia del domicilio tributario tal como está implementada (PR #51 del
+backend y #18 del frontend). La bodega virtual (`PLT-02`) sigue la misma
+secuencia; si la inicia un ejecutivo desde el backoffice, él registra la
+confirmación del cliente.
 
 ```mermaid
 sequenceDiagram
+    autonumber
     actor C as Cliente
-    participant W as Portal
-    participant A as API
-    participant Q as Celery
-    participant P as Pasarela de pago
-    participant F as Plataforma de firma
-    participant D as Base de datos
+    participant W as Portal (React)
+    participant A as API (Django)
+    participant Q as Celery worker
+    participant G as Gotenberg
+    participant P as Klap o Flow
+    actor E as Ejecutivo
+    participant B as Backoffice (React)
 
-    C->>W: Selecciona el servicio
-    W->>A: Solicita configuración del tipo de trámite
-    A-->>W: Campos, validaciones y requisitos
-    C->>W: Completa sus antecedentes
-    W->>A: Envía los datos
-    A->>A: Valida contra la configuración
-    A->>D: Crea o actualiza el cliente y crea el trámite
-    A->>Q: Encola la generación del documento
-    Q->>D: Genera el documento, congela los datos y calcula el hash
-    A-->>W: Vista previa del borrador
-    C->>W: Confirma que los datos son correctos
-    C->>W: Paga
-    W->>A: Inicia el pago
-    A->>Q: Encola la creación del cobro
+    C->>W: Elige el servicio y el plan
+    W->>A: GET formulario del tipo de trámite
+    A-->>W: Campos, planes, sucursales disponibles
+    C->>W: Completa sus datos y la fecha de inicio
+    W->>A: POST trámite
+    A->>A: iniciar_tramite: valida contra la configuración
+    A->>A: Guarda empresa y representante, crea contrato en borrador
+    Note over A: Trámite Iniciado
+    A-)Q: documento_requerido → generar_documento
+    Q->>Q: Llena PLT-01 (docxtpl) y congela los datos
+    Q->>G: Word
+    G-->>Q: PDF
+    Q->>Q: SHA-256 del Word y del PDF
+    Note over Q: Pendiente · revisión del borrador
+    W->>A: Consulta el estado
+    A-->>W: Vista previa del PDF
+    alt El cliente corrige un dato
+        C->>W: Edita
+        W->>A: PATCH trámite
+        A-)Q: Nueva versión del documento
+    end
+    C->>W: Confirma el borrador
+    W->>A: POST confirmar
+    A->>A: confirmar_borrador: crea la venta con el precio del plan
+    Note over A: Pendiente · pago
+    C->>W: Elige Klap o Flow
+    W->>A: POST pagar
+    A-)Q: crear_orden_en_proveedor
     Q->>P: Crea el cobro
-    P-->>A: Notifica el resultado
-    A->>D: Registra el pago de forma idempotente (detalle en §4.4)
-    A->>Q: Encola el envío a firma
-    Q->>F: Envía el documento
-    F-->>A: Notifica el documento firmado
-    A->>D: Asocia el documento firmado y verifica el hash
-    A->>D: Registra el servicio contratado con su vencimiento
-    A-->>C: Documento final disponible
+    P-->>Q: URL de pago
+    W->>P: Redirige al cliente
+    C->>P: Paga
+    P-)A: Webhook
+    A-)Q: procesar_notificacion
+    Q->>P: Verifica el estado (Flow) o valida la firma (Klap)
+    Q->>Q: aplicar_resultado: venta pagada, sin duplicar
+    Q->>Q: venta_pagada → registrar_pago
+    Note over Q: Pendiente · firma
+    E->>B: Abre el trámite
+    B->>A: Descarga el PDF
+    E->>E: Firma con el proveedor de Easy Office
+    E->>B: Sube el PDF firmado
+    B->>A: POST documento firmado
+    A->>A: registrar_firmado: SHA-256 del firmado
+    A->>A: completar: contrato vigente
+    Note over A: Completado
+    W->>A: Consulta el estado
+    A-->>W: Documento final disponible
+    C->>W: Descarga el contrato firmado
 ```
 
-El último paso es el que conecta el portal con el CRM sin redigitación, que el
-§9 identifica como uno de los requisitos centrales del encargo. A partir de ahí
-el servicio queda bajo seguimiento y genera sus alertas de vencimiento.
+**Casos alternativos implementados.** Si la generación falla, el trámite queda
+pendiente por falta de información, con el detalle para el ejecutivo, que puede
+reintentarla. Si la fecha de inicio vence antes del pago o de la firma, el
+trámite pide una fecha nueva. Si el proveedor rechaza o expira el pago, la venta
+sigue pendiente y el cliente puede volver a pagar desde su cuenta.
+
+**Diferencia con lo diseñado.** El diseño original (versión 1.0 de este
+documento) enviaba el documento a la plataforma de firma y registraba el servicio
+contratado al final. Hoy la firma es asistida, porque faltan las credenciales del
+proveedor (TA-07), y el contrato existe desde el inicio como borrador y pasa a
+vigente al completarse. El envío automático a firma queda como pendiente; la
+interfaz `SignatureProvider` ya está definida.
 
 ---
 
@@ -455,3 +524,4 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | 1.2 | 17-10-2026 | Conversión a PDF con Gotenberg en el despliegue; decisiones AD-13 (docxtpl) y AD-14 (Gotenberg); pendientes de fidelidad del PDF y firma con proveedor | Equipo de proyecto |
 | 1.3 | 17-10-2026 | Sesión separada para el panel de administración (§4.1, AD-15; PR #52 del backend) | Equipo de proyecto |
 | 1.4 | 17-10-2026 | Cambio entre sesión de personal y de cliente en la aplicación web (§4.1; PR #19 del frontend) | Equipo de proyecto |
+| 1.5 | 22-10-2026 | §3 diagrama de componentes en notación UML con los módulos reales (`configuracion`, `contratos`, `panel`) y Gotenberg; dependencias verificadas en el código; §5 secuencia real del trámite con firma asistida | Equipo de proyecto |

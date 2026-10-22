@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLT-000 · Catálogo de plantillas y diccionario de campos |
-| **Versión** | 1.3 |
-| **Fecha** | 20 de octubre de 2026 |
+| **Versión** | 1.4 |
+| **Fecha** | 22 de octubre de 2026 |
 | **Fuente** | Documentos entregados por Easy Office el 8 de octubre de 2026 (ver `ACTA-002`) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -44,7 +44,7 @@ carpeta; los originales no.
 | Código | Plantilla | Formato de origen | Estado de la plantilla | Prioridad |
 |---|---|---|---|---|
 | PLT-01 | Contrato de servicios con autorización de domicilio (oficina) | Word con campos de combinación | Lista para generación | **Trámite piloto: domicilio tributario** |
-| PLT-02 | Contrato de servicios con autorización de uso de bodega | Word con campos de combinación | Lista para generación (backend PR #60, abierto) | Segundo caso, antes del motor configurable (HU-15) |
+| PLT-02 | Contrato de servicios con autorización de uso de bodega | Word con campos de combinación | Implementada en la generación (backend PR #60, fusionado el 21-10-2026) | Segundo caso, antes del motor configurable (HU-15) |
 | PLT-03 | Contrato de arriendo de vehículo | Word con marcadores `[ ]` | Requiere convertir marcadores en campos | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
 | PLT-04 | Contrato de arriendo de estacionamiento | Word con espacios en blanco | Requiere definir cada campo | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
 | PLT-05 | Acuerdo de accionistas para SpA | Word con texto variable en negrita | Requiere cláusulas variables | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
@@ -145,7 +145,7 @@ migración (TA-03).
 | OB-02 | PLT-01 | La autorización dice "UNIDAD DE SAN ANTONIO «COMUNA_SUCURSAL»" para la unidad del SII | Confirmar el texto correcto por sucursal y llevarlo a la configuración de la oficina · Resuelto en la plantilla convertida: la unidad del SII y la municipalidad salen de la sucursal `[supuesto: texto por sucursal]` |
 | OB-03 | PLT-01, PLT-02 | El vencimiento se digita a mano en la planilla; la muestra tiene vencimientos que no siguen una regla única | El sistema lo calcula: inicio + duración − 1 día (RN-37) |
 | OB-04 | PLT-01, PLT-02 | La tabla de servicios complementarios tiene precios "desde" escritos en el documento, distintos entre plantillas (contabilidad $15.900 y $19.900) | Llevar los precios a configuración `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
-| OB-05 | PLT-02 | La duración ("DOCE (12) MESES") está escrita en el texto, no como campo. La dirección, la comuna y el rol de avalúo de la bodega se reemplazaron el 20-10-2026 por los marcadores de texto «BODEGA_DIRECCION», «BODEGA_COMUNA» y «BODEGA_ROL_AVALUO», porque identificaban un inmueble real de una persona natural | La duración sale del plan elegido y se imprime en palabras y en cifras; la dirección, la comuna y el rol, del inmueble tipo bodega. Implementado en el backend (PR #60, abierto) |
+| OB-05 | PLT-02 | La duración ("DOCE (12) MESES") está escrita en el texto, no como campo. La dirección, la comuna y el rol de avalúo de la bodega se reemplazaron el 20-10-2026 por los marcadores de texto «BODEGA_DIRECCION», «BODEGA_COMUNA» y «BODEGA_ROL_AVALUO», porque identificaban un inmueble real de una persona natural | La duración sale del plan elegido y se imprime en palabras y en cifras; la dirección, la comuna y el rol, del inmueble tipo bodega. Implementado en el backend (PR #60, fusionado) |
 | OB-06 | PLT-03 | Usa marcadores `[CAMPO]`; las partes son el propietario del vehículo y la empresa cliente. Easy Office no es parte | Convertir marcadores en campos y modelar al propietario como persona |
 | OB-07 | PLT-04 | Solo tiene líneas en blanco; incluye datos del Conservador de Bienes Raíces y cuenta bancaria del arrendador | Definir el formulario completo con Easy Office antes de automatizarlo |
 | OB-08 | PLT-05 | Los artículos varían según el trámite (cambio de representante, razón social, nombre de fantasía, capital, etc.) y el original dice "constituida por 10.000 accionistas" en lugar del número de accionistas | Modelar las modificaciones como cláusulas opcionales; confirmar el texto con Easy Office |
