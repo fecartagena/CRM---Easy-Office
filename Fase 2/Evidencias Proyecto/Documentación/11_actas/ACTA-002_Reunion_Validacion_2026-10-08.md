@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ACTA-002 · Reunión de validación con la contraparte |
-| **Versión** | 1.7 |
+| **Versión** | 1.8 |
 | **Fecha de la reunión** | Jueves 8 de octubre de 2026, 20:00 |
 | **Modalidad** | `[CONFIRMAR: remota o presencial]` |
 | **Participantes** | Por Easy Office: Natanael Escobar. Por el equipo: Fernando Cartagena `[CONFIRMAR asistencia de Nicolás Zapata y Marcos Álvarez]` |
@@ -108,6 +108,10 @@ la confirmación escrita de esta acta.
 | TA-22 | Domicilio del autorizante y ciudad de firma, que siguen escritos en la plantilla | Easy Office | Abierto |
 | TA-23 | Si en línea solo contratan clientes empresa | Easy Office | Abierto |
 | TA-24 | Quién es el ejecutivo de una venta en línea: hoy las ventas del portal no tienen ejecutivo y el dashboard las muestra como "En línea (sin ejecutivo)" | Easy Office | Abierto |
+| TA-25 | Bodega virtual: si se contrata siempre junto con el domicilio tributario y si una misma bodega la pueden usar varios clientes (MD-04) | Easy Office | Abierto |
+| TA-26 | Precios de los planes semestral y trimestral de la bodega virtual. Hoy los tres planes usan el precio anual del sitio web (59.990, firma incluida) | Easy Office | Abierto |
+| TA-27 | Si un trámite que inicia un ejecutivo se cobra en línea o fuera de la plataforma | Easy Office | Abierto |
+| TA-28 | Nombre del servicio ("Bodega" o "Bodega virtual") y su descripción, que hoy el anexo del contrato imprime con doble punto | Easy Office | Abierto |
 
 ---
 

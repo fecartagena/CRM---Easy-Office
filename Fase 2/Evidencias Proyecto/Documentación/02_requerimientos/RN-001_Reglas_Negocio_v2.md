@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RN-001 · Reglas de negocio |
-| **Versión** | 2.5 |
-| **Fecha** | 18 de octubre de 2026 |
+| **Versión** | 2.6 |
+| **Fecha** | 21 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | Las especificaciones formales de Easy Office confirman reglas que la versión 1.0 marcaba como propuesta, y agregan otras nuevas |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -111,6 +111,8 @@ autorización llevan esa fecha. Se admite hasta 30 días a futuro*
 `[SUPUESTO – VALIDAR CON EASY OFFICE]`*.*
 *Implementación (issue #38): cuando el día de inicio no existe en el mes de
 vencimiento, se usa el último día de ese mes* `[SUPUESTO – VALIDAR CON EASY OFFICE]`.
+*En la bodega virtual (PR #60), la duración y el vencimiento salen del plan
+elegido (3, 6 o 12 meses), y `PLT-02` imprime la duración en palabras y en cifras.*
 
 **RN-38.** Cada contrato recibe un folio con el formato
 `{código de sucursal}-{correlativo de 4 dígitos}-{año}`, donde el código es `LF`
@@ -148,6 +150,9 @@ ingreso manual a plataformas externas.*
 confirme que la información es correcta.
 *Implementada en el domicilio tributario (PR #51): sin la confirmación del
 borrador no se crea la venta ni se habilita la firma.*
+*En un trámite que inicia un ejecutivo (bodega virtual, PR #60), el ejecutivo
+registra la confirmación del cliente y el pago se hace fuera de la plataforma*
+`[SUPUESTO – VALIDAR CON EASY OFFICE]`*.*
 **Confirmada** · Proceso actual y propuesto · Levantamiento y ESP §5.1
 
 **RN-14.** Un trámite solo puede transitar entre estados según las transiciones
@@ -227,12 +232,17 @@ firmas es un supuesto.*
 12-10-2026)
 *El orden de las firmas en el domicilio tributario está pendiente de
 confirmación.*
+*En la bodega virtual (`PLT-02`, PR #60) firman el representante legal del
+cliente y el dueño de la bodega.*
 
 **RN-43.** La autorización de uso del domicilio tributario la otorga el
 propietario del inmueble de la oficina, que puede ser distinto en cada oficina.
 *El propietario puede ser una persona natural (bodega, `PLT-02`) o una empresa con
 su representante legal (oficina, `PLT-01`); el documento incorpora la imagen de su
 cédula de identidad, que se guarda como archivo protegido.*
+*Implementada para la bodega (PR #60): una bodega solo se ofrece si su autorizante
+vigente es una persona natural con sus datos completos y la cédula por ambos
+lados; si es una empresa, el sistema la rechaza.*
 **Confirmada** · Proceso actual y propuesto · Contratos entregados por Easy
 Office, Reunión del 08-10-2026 (`ACTA-002`)
 
@@ -290,6 +300,10 @@ EASY OFFICE]`*; mientras tanto, cada servicio lleva el indicador
 *En línea, el domicilio tributario se vende en dos planes publicados en el sitio
 web de Easy Office: anual (12 meses, 59.990, firma incluida) y semestral (6 meses,
 39.990, firma aparte a 5.000)* `[SUPUESTO – VALIDAR CON EASY OFFICE]`*.*
+*La bodega virtual se vende en tres planes (anual, semestral y trimestral), todos
+con el precio anual del sitio web, 59.990 con la firma incluida, mientras Easy
+Office informa los precios de los otros dos. El plan paga también la línea del
+domicilio, que se imprime en $0* `[SUPUESTO – VALIDAR CON EASY OFFICE]`*.*
 **Confirmada** · Proceso actual y propuesto · `ACTA-002` (actualización del
 12-10-2026)
 
@@ -376,3 +390,4 @@ agenda de la próxima validación. RN-37 quedó confirmada el 12-10-2026.
 | 2.3 | 14-10-2026 | Notas de implementación en RN-37 (fin de mes), RN-38 (marcas, sucursal, ancho configurable, año de emisión, renovación), RN-43 (autorizante persona o empresa) y RN-44 (copia del precio y discrepancia del IVA con el anexo de `PLT-01`) |
 | 2.4 | 17-10-2026 | Notas de implementación del domicilio tributario (PR #51) en RN-13, RN-24, RN-37 (fecha de inicio no atrasada, hasta 30 días a futuro), RN-39, RN-40, RN-42 y RN-44 (planes del sitio web) |
 | 2.5 | 18-10-2026 | Notas de implementación del dashboard en RN-10 (renovación) y RN-32 (acceso del Ejecutivo) |
+| 2.6 | 21-10-2026 | Notas de implementación de la bodega virtual (PR #60, abierto) en RN-13, RN-37, RN-39, RN-43 y RN-44 |

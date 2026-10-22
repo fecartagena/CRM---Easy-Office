@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.7 |
-| **Fecha** | 20 de octubre de 2026 |
+| **Versión** | 1.8 |
+| **Fecha** | 21 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 
@@ -327,6 +327,39 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 - Verificado en el navegador como Administrador y como Ejecutivo con datos locales
   ficticios.
 
+**Bodega virtual con `PLT-02` (backend PR #60 y frontend PR #23, abiertos)**
+
+- Pruebas nuevas o ampliadas:
+  - requisitos de la bodega y de su autorizante (`inmuebles`);
+  - ocupación de inmuebles (`contratos`);
+  - generación de `PLT-02`, API de la bodega y formato de las duraciones
+    (`documentos`);
+  - trámite de bodega en el backoffice y en el portal (`tramites`);
+  - siembra de los planes de la bodega (`ventas`).
+- Se ajustaron las pruebas de `ventas` que suponían que la bodega no se vendía en
+  línea.
+- 637 pruebas del backend pasan, incluidas las 546 que existían antes del cambio.
+  Ruff y `makemigrations --check` sin observaciones.
+- Verificado en local con Celery y Gotenberg, por la API: el trámite del
+  backoffice completo hasta el PDF firmado, y en el portal el plan trimestral
+  hasta la venta de 59.990. Los PDF salieron con todos los campos llenos.
+- No verificado: un pago real con Klap o Flow para la bodega (cubierto con el
+  proveedor simulado) ni las pantallas en el navegador. CI del PR #60: el linter
+  pasó y pytest seguía en curso al abrir el PR.
+- Frontend: 150 pruebas pasan, incluidas las 131 anteriores; `tsc -b` y oxlint
+  sin observaciones.
+  - Nuevas: la pantalla "Nuevo trámite" del backoffice, incluido el caso con
+    planes; el formulario genérico del portal; los casos de bodega en el detalle
+    del trámite y la tarjeta de bodega del catálogo.
+  - Ajustadas: el estado del trámite, que ahora consulta el formulario genérico,
+    y los datos de prueba, que suman el tipo de trámite, las líneas del contrato y
+    los formularios de bodega.
+- Defecto conocido: una prueba de "Nuevo trámite" falló una vez en una corrida
+  completa y pasó en las tres siguientes. Parece un problema de tiempo bajo carga,
+  sin confirmar.
+- Pendiente: recorrer en el navegador los flujos de la bodega en el portal y en el
+  backoffice.
+
 Pendiente: pruebas de rendimiento y de seguridad, y las pruebas de aceptación con
 Easy Office.
 
@@ -344,3 +377,4 @@ Easy Office.
 | 1.5 | 17-10-2026 | Pruebas del cambio de sesión entre personal y cliente (128 en el frontend) | Equipo de proyecto |
 | 1.6 | 18-10-2026 | Pruebas del dashboard con datos reales (545 en el backend, 131 en el frontend) | Equipo de proyecto |
 | 1.7 | 20-10-2026 | Estados de los PR de sesión y del dashboard: fusionados | Equipo de proyecto |
+| 1.8 | 21-10-2026 | Pruebas de la bodega virtual con `PLT-02` (637 en el backend, 150 en el frontend) y un defecto conocido de tiempo en una prueba del frontend | Equipo de proyecto |

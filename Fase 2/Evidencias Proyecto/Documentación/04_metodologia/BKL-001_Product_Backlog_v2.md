@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.8 |
-| **Fecha** | 20 de octubre de 2026 |
+| **Versión** | 2.9 |
+| **Fecha** | 21 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -299,6 +299,18 @@ HU-41 pasa a datos reales en el backend (issue #53, PR #54) y el frontend
 (issue #20, PR #21), ambos fusionados: se eliminan las cifras de ejemplo, el Ejecutivo accede al
 dashboard y se agrega el desglose de trámites pendientes por motivo (HU-61).
 
+**Avance al 21-10-2026.** HU-15 avanza con `PLT-02` (contrato de servicios con
+autorización de uso de bodega) como segundo caso real antes del motor
+configurable: backend issue #59 y PR #60, frontend issue #22 y PR #23, abiertos.
+El tipo de trámite "Bodega virtual" usa las mismas funciones genéricas que el
+domicilio tributario, lo inicia un ejecutivo desde el backoffice o el cliente
+desde el portal, y se contrata en tres planes con precios provisorios. En el
+frontend, el formulario del portal y la pantalla "Nuevo trámite" del backoffice
+reutilizan los componentes del domicilio, sin duplicarlos. Las
+diferencias entre `PLT-01` y `PLT-02`, y lo que sugieren para el motor, quedan en
+`docs/variation-points.md` del backend. El motor (HU-14, HU-16 y HU-17) no se
+construye en este cambio.
+
 Este backlog está clasificado con MoSCoW pero **no está ordenado ni estimado para
 sprint**. Ese orden se define en el Sprint Planning.
 
@@ -323,3 +335,4 @@ planilla Excel o las credenciales externas.
 | 2.6 | 17-10-2026 | Domicilio tributario fusionado en backend (PR #51) y frontend (PR #18) |
 | 2.7 | 18-10-2026 | Avance de HU-41 con datos reales (issue #53) |
 | 2.8 | 20-10-2026 | HU-41 con datos reales fusionada; HU-65 y HU-66 fusionadas |
+| 2.9 | 21-10-2026 | Avance de HU-15 con la bodega virtual y `PLT-02` (issues #59 y #22, PR #60 y #23, abiertos) |
