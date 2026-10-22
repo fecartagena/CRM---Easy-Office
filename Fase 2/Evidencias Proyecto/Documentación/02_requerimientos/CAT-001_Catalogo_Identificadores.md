@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | CAT-001 · Catálogo de identificadores |
-| **Versión** | 1.4 |
-| **Fecha** | 17 de octubre de 2026 |
+| **Versión** | 1.5 |
+| **Fecha** | 22 de octubre de 2026 |
 | **Estado** | Vigente. Este documento es la fuente única de verdad de los identificadores del proyecto |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -71,6 +71,7 @@ Los códigos actualmente asignados llegan hasta: `RF-50`, `RNF-12`, `RS-09`,
 | `AD` | Decisión de arquitectura | `ARQ-001` |
 | `PLT` | Plantilla documental | `13_plantillas/README.md` |
 | `MD` | Pendiente del modelo de datos | `MOD-001` |
+| `T`, `D`, `B` | Tarea, dependencia y bloqueo de un sprint (`T-01`, `D-01`, `B-01`). `D-01` es una dependencia; `D2-01`, una decisión de `ACTA-002` | `SPR-001` |
 | `D2`, `H2`, `TA`, `CE` | Decisión, hallazgo, tema abierto y compromiso de una acta. El número indica la acta (`D2` = `ACTA-002`) | `ACTA-00n` |
 
 ---
@@ -164,6 +165,8 @@ la versión 2.0, según las tablas anteriores.
 | `TRZ-001 v2` | Relaciona requerimiento con historia, desarrollo y evidencia | Sincronizado |
 | `UML-001` | Cada caso de uso cita sus requerimientos | Sincronizado |
 | `MOD-001` | Cita reglas de negocio | Sincronizado |
+| `SPR-001` | Cada tarea del sprint cita su historia | Sincronizado |
+| `UML-002` | Cita historias, decisiones y temas abiertos | Sincronizado |
 
 Cualquier documento nuevo que referencie requerimientos debe usar los códigos de
 este catálogo y agregarse a esta tabla.
@@ -179,3 +182,4 @@ este catálogo y agregarse a esta tabla.
 | 1.2 | 12-10-2026 | Últimos códigos asignados: `RF-50`, `RN-44`, `HU-64` |
 | 1.3 | 14-10-2026 | Último código asignado: `HU-66` |
 | 1.4 | 17-10-2026 | Último riesgo asignado: `R-19` |
+| 1.5 | 22-10-2026 | Prefijos `T`, `D` y `B` de `SPR-001`; `SPR-001` y `UML-002` entre los documentos dependientes |

@@ -1,6 +1,6 @@
 # Documentación del proyecto · CRM Easy Office
 
-Estado al **9 de octubre de 2026** (semana 9 del proyecto), después de la reunión de validación con Easy Office (`ACTA-002`).
+Estado al **22 de octubre de 2026** (semana 11 del proyecto, Sprint 3 en ejecución). La reunión de validación con Easy Office del 8 de octubre está en `ACTA-002`.
 
 ---
 
@@ -32,21 +32,22 @@ Documentación/
 | Código | Documento | Carpeta | Versión |
 |---|---|---|---|
 | PV-001 | Product Vision | 03 | 2.0 |
-| BKL-001 | Product Backlog | 04 | 2.9 |
-| SPR-001 | Sprint Backlog · Sprint 1 | 04 | 1.1 |
+| BKL-001 | Product Backlog | 04 | 2.10 |
+| SPR-001 | Sprint Backlog · sprints 1 a 3 | 04 | 2.0 |
 | DOD-001 | Definition of Done | 04 | 1.0 |
 | DIS-001 | Documento de diseño | 07 | 1.4 |
-| RET-001 | Registro de retrospectivas | 04 | 1.0 |
+| RET-001 | Registro de retrospectivas | 04 | 1.1 |
 | GNT-001 | Carta Gantt, hitos, plan de trabajo y sprints (.xlsx + .pdf) | 05 | 1.1 |
-| PLA-001 | Plan de pruebas | 09 | 1.8 |
+| PLA-001 | Plan de pruebas | 09 | 1.9 |
 
 ### Elementos obligatorios independientes de la metodología
 
 | Código | Documento | Carpeta | Versión |
 |---|---|---|---|
 | DIP-001 | Documento de inicio de proyecto | 03 | 1.0 |
-| ARQ-001 | Arquitectura: diagrama, componentes, comunicación, secuencia | 07 | 1.4 |
-| MOD-001 | Modelo de datos (ER) | 08 | 1.8 |
+| ARQ-001 | Arquitectura: diagrama, componentes UML, comunicación, secuencia | 07 | 1.5 |
+| MOD-001 | Modelo de datos (ER) | 08 | 1.9 |
+| UML-002 | Diagrama de clases | 07 | 1.0 |
 | UML-001 | Casos de uso | 07 | 1.2 |
 | MRQ-001 | Requerimientos, incluidos los no funcionales | 02 | 2.6 |
 
@@ -56,16 +57,16 @@ Documentación/
 |---|---|---|---|
 | ACTA-001 | Acta de levantamiento de requerimientos | 01 | 1.0 |
 | ESP-DOC | Especificaciones de documentos entregadas por Easy Office | 01 | — |
-| CAT-001 | Catálogo de identificadores | 02 | 1.4 |
-| RN-001 | Reglas de negocio | 02 | 2.6 |
-| TRZ-001 | Matriz de trazabilidad | 02 | 2.10 |
+| CAT-001 | Catálogo de identificadores | 02 | 1.5 |
+| RN-001 | Reglas de negocio | 02 | 2.7 |
+| TRZ-001 | Matriz de trazabilidad | 02 | 2.11 |
 | ALC-001 | Alcance del MVP | 03 | 2.0 |
 | FUN-001 | Ficha funcional del servicio piloto | 03 | 1.0 |
 | REC-001 | Recomendación técnica | 07 | 1.0 |
 | RSK-001 | Registro de riesgos | 10 | 1.5 |
 | CHK-001 | Checklist de validación con la contraparte | 11 | 1.0 |
 | ACTA-002 | Reunión de validación con Easy Office, 08-10-2026 | 11 | 1.8 |
-| PLT-000 | Catálogo de plantillas, diccionario de campos y regla del folio | 13 | 1.3 |
+| PLT-000 | Catálogo de plantillas, diccionario de campos y regla del folio | 13 | 1.4 |
 | PLT-01 a PLT-05 | Plantillas documentales anonimizadas | 13 | — |
 
 Las versiones anteriores de MRQ-001, ALC-001, RN-001, TRZ-001 y PV-001 se
@@ -89,7 +90,7 @@ Para entender el proyecto de cero, en este orden:
 6. `RN-001 v2` — bajo qué reglas
 7. `REC-001` — con qué tecnología y por qué
 8. `ARQ-001` — cómo se estructura
-9. `MOD-001` — cómo se guardan los datos
+9. `MOD-001` — cómo se guardan los datos, y `UML-002`, cómo quedaron las clases en el código
 10. `UML-001` — quién hace qué
 11. `BKL-001` + `DOD-001` — cómo se construye
 12. `RSK-001` — qué puede fallar
@@ -123,9 +124,7 @@ Para entender el proyecto de cero, en este orden:
 
 | Documento | Cuándo corresponde |
 |---|---|
-| UML: diagrama de clases | Cuando exista el modelo implementado |
-| UML: diagrama de componentes en notación UML | Sprint 2 |
-| Dockerfile, docker-compose y variables de entorno | Repositorio de backend |
-| Evidencia de la retrospectiva del Sprint 1 | Al cierre del sprint |
+| Registro de las retrospectivas de los sprints 1 y 2 en `RET-001` | Con el aporte de los tres integrantes |
+| Evidencia de pruebas de seguridad y de rendimiento en `PLA-001` | Sprint 3 |
 | Manual técnico y de despliegue | Etapa de cierre (semanas 16 a 18) |
 | Sección de innovación | Documento de cierre |

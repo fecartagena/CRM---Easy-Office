@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.8 |
-| **Fecha** | 21 de octubre de 2026 |
+| **Versión** | 1.9 |
+| **Fecha** | 22 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 
@@ -327,7 +327,7 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 - Verificado en el navegador como Administrador y como Ejecutivo con datos locales
   ficticios.
 
-**Bodega virtual con `PLT-02` (backend PR #60 y frontend PR #23, abiertos)**
+**Bodega virtual con `PLT-02` (backend PR #60 y frontend PR #23, fusionados el 21-10-2026)**
 
 - Pruebas nuevas o ampliadas:
   - requisitos de la bodega y de su autorizante (`inmuebles`);
@@ -378,3 +378,4 @@ Easy Office.
 | 1.6 | 18-10-2026 | Pruebas del dashboard con datos reales (545 en el backend, 131 en el frontend) | Equipo de proyecto |
 | 1.7 | 20-10-2026 | Estados de los PR de sesión y del dashboard: fusionados | Equipo de proyecto |
 | 1.8 | 21-10-2026 | Pruebas de la bodega virtual con `PLT-02` (637 en el backend, 150 en el frontend) y un defecto conocido de tiempo en una prueba del frontend | Equipo de proyecto |
+| 1.9 | 22-10-2026 | Estado de los PR de la bodega virtual: fusionados | Equipo de proyecto |

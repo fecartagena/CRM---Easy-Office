@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RN-001 · Reglas de negocio |
-| **Versión** | 2.6 |
-| **Fecha** | 21 de octubre de 2026 |
+| **Versión** | 2.7 |
+| **Fecha** | 22 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | Las especificaciones formales de Easy Office confirman reglas que la versión 1.0 marcaba como propuesta, y agregan otras nuevas |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -391,3 +391,4 @@ agenda de la próxima validación. RN-37 quedó confirmada el 12-10-2026.
 | 2.4 | 17-10-2026 | Notas de implementación del domicilio tributario (PR #51) en RN-13, RN-24, RN-37 (fecha de inicio no atrasada, hasta 30 días a futuro), RN-39, RN-40, RN-42 y RN-44 (planes del sitio web) |
 | 2.5 | 18-10-2026 | Notas de implementación del dashboard en RN-10 (renovación) y RN-32 (acceso del Ejecutivo) |
 | 2.6 | 21-10-2026 | Notas de implementación de la bodega virtual (PR #60, abierto) en RN-13, RN-37, RN-39, RN-43 y RN-44 |
+| 2.7 | 22-10-2026 | PR #60 fusionado el 21-10-2026: las notas de la bodega virtual describen la rama principal |
