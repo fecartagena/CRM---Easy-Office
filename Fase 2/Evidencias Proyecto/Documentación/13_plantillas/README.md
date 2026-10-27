@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLT-000 · Catálogo de plantillas y diccionario de campos |
-| **Versión** | 1.4 |
-| **Fecha** | 22 de octubre de 2026 |
+| **Versión** | 1.5 |
+| **Fecha** | 27 de octubre de 2026 |
 | **Fuente** | Documentos entregados por Easy Office el 8 de octubre de 2026 (ver `ACTA-002`) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -43,7 +43,7 @@ carpeta; los originales no.
 
 | Código | Plantilla | Formato de origen | Estado de la plantilla | Prioridad |
 |---|---|---|---|---|
-| PLT-01 | Contrato de servicios con autorización de domicilio (oficina) | Word con campos de combinación | Lista para generación | **Trámite piloto: domicilio tributario** |
+| PLT-01 | Contrato de servicios con autorización de domicilio (oficina) | Word con campos de combinación | Implementada en la generación (backend PR #51, fusionado) | **Trámite piloto: domicilio tributario** |
 | PLT-02 | Contrato de servicios con autorización de uso de bodega | Word con campos de combinación | Implementada en la generación (backend PR #60, fusionado el 21-10-2026) | Segundo caso, antes del motor configurable (HU-15) |
 | PLT-03 | Contrato de arriendo de vehículo | Word con marcadores `[ ]` | Requiere convertir marcadores en campos | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
 | PLT-04 | Contrato de arriendo de estacionamiento | Word con espacios en blanco | Requiere definir cada campo | `[PENDIENTE DE VALIDAR CON EASY OFFICE]` |
