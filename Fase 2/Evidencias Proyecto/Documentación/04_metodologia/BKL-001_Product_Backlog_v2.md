@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.11 |
-| **Fecha** | 22 de octubre de 2026 |
+| **Versión** | 2.12 |
+| **Fecha** | 27 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -141,7 +141,7 @@ eliminación queda registrada; el registro no admite modificación ni eliminaci�
 incluye usuario, fecha, entidad afectada, valor anterior y valor nuevo.
 
 **Avance al 22-10-2026.** HU-30 está implementada en el backend, en la rama
-`feature/HU-30-auditoria`, todavía sin issue ni PR: registro con disparadores de
+`feature/HU-30-auditoria` (issue #61, PR #62 abierto): registro con disparadores de
 PostgreSQL, protección en la base, ingresos y descargas, y 59 pruebas nuevas. De
 HU-31 está la API de consulta, solo para el Administrador; las pantallas van en
 otra rama del frontend, después de fusionar el backend.
@@ -176,6 +176,15 @@ ejecuta con datos personales reales en entornos de desarrollo.
 
 > HU-35 y HU-37 dependen de `[CREDENCIALES PENDIENTES]`. Con la implementación
 > simulada de HU-34, el flujo queda construido y probado igualmente.
+
+**Avance al 27-10-2026.** HU-34, HU-35, HU-36, HU-37 y HU-22 están
+implementadas: backend issues #66 y #67, PR #68; frontend issue #26, PR #27;
+ambos fusionados. El documento se envía a un proveedor por HTTP con sus
+firmantes en orden, y se reciben webhooks verificados. Al completarse, el PDF
+firmado se verifica (RF-39) y el contrato queda vigente. En desarrollo el
+proveedor es un PSC de pruebas sin validez legal (AD-16). Falta el adaptador de
+tufirma.digital (TA-07), y los tipos de trámite siguen con firma asistida por
+defecto.
 
 ---
 
@@ -344,4 +353,5 @@ planilla Excel o las credenciales externas.
 | 2.8 | 20-10-2026 | HU-41 con datos reales fusionada; HU-65 y HU-66 fusionadas |
 | 2.9 | 21-10-2026 | Avance de HU-15 con la bodega virtual y `PLT-02` (issues #59 y #22, PR #60 y #23, abiertos) |
 | 2.10 | 22-10-2026 | HU-15: bodega virtual con `PLT-02` fusionada (PR #60 del backend y #23 del frontend) |
-| 2.11 | 22-10-2026 | Avance de HU-30 y de la API de HU-31 (auditoría, rama sin fusionar) |
+| 2.11 | 22-10-2026 | Avance de HU-30 y de la API de HU-31 (auditoría, issue #61, PR #62 abierto) |
+| 2.12 | 27-10-2026 | Épica 10: firma avanzada mediante un proveedor (PR #68 y #27) |

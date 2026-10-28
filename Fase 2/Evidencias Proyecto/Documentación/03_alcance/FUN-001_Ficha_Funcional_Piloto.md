@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | FUN-001 · Ficha funcional del servicio piloto |
-| **Versión** | 1.1 |
+| **Versión** | 1.2 |
 | **Fecha** | 27 de octubre de 2026 |
 | **Servicio** | Domicilio tributario |
 | **Estado** | Validado parcialmente con Easy Office en la reunión del 08-10-2026 y sus actualizaciones del 12-10-2026 (`ACTA-002`), **sujeto a su confirmación escrita**. Lo marcado `[VALIDAR]` o `[SUPUESTO]` no está confirmado |
@@ -155,6 +155,10 @@ la venta del plan; sin esa confirmación no se crea la venta ni se habilita la f
 sin validez, sin folio y sin envío a firma; la emisión sería el documento
 definitivo, con folio y hash, generado tras el pago. `[PROPUESTA – VALIDAR CON EASY OFFICE]`
 
+Hoy el borrador ya recibe su folio al crearse el contrato y es el mismo
+documento que se firma (`DEC-001` DE-10). Adoptar esta propuesta exigiría cambiar
+esa regla en el código.
+
 **Proveedor de pago.** El equipo integra Klap y Flow detrás de una interfaz común;
 Easy Office decide cuál usará (`ACTA-002`, D2-10; TA-08). La política de
 reembolsos está abierta (TA-14).
@@ -167,7 +171,7 @@ reembolsos está abierta (TA-14).
 |---|---|---|
 | Inicio de vigencia | Fecha de inicio indicada en el contrato. No puede quedar en el pasado y se admite hasta 30 días a futuro | `[SUPUESTO]` (RN-37, TA-21) |
 | Término | Inicio más la duración, **menos un día**. Ejemplo: inicio 02-10-2026 por 12 meses, vence el 01-10-2027 | Confirmado (RN-37, `ACTA-002`) |
-| Alertas | 60, 30, 15 y 7 días antes del término | Confirmado, ESP §4.8 |
+| Alertas | 60, 30, 15 y 7 días antes del término | Confirmado, ESP §4.8. **No implementado** (HU-42, HU-53) |
 | Renovación | Genera un servicio contratado nuevo y conserva el anterior | `[VALIDAR]` |
 | ¿La renovación emite documentos nuevos? | Sí, los mismos del contrato original | `[VALIDAR]` |
 | ¿La renovación conserva el folio o genera uno nuevo? | Sin definir | `[VALIDAR]` (TA-17) |
@@ -283,6 +287,8 @@ piloto.
 | Casos de uso | UC-01, UC-15, UC-16, UC-17 |
 | Reglas de negocio | RN-13, RN-18, RN-21 a RN-28, RN-37, RN-39, RN-40, RN-42, RN-44 |
 | Decisiones de la contraparte | `ACTA-002`: D2-01, D2-03, D2-07, D2-09, D2-10, D2-11 |
+| Decisiones del equipo | `DEC-001`: DE-05 firma, DE-07 precio, DE-09 ventana de inicio, DE-10 folio |
+| Implementación | Backend PR #51 (domicilio de punta a punta), #60 (motor compartido con la bodega), #68 (firma avanzada con el PSC de pruebas) · Frontend PR #18, #23, #27 |
 | Temas abiertos | TA-03, TA-07, TA-08, TA-13 a TA-17, TA-19 a TA-21 (`ACTA-002`, sección 5) |
 | Riesgos asociados | R-02 plantillas, R-10 fidelidad de formato, R-11 firma desasistida |
 
@@ -294,3 +300,4 @@ piloto.
 |---|---|---|
 | 1.0 | 24-09-2026 | Versión inicial. Registra las tres descripciones divergentes del piloto y propone una definición única para validación |
 | 1.1 | 27-10-2026 | Incorpora las decisiones de `ACTA-002` (08 y 12-10-2026): trámite piloto, firmantes (RN-39), pago después del borrador (RN-40), vencimiento (RN-37), estados Iniciado, Pendiente y Completado con motivo (RN-42) y precios con IVA (RN-44). Reemplaza el diagrama de 15 estados por los tres confirmados. Registra el estado de la implementación del backend (oficina, firma asistida y firma de pruebas) distinguiéndolo de lo confirmado. Depura las preguntas abiertas |
+| 1.2 | 27-10-2026 | Nota sobre el folio del borrador frente a la propuesta de vista previa y emisión; alertas marcadas como no implementadas; trazabilidad con `DEC-001` y los PR de implementación |

@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RN-001 · Reglas de negocio |
-| **Versión** | 2.8 |
-| **Fecha** | 22 de octubre de 2026 |
+| **Versión** | 2.9 |
+| **Fecha** | 27 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | Las especificaciones formales de Easy Office confirman reglas que la versión 1.0 marcaba como propuesta, y agregan otras nuevas |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -203,6 +203,11 @@ queda asociado a la versión con que se generó.
 
 **RN-21.** Los documentos estandarizados se firman con firma electrónica
 avanzada.
+*La firma avanzada con validez legal la otorga un prestador acreditado
+(tufirma.digital). El flujo de envío al proveedor está implementado (PR #68),
+pero en desarrollo se prueba contra un PSC de pruebas sin validez legal
+(AD-16). Cada tipo de trámite elige su nivel; hoy todos siguen con firma
+asistida.*
 **Confirmada** · Proceso actual y propuesto · Levantamiento y ESP §7
 
 **RN-22.** Un documento puede requerir la firma de más de una parte.
@@ -218,7 +223,10 @@ el propietario del inmueble (RN-43).*
 **RN-24.** Un trámite no se considera completado mientras existan firmas
 pendientes.
 *Implementada en el domicilio tributario (PR #51): el trámite pasa a Completado
-solo cuando un ejecutivo sube el documento firmado.*
+solo cuando un ejecutivo sube el documento firmado. Con firma avanzada (PR #68),
+pasa a Completado solo cuando el proveedor informa todas las firmas y el PDF
+firmado supera la verificación de integridad; si un firmante rechaza o la
+solicitud vence, el trámite vuelve a Pendiente por falta de información.*
 `[PROPUESTA – VALIDAR CON EASY OFFICE]` · Proceso propuesto
 
 **RN-39.** En el domicilio tributario firman el cliente, a través de su
@@ -234,6 +242,10 @@ firmas es un supuesto.*
 confirmación.*
 *En la bodega virtual (`PLT-02`, PR #60) firman el representante legal del
 cliente y el dueño de la bodega.*
+*Con firma avanzada (PR #68), el orden sale de `configuracion["firma"]["firmantes"]`
+y puede incluir al representante de Easy Office. Si el autorizante firma a través
+del proveedor o de forma desasistida, y quién guarda su certificado, siguen
+pendientes `[PENDIENTE DE VALIDAR CON EASY OFFICE]`.*
 
 **RN-43.** La autorización de uso del domicilio tributario la otorga el
 propietario del inmueble de la oficina, que puede ser distinto en cada oficina.
@@ -339,21 +351,21 @@ reconstruir el sistema.
 **RN-34.** Toda modificación importante registra el usuario que la realizó, la
 fecha y hora, el registro afectado, la acción realizada y, cuando corresponda, el
 valor anterior y el nuevo.
-*Implementada en el backend (HU-30, sin fusionar) con disparadores de
+*Implementada en el backend (HU-30, PR #62 abierto) con disparadores de
 PostgreSQL: al modificar se guardan solo los campos que cambiaron, y el origen
 distingue al sistema (tareas y pagos) de un usuario.*
 **Confirmada** · Proceso propuesto · ESP §4.3
 
 **RN-35.** El historial de auditoría está protegido para impedir que usuarios
 normales lo alteren o eliminen.
-*Implementada en el backend (HU-30, sin fusionar): la base rechaza modificar,
+*Implementada en el backend (HU-30, PR #62 abierto): la base rechaza modificar,
 eliminar y vaciar el registro, también para el usuario de base de datos de la
 aplicación. Solo el Administrador lo consulta (RN-31); el Ejecutivo no.*
 **Confirmada** · Proceso propuesto · ESP §4.3
 
 **RN-36.** Se registran también los accesos al sistema y las acciones relevantes,
 además de las modificaciones.
-*Implementada en el backend (HU-30, sin fusionar): ingresos, cierres de sesión e
+*Implementada en el backend (HU-30, PR #62 abierto): ingresos, cierres de sesión e
 intentos fallidos del personal, del portal y del panel de administración;
 descargas de documentos del trámite y accesos a la cédula del autorizante.*
 **Confirmada** · Proceso propuesto · ESP §4.3
@@ -401,4 +413,5 @@ agenda de la próxima validación. RN-37 quedó confirmada el 12-10-2026.
 | 2.5 | 18-10-2026 | Notas de implementación del dashboard en RN-10 (renovación) y RN-32 (acceso del Ejecutivo) |
 | 2.6 | 21-10-2026 | Notas de implementación de la bodega virtual (PR #60, abierto) en RN-13, RN-37, RN-39, RN-43 y RN-44 |
 | 2.7 | 22-10-2026 | PR #60 fusionado el 21-10-2026: las notas de la bodega virtual describen la rama principal |
-| 2.8 | 22-10-2026 | Notas de implementación de la auditoría (HU-30, sin fusionar) en RN-34, RN-35 y RN-36 |
+| 2.8 | 22-10-2026 | Notas de implementación de la auditoría (HU-30, PR #62 abierto) en RN-34, RN-35 y RN-36 |
+| 2.9 | 27-10-2026 | Notas de la firma avanzada mediante un proveedor (PR #68) en RN-21, RN-24 y RN-39 |

@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RET-001 · Registro de retrospectivas |
-| **Versión** | 1.1 |
-| **Fecha** | 22 de octubre de 2026 |
+| **Versión** | 1.2 |
+| **Fecha** | 27 de octubre de 2026 |
 | **Estado** | Vigente · se actualiza al cierre de cada sprint |
 | **Preparado por** | Equipo de proyecto |
 
@@ -69,24 +69,24 @@ Se registran para cada sprint, de modo que la serie permita ver tendencias.
 
 ### Qué funcionó
 
-*Por completar el 3 de octubre.*
+*La sesión del 3 de octubre no quedó registrada. Se completará en una revisión posterior del equipo, anotada con su fecha real.*
 
 ### Qué no funcionó
 
-*Por completar el 3 de octubre.*
+*La sesión del 3 de octubre no quedó registrada. Se completará en una revisión posterior del equipo, anotada con su fecha real.*
 
 ### Qué cambiamos
 
 | # | Acción | Responsable | Plazo | Estado |
 |---|---|---|---|---|
-| | *Por completar el 3 de octubre* | | | |
+| | *Pendiente de la revisión posterior* | | | |
 
 ### Métricas
 
 | Métrica | Valor |
 |---|---|
 | Puntos comprometidos | 31 |
-| Puntos completados | 11 (T-01, T-02, T-03, HU-01, HU-04) |
+| Puntos completados | 6 al cierre del 03-10 (T-01, T-02, T-03); 11 con el PR #15, fusionado el 05-10 (HU-01, HU-04) |
 | Historias arrastradas | 5 traspasadas (HU-05, HU-06, HU-08, HU-30, HU-51) y 3 parciales (HU-02, HU-09, HU-45) |
 | Defectos encontrados | `[CONFIRMAR]` |
 | Bloqueos externos | Listado de campos del cliente (D-01), esperado desde el inicio del sprint y recibido el 08-10-2026 |
@@ -113,7 +113,7 @@ retrospectiva formal.
 
 | Sprint | Comprometido | Completado | Velocidad | Arrastradas |
 |---|---|---|---|---|
-| 1 | 31 | 11 | 11 | 5 + 3 parciales |
+| 1 | 31 | 6 al cierre (11 al 05-10) | 6 | 5 + 3 parciales |
 | 2 | Sin compromiso escrito (ver `SPR-001`) | — | — | — |
 | 3 | — | — | — | — |
 | 4 | — | — | — | — |
@@ -127,3 +127,4 @@ retrospectiva formal.
 |---|---|---|---|
 | 1.0 | 24-09-2026 | Creación del registro y formato. Sprint 1 pendiente de sesión | Equipo de proyecto |
 | 1.1 | 22-10-2026 | Métricas del Sprint 1 desde `SPR-001` v2.0; las secciones cualitativas quedan para el equipo | Equipo de proyecto |
+| 1.2 | 27-10-2026 | Métricas del Sprint 1 cortadas al 03-10; la sesión no registrada queda declarada como tal | Equipo de proyecto |

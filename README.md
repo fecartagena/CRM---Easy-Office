@@ -69,9 +69,12 @@ está en `REC-001 Recomendación técnica`.
 
 **Integraciones externas.** Firma electrónica avanzada y pasarela de pago se
 consumen a través de interfaces definidas por el sistema, con implementaciones
-intercambiables. El proveedor de firma es el que utiliza Easy Office; mientras no
-se reciban sus credenciales, la firma es asistida: un ejecutivo sube el PDF
-firmado y el sistema registra su huella SHA-256. En pagos están integrados Klap y
+intercambiables. El proveedor de firma avanzada es el que utiliza Easy Office
+(tufirma.digital). Mientras no se reciban sus credenciales, cada tipo de trámite
+usa firma asistida, en la que un ejecutivo sube el PDF firmado y el sistema
+registra su huella SHA-256. El envío automático a un proveedor ya está construido
+y se prueba en desarrollo contra un PSC de pruebas propio, sin validez legal, que
+no se despliega (`firma_sandbox/` en el backend). En pagos están integrados Klap y
 Flow, y el cliente elige entre los medios habilitados; la elección de cuáles
 ofrecer en producción está pendiente de la contraparte. La conversión de Word a
 PDF corre en un contenedor aparte (Gotenberg), alcanzable solo desde el worker.
@@ -226,8 +229,8 @@ Backoffice CRM (React)  ─┘             │
 | `documentos` | Plantillas versionadas, generación Word y PDF, firmantes, integridad |
 | `ventas` | Catálogo de servicios y planes, ventas, órdenes de pago y pagos |
 | `panel` | Indicadores del dashboard y exportación a Excel |
-| `integrations` | Interfaces e implementaciones de firma, pago (Klap y Flow) y conversión a PDF (Gotenberg) |
-| `migracion` | Carga de información desde planillas (a la espera de la planilla anonimizada) |
+| `integrations` | Interfaces e implementaciones de firma (adaptador HTTP y simulado), pago (Klap y Flow) y conversión a PDF (Gotenberg) |
+| `migracion` | Carga de información desde planillas. Aún sin código; el diseño está en `MIG-001` y se ensaya con datos sintéticos |
 
 ### Decisiones de diseño
 
@@ -293,6 +296,14 @@ Los repositorios de código se mantienen separados:
 | ACTA-001 | Acta de levantamiento |
 | ACTA-002 | Reunión de validación con Easy Office, 08-10-2026 |
 | CHK-001 | Checklist de validación con la contraparte |
+| DEC-001 | Decisiones del equipo ante la participación limitada de Easy Office |
+| CHK-003 | Checklist de cierre documental |
+| GES-001 | Gestión del trabajo, aportes individuales y preparación del cierre |
+| EVI-001 | Plan de evidencias y aceptación técnica |
+| MIG-001 | Plan de migración desde la planilla |
+| MTE-001 | Manual técnico |
+| MUS-001 | Manual de usuario (`14_manuales`) |
+| MOP-001 | Manual de operación: despliegue, respaldo y recuperación (`14_manuales`) |
 | PLT-000 | Catálogo de plantillas, diccionario de campos y regla del folio (`13_plantillas`) |
 | PLT-01 a PLT-05 | Plantillas documentales anonimizadas (`13_plantillas`) |
 | GNT-001 | Carta Gantt, hitos y calendario de sprints |
