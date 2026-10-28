@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.10 |
-| **Fecha** | 22 de octubre de 2026 |
+| **Versión** | 1.11 |
+| **Fecha** | 27 de octubre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 
@@ -360,7 +360,7 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 - Pendiente: recorrer en el navegador los flujos de la bodega en el portal y en el
   backoffice.
 
-**Auditoría (HU-30 y API de HU-31, rama `feature/HU-30-auditoria`, sin fusionar)**
+**Auditoría (HU-30 y API de HU-31, issue #61, PR #62 abierto)**
 
 - 59 pruebas nuevas; 696 del backend pasan sobre una base creada desde cero.
   `ruff` y `makemigrations --check` sin observaciones. Las migraciones se
@@ -386,8 +386,36 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
   directo en psql falla.
 - Pendiente: las pantallas de consulta (HU-31, frontend).
 
-Pendiente: pruebas de rendimiento, el resto de las pruebas de seguridad y las
-pruebas de aceptación con Easy Office.
+**Firma avanzada con el PSC de pruebas (backend PR #68 y frontend PR #27, fusionados)**
+
+- Backend (CRM): 685 pruebas pasan en `main` (637 previas y 48 nuevas). Las 696
+  de la auditoría corresponden a la rama del PR #62, todavía sin fusionar.
+  - Unitarias (§3.1): el adaptador HTTP con `httpx.MockTransport`, el contrato de
+    firma y el registro de proveedores.
+  - Integración (§3.2): webhook firmado, deduplicado y fuera de orden; envío,
+    rechazo, expiración, sincronización periódica, reenvío, cancelación,
+    reintento y permisos; cierre con PDF, hash, estado y contrato vigente; RF-39
+    con prefijo y hash distintos; un trámite de domicilio iniciado en el portal y
+    pagado también va al proveedor y se completa; el nivel `asistida` no cambia.
+  - Seguridad (§3.4): HMAC y ventana de tiempo; la configuración de producción
+    rechaza la URL del PSC; el compose de producción no lo incluye; no hay
+    imports cruzados entre el CRM y el PSC.
+- PSC de pruebas: 62 pruebas. PKI y rotación; fallos de identidad y bloqueo;
+  vencimiento e intentos del código; orden de firmantes; cada firma valida contra
+  la raíz de pruebas y las anteriores siguen validando; un PDF alterado falla;
+  sello de tiempo y revocación embebidos; API key y HMAC obligatorios; reintentos
+  de webhooks; se niega a iniciar con configuración de producción.
+- Punta a punta (`just e2e-firma`): pasó en local con todo el stack, con tres
+  firmantes, códigos leídos en Mailpit, webhooks, trámite completado, contrato
+  vigente y PDF final validado contra la raíz de pruebas. En CI corre solo en los
+  PR que tocan la firma, más ejecución manual.
+- No verificado: el resultado final de los workflows de CI del PR #68 antes de la
+  integración (`linter` y `firma-sandbox` en verde; `pytest` y `e2e` en curso en
+  la última revisión). Falta adjuntar el enlace a la ejecución como evidencia.
+
+Pendiente: pruebas de rendimiento, el resto de las pruebas de seguridad, las
+pruebas de aceptación con Easy Office y las evidencias reproducibles de cada
+ejecución (fecha, commit, entorno y resultado).
 
 ---
 
@@ -405,4 +433,5 @@ pruebas de aceptación con Easy Office.
 | 1.7 | 20-10-2026 | Estados de los PR de sesión y del dashboard: fusionados | Equipo de proyecto |
 | 1.8 | 21-10-2026 | Pruebas de la bodega virtual con `PLT-02` (637 en el backend, 150 en el frontend) y un defecto conocido de tiempo en una prueba del frontend | Equipo de proyecto |
 | 1.9 | 22-10-2026 | Estado de los PR de la bodega virtual: fusionados | Equipo de proyecto |
-| 1.10 | 22-10-2026 | Pruebas de la auditoría (696 en el backend, sin fusionar); dos casos de seguridad de §3.4 automatizados | Equipo de proyecto |
+| 1.10 | 22-10-2026 | Pruebas de la auditoría (696 en el backend, PR #62 abierto); dos casos de seguridad de §3.4 automatizados | Equipo de proyecto |
+| 1.11 | 27-10-2026 | Pruebas de la firma avanzada con el PSC de pruebas (685 en el backend en `main`, 62 del PSC y la prueba de punta a punta) | Equipo de proyecto |

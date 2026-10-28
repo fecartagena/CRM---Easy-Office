@@ -5,9 +5,9 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | UML-002 · Diagrama de clases |
-| **Versión** | 1.1 |
-| **Fecha** | 22 de octubre de 2026 |
-| **Estado** | Refleja el código de la rama principal del backend al 22-10-2026 (después del PR #60) |
+| **Versión** | 1.2 |
+| **Fecha** | 27 de octubre de 2026 |
+| **Estado** | Refleja el código de la rama principal del backend al 27-10-2026 (después del PR #68). La auditoría (sección 5 bis) está en el PR #62, abierto |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
 ---
@@ -18,7 +18,7 @@ Este diagrama muestra las clases **implementadas** en el backend
 (`crm_easyoffice/*/models.py` e `integrations/`), no el modelo conceptual. El
 modelo conceptual, con las entidades previstas que aún no existen (alertas de
 vencimiento, migración), está en `MOD-001`. La auditoría (sección 5 bis) está
-en una rama sin fusionar.
+en el PR #62, abierto.
 
 - Cada clase es un modelo de Django y una tabla de PostgreSQL. Salvo
   `CorrelativoFolio`, `ServicioContratado`, `Firmante`, `ItemVenta`,
@@ -450,7 +450,47 @@ classDiagram
     class Firmante {
         +str rol
         +int orden
+        +EstadoFirmante estado
         +datetime firmado_en
+        +datetime rechazado_en
+        +str motivo_rechazo
+        +str id_externo
+    }
+    class EstadoFirmante {
+        <<enumeration>>
+        pendiente
+        firmado
+        rechazado
+    }
+    class SolicitudFirma {
+        +str proveedor
+        +str id_externo
+        +EstadoSolicitud estado
+        +bool ambiente_pruebas
+        +str detalle_error
+        +datetime enviada_en
+        +datetime expira_en
+        +datetime sincronizada_en
+        +datetime terminada_en
+    }
+    class EstadoSolicitud {
+        <<enumeration>>
+        creando
+        enviada
+        completada
+        rechazada
+        expirada
+        cancelada
+        error
+    }
+    class EventoFirma {
+        +str proveedor
+        +str id_evento
+        +str tipo
+        +str clave_dedup
+        +json payload
+        +str resultado
+        +datetime recibido_en
     }
     class EstadoDocumento {
         <<enumeration>>
@@ -477,6 +517,10 @@ classDiagram
     Documento "1" *-- "*" Firmante
     Firmante "*" --> "1" Persona
     Documento ..> EstadoDocumento
+    Firmante ..> EstadoFirmante
+    Documento "1" *-- "*" SolicitudFirma : envíos al proveedor
+    SolicitudFirma "1" *-- "*" EventoFirma : notificaciones
+    SolicitudFirma ..> EstadoSolicitud
 ```
 
 **Reglas que el diagrama no alcanza a mostrar**
@@ -502,7 +546,7 @@ classDiagram
 
 ## 5 bis. Auditoría
 
-En la rama `feature/HU-30-auditoria`, sin fusionar al 22-10-2026.
+En el PR #62 del backend (issue #61), abierto al 27-10-2026.
 
 ```mermaid
 classDiagram
@@ -585,7 +629,9 @@ classDiagram
         +parse_webhook(payload, headers) SignatureResult
     }
     class SimulatedSignatureProvider
+    class HttpSignatureProvider
     SignatureProvider <|.. SimulatedSignatureProvider
+    SignatureProvider <|.. HttpSignatureProvider
 
     class PdfConverter {
         <<interface>>
@@ -618,9 +664,21 @@ classDiagram
     OrdenPago ..> PaymentProvider : proveedor
 ```
 
-`SignatureProvider` solo tiene la implementación simulada: la del proveedor de
-Easy Office espera sus credenciales (TA-07). Mientras tanto la firma es asistida:
-un ejecutivo sube el PDF firmado (`documentos.services.registrar_firmado`).
+`SignatureProvider` tiene dos implementaciones (PR #68). La simulada se usa en
+las pruebas unitarias y se maneja paso a paso. `HttpSignatureProvider` habla con
+un proveedor por HTTP: API key Bearer y webhooks verificados con HMAC-SHA256.
+Hoy apunta al PSC de pruebas (AD-16). El adaptador de tufirma.digital será una
+copia con otro mapeo de campos, otra URL y otra clave (TA-07).
+
+El contrato creció lo mínimo:
+- `Signer` agrega `role` y `reference`;
+- `SignatureResult` agrega `signers`, `original_sha256` y `test_environment`;
+- `SignatureRequest` agrega `expires_at`;
+- hay un método nuevo `resend`;
+- `parse_webhook` recibe el cuerpo crudo.
+
+Con firma asistida, un ejecutivo sigue subiendo el PDF firmado. Ambos caminos
+terminan en `documentos.services.guardar_firmado`.
 
 ---
 
@@ -648,7 +706,7 @@ emite `venta_pagada` y `tramites` la escucha; `tramites` emite
 
 | Tema | `MOD-001` | Código |
 |---|---|---|
-| Auditoría | `REGISTRO_AUDITORIA` | `RegistroAuditoria` en `core`, con el campo `origen` agregado (HU-30, sin fusionar) |
+| Auditoría | `REGISTRO_AUDITORIA` | `RegistroAuditoria` en `core`, con el campo `origen` agregado (HU-30, PR #62 abierto) |
 | Alertas de vencimiento | `ALERTA_VENCIMIENTO` | No implementada (HU-42, HU-53) |
 | Plan de la línea del contrato | `PLAN_SERVICIO` asociado a `SERVICIO_CONTRATADO` | El plan elegido queda en `Tramite.datos`; la línea no lo referencia |
 | Nombre del inmueble | `OFICINA` | La clase se llama `Oficina` y representa oficinas y bodegas (`tipo`) |
@@ -660,4 +718,5 @@ emite `venta_pagada` y `tramites` la escucha; `tramites` emite
 | Versión | Fecha | Descripción | Autor |
 |---|---|---|---|
 | 1.0 | 22-10-2026 | Emisión inicial, desde el código de la rama principal del backend al 22-10-2026 | Equipo de proyecto |
-| 1.1 | 22-10-2026 | Sección 5 bis: `RegistroAuditoria` (HU-30, sin fusionar); §8 actualizada | Equipo de proyecto |
+| 1.1 | 22-10-2026 | Sección 5 bis: `RegistroAuditoria` (HU-30, PR #62 abierto); §8 actualizada | Equipo de proyecto |
+| 1.2 | 27-10-2026 | Firma avanzada (PR #68): `SolicitudFirma`, `EventoFirma`, estado de `Firmante` y `HttpSignatureProvider` | Equipo de proyecto |

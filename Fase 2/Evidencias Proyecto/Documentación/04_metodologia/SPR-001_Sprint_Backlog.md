@@ -7,8 +7,8 @@
 | **Documento** | SPR-001 · Sprint Backlog |
 | **Sprints** | 1 · Núcleo de datos y accesos — cerrado<br>2 · Domicilio tributario de punta a punta — cerrado<br>3 · Segundo documento y motor configurable — en ejecución |
 | **Período** | 22 de septiembre – 31 de octubre de 2026 |
-| **Versión** | 2.1 |
-| **Fecha** | 22 de octubre de 2026 |
+| **Versión** | 2.2 |
+| **Fecha** | 27 de octubre de 2026 |
 | **Preparado por** | Equipo de proyecto |
 
 ---
@@ -23,9 +23,24 @@ de los issues, los pull requests fusionados y los commits de los repositorios de
 backend y frontend, con la fecha de fusión de cada PR. Lo que no se puede
 comprobar en los repositorios se marca `[CONFIRMAR]`.
 
-Estados usados: **Hecho** (fusionado en la rama principal), **Parcial**
-(fusionado, con parte de los criterios pendientes), **Traspasado** (no se terminó
-y pasa a un sprint siguiente), **En curso** y **Pendiente**.
+Estados usados: **Hecho** (fusionado en la rama principal, con sus pruebas
+automatizadas pasando), **Parcial** (fusionado, con parte de los criterios
+pendientes), **Traspasado** (no se terminó y pasa a un sprint siguiente),
+**En curso** y **Pendiente**.
+
+"Hecho" no equivale a cumplir toda la Definition of Done (`DOD-001`), que además
+exige criterios de aceptación revisados, documentación al día y revisión por otro
+integrante. Tampoco equivale a la aceptación de Easy Office. Para no mezclar
+niveles, el documento distingue tres:
+
+| Nivel | Qué significa | Estado al 27-10-2026 |
+|---|---|---|
+| Fusionado | En la rama principal, con pruebas que pasan | Lo marcado como "Hecho" |
+| Cumple la DoD | Además, criterios revisados, documentación y revisión cruzada | Se verifica en cada PR, pero sin una lista registrada: falta la plantilla de PR (T-05) |
+| Aceptado por Easy Office | La contraparte lo probó y lo aprobó | Ninguna historia todavía; se registrará en la reunión de avance |
+
+Las métricas de cada sprint se cortan en su fecha de cierre. Lo fusionado después
+se cuenta como fuera de plazo.
 
 ## Calendario de sprints
 
@@ -84,9 +99,9 @@ e historias sumaba 31. Esta tabla queda con la suma del detalle.
 
 | ID | Historia (resumen) | Resp. | Pts | Resultado | Evidencia |
 |---|---|---|---|---|---|
-| HU-01 | Inicio de sesión del personal | Nicolás | 2 | Hecho | Commits del 30-09; backend PR #15 fusionado el 05-10; pantalla de login en el frontend (30-09) |
+| HU-01 | Inicio de sesión del personal | Nicolás | 2 | Hecho fuera de plazo (05-10) | Commits del 30-09; backend PR #15 fusionado el 05-10, dos días después del cierre; pantalla de login en el frontend (30-09) |
 | HU-02 | Crear y desactivar usuarios internos | Nicolás | 2 | Parcial | Se hace desde el panel de administración de Django; no hay pantalla propia `[CONFIRMAR si basta para Easy Office]` |
-| HU-04 | Asignar un rol a cada usuario | Nicolás | 3 | Hecho | Roles Administrador y Ejecutivo sembrados como grupos (30-09, PR #15) |
+| HU-04 | Asignar un rol a cada usuario | Nicolás | 3 | Hecho fuera de plazo (05-10) | Roles Administrador y Ejecutivo sembrados como grupos (commits del 30-09, PR #15 fusionado el 05-10) |
 | HU-05 | Ejecutivos sin permiso para eliminar clientes | Nicolás | 2 | Traspasado → Sprint 2 | La API de clientes no expone eliminación (PR #18, 10-10) y el panel lo bloquea (14-10) |
 | HU-06 | Registrar un cliente con sus datos de contacto | Fernando | 3 | Traspasado → Sprint 2 | PR #18 del backend y #5 del frontend, 10-10 |
 | HU-51 | Identificador único del cliente | Fernando | 1 | Traspasado → Sprint 2 | Código del cliente en el PR #18 |
@@ -112,9 +127,9 @@ prototipo y el 05-10 el dashboard con cifras de ejemplo (PR #3, HU-41).
 | Las pruebas del sprint pasan | Sí |
 | Ningún dato personal real ni credencial fue versionado | Sí |
 
-**Resultado.** 11 de 31 puntos hechos al cierre (T-01, T-02, T-03, HU-04 y HU-01,
-este último fusionado dos días después) y tres historias parciales (HU-02, HU-09
-y HU-45). La estimación resultó optimista para un primer sprint, como advertía la
+**Resultado.** Al cierre del 3 de octubre: 6 de 31 puntos hechos (T-01, T-02 y
+T-03). Con el PR #15, fusionado el 5 de octubre, suman 11 (HU-01 y HU-04 fuera de
+plazo). Además quedaron tres historias parciales (HU-02, HU-09 y HU-45). La estimación resultó optimista para un primer sprint, como advertía la
 versión 1.0: el entorno tomó menos de lo previsto, pero las historias de clientes
 dependían del listado de campos que Easy Office entregó el 8 de octubre.
 
@@ -153,12 +168,13 @@ dependían del listado de campos que Easy Office entregó el 8 de octubre.
 | HU-65 | Datos de Easy Office, marcas y cuentas de pago | Fernando | PR #43 | — | 14-10 |
 | HU-23 | Catálogo de servicios desde el formulario de Easy Office; servicios visibles y contratables; landing desde la API | Fernando | PR #44, #48 | PR #16 | 14-10 y 15-10 |
 | HU-60 | Contratos con folio por sucursal y servicios contratados | Fernando | PR #45 | — | 14-10 |
-| HU-24, HU-19, HU-20, HU-21, HU-26, HU-27, HU-28, HU-29, HU-56, HU-61 | Domicilio tributario de punta a punta con `PLT-01`: formulario, contrato en borrador, documento Word y PDF, revisión, pago, firma asistida, descarga y motivo de pendiente | Nicolás | PR #51 | PR #18 | 17-10 |
+| HU-24, HU-19, HU-20, HU-21, HU-26, HU-27, HU-28, HU-29, HU-56, HU-61 | Domicilio tributario de punta a punta con `PLT-01`: formulario, contrato en borrador, documento Word y PDF, revisión, pago, firma asistida, descarga y motivo de pendiente | Fernando | PR #51 | PR #18 | 17-10 |
 | HU-01, HU-03 | Sesión propia del panel de administración y cambio entre sesión de personal y de cliente | Nicolás | PR #52 | PR #19 | 17-10 |
 | — | Herramienta del equipo para documentar cada cambio | Nicolás | PR #32 | PR #14 | 14-10 |
 
-Responsable según quien fusionó el PR en GitHub. Varias ramas tuvieron commits de
-más de un integrante; el detalle está en el historial de cada repositorio.
+Responsable según la autoría de los commits de cada PR (en la versión 2.0 se
+usó, por error, quien lo fusionó). Varias ramas tuvieron commits de más de un
+integrante; el detalle está en el historial de cada repositorio.
 
 **Corrección a la versión 1.1.** La nota "trabajo adelantado" del Sprint 1
 listaba HU-03, HU-38, HU-39, HU-40, HU-57, HU-62, HU-63 y HU-64. Sus commits son
@@ -187,22 +203,28 @@ Sprint 2.
 
 ## 3. Sprint 3 · Segundo documento y motor configurable
 
-**20 – 31 de octubre de 2026 · En ejecución · Reconstruido al 22-10**
+**20 – 31 de octubre de 2026 · En ejecución · Reconstruido al 27-10**
 
 ### 3.1 Objetivo (propuesto)
 
-> Demostrar que el sistema incorpora un segundo servicio sin código nuevo por
-> documento, mostrar indicadores reales de la operación y cerrar la deuda de
+> Demostrar que un segundo servicio se incorpora sobre la misma lógica genérica
+> del primero, mostrar indicadores reales de la operación y cerrar la deuda de
 > auditoría y de pruebas de seguridad antes de la presentación.
+
+Un documento nuevo todavía requiere su conversión de plantilla
+(`docs/variation-points.md` del backend), así que el objetivo no promete
+incorporar documentos sin código.
 
 `[CONFIRMAR el objetivo en la planificación del equipo]`
 
-### 3.2 Hecho al 22 de octubre
+### 3.2 Hecho al 27 de octubre
 
 | Historias | Qué se entregó | Resp. | Backend | Frontend | Fusión |
 |---|---|---|---|---|---|
-| HU-41, HU-61 | Dashboard con datos reales, acceso del Ejecutivo y pendientes por motivo | Nicolás | PR #54 | PR #21 | 20-10 |
+| HU-41, HU-61 | Dashboard con datos reales, acceso del Ejecutivo y pendientes por motivo | Fernando | PR #54 | PR #21 | 20-10 |
 | HU-15 | Bodega virtual con `PLT-02`: segundo tipo de trámite, iniciado por un ejecutivo o desde el portal, con tres planes de precio provisorio | Fernando | PR #60 | PR #23 | 21-10 |
+| HU-59 | Identidad visual de Easy Office en el portal y el backoffice, con el logo entregado por Easy Office | Fernando | — | PR #25 | 22-10 |
+| HU-34, HU-35, HU-36, HU-37, HU-22 | Firma avanzada mediante un proveedor por HTTP, con firmantes en orden, webhooks verificados y verificación de integridad, probada contra un PSC de pruebas sin validez legal (AD-16) | Nicolás | PR #68 | PR #27 | 27-10 |
 
 637 pruebas del backend y 150 del frontend pasan en la rama principal (`PLA-001`).
 
@@ -213,9 +235,8 @@ presentación. `[CONFIRMAR responsables y alcance en la planificación]`
 
 | ID | Elemento | Resp. | Estado |
 |---|---|---|---|
-| HU-30, HU-31 | Registro de auditoría de solo escritura y su consulta (RF-15 a RF-17) | `[CONFIRMAR]` | En curso: backend listo en `feature/HU-30-auditoria` (696 pruebas), sin PR; faltan las pantallas |
-| HU-14, HU-16 | Pantalla para configurar tipos de trámite: campos, plantilla, pago y firma | `[CONFIRMAR]` | Pendiente |
-| HU-59 | Identidad visual de Easy Office en el portal y el backoffice (RNF-12) | Marcos | Pendiente |
+| HU-30, HU-31 | Registro de auditoría de solo escritura y su consulta (RF-15 a RF-17) | Fernando | En curso: backend listo en el PR #62, abierto y pendiente de revisión; faltan las pantallas |
+| HU-14, HU-16 | Pantalla para configurar tipos de trámite: campos, plantilla, pago y firma | Nicolás | Pendiente |
 | HU-45 | Pruebas de control de acceso por rol y pruebas de seguridad | Marcos | Pendiente |
 | HU-46 | Pruebas de rendimiento (RNF-10) | Marcos | Pendiente |
 | T-05 | Plantilla de Pull Request con la Definition of Done | Marcos | Pendiente, traspasada del Sprint 1 |
@@ -262,3 +283,4 @@ presentación. `[CONFIRMAR responsables y alcance en la planificación]`
 | 1.1 | 12-10-2026 | Nota de avance: trabajo adelantado fuera del compromiso del sprint | Equipo de proyecto |
 | 2.0 | 22-10-2026 | Cierre del Sprint 1 con su resultado real; sprints 2 y 3 reconstruidos desde issues, PR y commits; corrección de la nota de la versión 1.1; suma de capacidad corregida | Equipo de proyecto |
 | 2.1 | 22-10-2026 | Sprint 3: avance de HU-30 y HU-31 | Equipo de proyecto |
+| 2.2 | 27-10-2026 | Niveles de cumplimiento (fusionado, DoD, aceptado); métricas del Sprint 1 cortadas al 03-10; responsables por autoría de commits (HU-24 y HU-41 son de Fernando); Sprint 3 con HU-59 y la firma avanzada hechas y responsables de HU-30, HU-31, HU-14 y HU-16 según la distribución acordada en el diario de reflexión | Equipo de proyecto |

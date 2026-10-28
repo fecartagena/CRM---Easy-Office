@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ARQ-001 · Arquitectura de la solución |
-| **Versión** | 1.6 |
-| **Fecha** | 22 de octubre de 2026 |
+| **Versión** | 1.7 |
+| **Fecha** | 27 de octubre de 2026 |
 | **Estado** | Propuesta de arquitectura. Sujeta a ajustes al recibir la documentación técnica de la plataforma de firma electrónica |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -143,14 +143,27 @@ graph TB
     RDS -.-> WORKER
     BEAT -.-> RDS
 
-    KLAP["«external»<br/>Klap"]
-    FLOW["«external»<br/>Flow"]
-    GOT["«component»<br/>Gotenberg"]
-    FIRMA["«external»<br/>Proveedor de firma<br/>(pendiente)"]
+    subgraph EXT["Servicios de apoyo y externos"]
+        KLAP["«external»<br/>Klap"]
+        FLOW["«external»<br/>Flow"]
+        GOT["«component»<br/>Gotenberg"]
+        FIRMA["«external»<br/>Prestador acreditado<br/>tufirma.digital (pendiente)"]
+    end
+    subgraph PSC["«external» PSC de pruebas · firma-sandbox (solo desarrollo)"]
+        PSCAPI["«component»<br/>API y páginas de firma"]
+        PSCW["«component»<br/>worker de webhooks"]
+        PSCDB[("SQLite<br/>y PKI de pruebas")]
+        MAIL["«component»<br/>Mailpit (local,<br/>compartido con el CRM)"]
+    end
     IPAY --> KLAP
     IPAY --> FLOW
     IPDF --> GOT
-    ISIG -.-> FIRMA
+    DOC --> ISIG
+    ISIG -->|HTTP · API key| PSCAPI
+    PSCW -.->|webhooks HMAC| DOC
+    PSCAPI --> PSCDB
+    PSCAPI -.->|códigos| MAIL
+    ISIG -.->|cuando lleguen credenciales| FIRMA
 
     PG[("PostgreSQL")]
     ST[("Almacenamiento<br/>de documentos")]
@@ -162,16 +175,16 @@ graph TB
 
 | Módulo | Responsabilidad | Depende de |
 |---|---|---|
-| `users`, `core` | Usuarios (inicio de sesión con correo), roles Administrador y Ejecutivo, permisos del sistema, modelo base con fechas, registro de auditoría (HU-30, sin fusionar) | Nada |
+| `users`, `core` | Usuarios (inicio de sesión con correo), roles Administrador y Ejecutivo, permisos del sistema, modelo base con fechas, registro de auditoría (HU-30, PR #62 abierto) | Nada |
 | `clientes` | Personas, empresas, representación legal, código del cliente y cuentas del portal | `core`, `users` |
 | `configuracion` | Datos de Easy Office, marcas y cuentas donde recibe pagos | `core` |
 | `inmuebles` | Oficinas y bodegas, rol de avalúo y autorizantes con su cédula | `core`, `clientes`, `configuracion` |
 | `ventas` | Catálogo de servicios y planes, ventas, órdenes de pago y pagos. Es el único lugar donde cambia el estado de una venta | `core`, `clientes`, `integrations` |
 | `contratos` | Contratos con folio, líneas copiadas del catálogo, vigencia, ocupación de inmuebles | `core`, `users`, `clientes`, `configuracion`, `inmuebles`, `ventas` |
 | `tramites` | Tipos de trámite configurables, trámites, estados, motivos de pendiente e historial | `core`, `users`, `clientes`, `configuracion`, `inmuebles`, `contratos`, `ventas` |
-| `documentos` | Plantillas versionadas, generación Word y PDF, firmantes, firma asistida e integridad | Todos los anteriores, más `integrations` |
+| `documentos` | Plantillas versionadas, generación Word y PDF, firmantes, firma asistida y firma avanzada mediante un proveedor (solicitudes, eventos e integridad) | Todos los anteriores, más `integrations` |
 | `panel` | Indicadores del dashboard y exportación a Excel. Solo lee | `clientes`, `contratos`, `documentos`, `tramites`, `ventas` |
-| `integrations` | Interfaces de pago, firma y conversión a PDF, con sus implementaciones | Nada |
+| `integrations` | Interfaces de pago, firma y conversión a PDF, con sus implementaciones: Klap, Flow, Gotenberg, el adaptador HTTP de firma y los simulados | Nada |
 
 **Regla de dependencia.** Los módulos se comunican mediante funciones de servicio
 públicas. La dirección de dependencia es descendente en la tabla y no hay ciclos
@@ -402,10 +415,72 @@ sigue pendiente y el cliente puede volver a pagar desde su cuenta.
 
 **Diferencia con lo diseñado.** El diseño original (versión 1.0 de este
 documento) enviaba el documento a la plataforma de firma y registraba el servicio
-contratado al final. Hoy la firma es asistida, porque faltan las credenciales del
-proveedor (TA-07), y el contrato existe desde el inicio como borrador y pasa a
-vigente al completarse. El envío automático a firma queda como pendiente; la
-interfaz `SignatureProvider` ya está definida.
+contratado al final. El contrato existe desde el inicio como borrador y pasa a
+vigente al completarse. La firma tiene dos niveles, que se eligen por tipo de
+trámite (`configuracion["firma"]["nivel"]`): **asistida**, la de la secuencia de
+arriba y el nivel por defecto, y **avanzada**, mediante un proveedor externo
+(§5.1).
+
+### 5.1 Firma avanzada mediante un proveedor (backend PR #68, frontend PR #27)
+
+Hasta que lleguen las credenciales de tufirma.digital (TA-07), el proveedor es
+el **PSC de pruebas** (`firma-sandbox`), un servicio aparte, **sin validez
+legal**, que solo corre en desarrollo y pruebas (AD-16).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant A as API (Django)
+    participant Q as Celery worker
+    participant P as PSC de pruebas
+    actor F as Firmante
+    participant M as Mailpit
+    actor E as Ejecutivo
+
+    Note over A: Trámite Pendiente · firma
+    A-)Q: firma_requerida → enviar_a_firma
+    Q->>P: POST solicitud: PDF vigente y firmantes en orden
+    P-->>Q: id de la solicitud
+    loop Cada firmante, en orden
+        P->>F: Enlace de firma por correo
+        F->>P: RUT y número de serie de la cédula
+        P->>M: Código de 6 dígitos
+        F->>P: Código y consentimiento
+        P->>P: Certificado de un solo uso, firma PAdES B-LT
+        P-)A: Webhook firmante.firmo (HMAC, id de evento)
+        A-)Q: procesar_evento_firma
+        Q->>P: Consulta el estado
+        Q->>Q: Marca al firmante
+    end
+    P-)A: Webhook solicitud.completada
+    A-)Q: procesar_evento_firma
+    Q->>P: Descarga el PDF firmado
+    Q->>Q: Verifica RF-39: hash informado = sha256_pdf, prefijo exacto, hash descargado
+    Q->>Q: guardar_firmado y completar: contrato vigente
+    Note over A: Completado
+    opt Webhook perdido
+        Q->>P: sincronizar_solicitudes_abiertas, cada 15 minutos
+    end
+    opt Rechazo, expiración o cancelación
+        Q->>Q: Pendiente · falta información, con el detalle
+        E->>A: Reenviar, cancelar o reintentar desde el backoffice
+    end
+```
+
+- La solicitud vence a los 7 días o al final del día de inicio del contrato, lo
+  que ocurra antes `[supuesto]`.
+- Firman el representante legal del cliente, el representante de Easy Office,
+  cuando la configuración del tipo lo incluye, y el autorizante del inmueble
+  `[supuesto: firmantes y orden, pendiente de validar con Easy Office]`.
+- La subida asistida responde 409 para los tipos con firma avanzada.
+- El CRM marca la solicitud con `ambiente_pruebas` y el backoffice lo muestra.
+  El PDF firmado por el PSC de pruebas, en cambio, **no lleva una marca visible**
+  de ambiente de pruebas: sus sellos dicen «Firma electrónica avanzada», y solo
+  los certificados, emitidos por una CA «de PRUEBAS», revelan que no tiene validez
+  legal. Agregar esa marca está pendiente (§9).
+- Cuando lleguen las credenciales de tufirma.digital, el adaptador real será una
+  copia del adaptador HTTP con otro mapeo de campos, otra URL y otra clave. El
+  dominio no cambia.
 
 ---
 
@@ -499,6 +574,7 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | AD-13 | Llenar la plantilla Word con una librería de plantillas (`docxtpl`), tras convertir una vez los campos de combinación de `PLT-01` a marcas propias | Editar el XML del Word directamente en cada generación | La plantilla queda como configuración editable en Word, no como código por plantilla. Elegida en la prueba técnica del issue #49 |
 | AD-14 | Convertir a PDF en un contenedor aparte (Gotenberg, con LibreOffice) | LibreOffice dentro de la imagen del worker; no generar PDF | Vista previa del documento real y PDF para la firma, sin dependencia de Python adicional ni una imagen de aplicación más pesada |
 | AD-15 | Cookie de sesión propia para el panel de administración, mediante un middleware que extiende el de sesiones de Django y solo cambia el nombre y la ruta de la cookie | Copiar el código del middleware de Django; mantener una sola sesión | Iniciar sesión en el panel no debe cerrar la sesión de la aplicación web; extender en vez de copiar evita romper con versiones futuras de Django |
+| AD-16 | Para desarrollo, pruebas y demostraciones, un PSC de pruebas propio (`firma-sandbox`), sin validez legal, con su propia PKI (CA raíz y emisora «de PRUEBAS», sellos de tiempo, CRL y OCSP), que el CRM consume solo por HTTP como a un proveedor externo. La firma electrónica avanzada con validez legal queda con un prestador acreditado (tufirma.digital, RN-21) | Esperar las credenciales; construir una firma avanzada propia para producción; un repositorio aparte; Certomancer | Bajo la Ley 19.799 solo un prestador acreditado otorga validez a la firma avanzada. El PSC permite construir y probar de punta a punta el flujo real (PAdES, varios firmantes, webhooks) con el mismo contrato. No se despliega: se niega a iniciar fuera de desarrollo y la configuración de producción del CRM rechaza su URL. Certomancer se descartó porque sus certificados son estáticos y sus servicios usan Werkzeug |
 
 ---
 
@@ -510,7 +586,9 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 - Política de reembolsos: Klap lo soporta en el adaptador, Flow aún no, y la aplicación no expone la operación `[PENDIENTE — Easy Office]`
 - Proveedor de alojamiento `[PENDIENTE]`
 - Fidelidad del PDF frente al Word original: las plantillas usan Times New Roman y LibreOffice la reemplaza por una fuente de iguales medidas; falta compararlos con Easy Office
-- Firma con proveedor: hoy es asistida (un ejecutivo sube el PDF firmado) `[PENDIENTE — credenciales, TA-07]`
+- Firma con el prestador real: el flujo de firma avanzada funciona contra el PSC de pruebas (AD-16); falta el adaptador de tufirma.digital `[PENDIENTE — credenciales, TA-07]`. Por defecto, los tipos de trámite siguen con firma asistida
+- Quién firma, en qué orden, si el autorizante firma por el proveedor o de forma desasistida, y quién guarda su certificado `[PENDIENTE — Easy Office]`
+- Marca visible «Documento de prueba – firma sin validez legal» en los PDF y en las páginas de firma del PSC de pruebas, para que un documento de prueba no pueda confundirse con uno firmado con validez legal `[PENDIENTE — equipo]`
 - ~~Formato de las plantillas de contratos~~: cerrado el 08-10-2026, son documentos Word con campos de combinación (`13_plantillas`)
 
 ---
@@ -525,4 +603,5 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | 1.3 | 17-10-2026 | Sesión separada para el panel de administración (§4.1, AD-15; PR #52 del backend) | Equipo de proyecto |
 | 1.4 | 17-10-2026 | Cambio entre sesión de personal y de cliente en la aplicación web (§4.1; PR #19 del frontend) | Equipo de proyecto |
 | 1.5 | 22-10-2026 | §3 diagrama de componentes en notación UML con los módulos reales (`configuracion`, `contratos`, `panel`) y Gotenberg; dependencias verificadas en el código; §5 secuencia real del trámite con firma asistida | Equipo de proyecto |
-| 1.6 | 22-10-2026 | AD-08 implementada (HU-30, sin fusionar): disparadores escritos a mano y contexto por transacción; `core` con el registro de auditoría | Equipo de proyecto |
+| 1.6 | 22-10-2026 | AD-08 implementada (HU-30, PR #62 abierto): disparadores escritos a mano y contexto por transacción; `core` con el registro de auditoría | Equipo de proyecto |
+| 1.7 | 27-10-2026 | Firma avanzada mediante un proveedor (backend PR #68, frontend PR #27): componente del PSC de pruebas en §3.1, módulos en §3.2, secuencia en §5.1 y decisión AD-16 | Equipo de proyecto |

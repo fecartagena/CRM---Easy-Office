@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MOD-001 · Modelo de datos |
-| **Versión** | 1.10 |
-| **Fecha** | 22 de octubre de 2026 |
+| **Versión** | 1.11 |
+| **Fecha** | 27 de octubre de 2026 |
 | **Motor** | PostgreSQL (ver `REC-001` para la justificación) |
 | **Estado** | Actualizado con la muestra de 34 campos, las plantillas y las decisiones de la reunión del 08-10-2026 (`ACTA-002`). Pendientes en la sección 7 |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -184,6 +184,7 @@ nuevo) y al §8.2 (incorporar tipos de documentos de forma modular).
 | Entidad | Campos principales | Notas |
 |---|---|---|
 | `TIPO_TRAMITE` | `nombre`, `tipo_servicio`, `plantilla`, `configuracion` (JSONB: campos, validaciones, orden), `requiere_pago`, `requiere_firma`, `activo`, `version` | El corazón del motor. Un tipo de trámite se define como dato **Implementado** con su configuración en JSONB (HU-24 · issue #50 · PR #51) Segundo tipo, `bodega` ("Bodega virtual", `PLT-02`, migración `tramites/0004`). Claves de `configuracion`, documentadas en el modelo: `servicio`, `marca`, `plantilla`, `requiere_pago` (booleano o lista de canales), `requiere_firma`, `inicio_max_dias`, `planes`, `duracion_por_defecto`, `canales`, `tipos_cliente` y `lineas` (cada una con `servicio`, `inmueble`, `requisitos`, `inmueble_exclusivo` e `incluido_en_plan`). El domicilio queda en el canal portal y la bodega en portal y backoffice (`tramites/0005`). Permiso nuevo `tramites.iniciar_tramite` para Administrador y Ejecutivo (HU-15 · issue #59 · PR #60, fusionado) |
+| `TIPO_TRAMITE.configuracion["firma"]` | `nivel` (`asistida` por defecto, o `avanzada`), `firmantes` (opcional, los roles en orden) | **Implementado** (PR #68). La migración `tramites/0006` deja `asistida` en los tipos existentes |
 | `ESTADO_TRAMITE` | `codigo`, `nombre`, `es_final` | Valores iniciales según RN-42: Iniciado, Pendiente, Completado **Implementación:** los estados y las transiciones válidas viven hoy en una tabla `TRANSICIONES` dentro del servicio de dominio de `tramites`, no como filas de `ESTADO_TRAMITE` y `TRANSICION_ESTADO` (ver MD-17) |
 | `MOTIVO_PENDIENTE` | `codigo`, `nombre`, `aplica_a` (trámite / documento), `activo` | Catálogo de motivos por los que un trámite o documento queda Pendiente (RF-47). Lista inicial propuesta: falta información, revisión del borrador, pago, firma `[PENDIENTE DE VALIDAR CON EASY OFFICE]` **Implementado** con cuatro motivos iniciales: falta de información, revisión del borrador, pago y firma `[supuesto hasta TA-13]` |
 | `TRANSICION_ESTADO` | `tipo_tramite`, `estado_origen`, `estado_destino`, `rol_autorizado`, `condicion` | La máquina de estados es una tabla, no condicionales repartidos por el código |
@@ -201,8 +202,9 @@ capacidad de consulta al usarlo.
 | `PLANTILLA_DOCUMENTO` | `nombre`, `tipo_documento`, `activa` | Easy Office ya tiene formatos definidos (§6) **Implementado** |
 | `VERSION_PLANTILLA` | `plantilla`, `numero_version`, `archivo`, `campos_requeridos` (JSONB), `vigente_desde`, `creada_por` | Inmutable una vez emitido un documento con ella **Implementado.** La migración carga `PLT-01` versión 1, convertida una vez a plantilla con marcas propias desde el Word anonimizado (`manage.py convertir_plt01`) `PLT-02` versión 1 se carga igual desde el archivo anonimizado de `13_plantillas`, idéntico byte a byte, con los marcadores `«BODEGA_*»` (migración `documentos/0003`). El comando pasa a ser `convertir_plantilla`, para `PLT-01` o `PLT-02`, y `convertir_plt01` queda como alias (PR #60, fusionado) |
 | `DOCUMENTO` | `tramite`, `version_plantilla`, `archivo_generado`, `hash_generado`, `archivo_firmado`, `hash_firmado`, `datos_snapshot` (JSONB), `estado`, `generado_en` | Un trámite puede producir más de un documento: por ejemplo contrato y autorización, o una regeneración tras corregir datos. Ver decisiones 1 a 3 **Implementado:** guarda el Word y el PDF generados, cada uno con su SHA-256, la copia congelada de los datos y el PDF firmado con su propio SHA-256. Editar el borrador genera una versión nueva del documento con el mismo folio |
-| `FIRMANTE` | `documento`, `persona`, `rol_firmante`, `orden`, `estado`, `firmado_en` | Un documento puede requerir más de una firma **Implementado** según RN-39 `[supuesto: orden de firmas]` |
-| `SOLICITUD_FIRMA` | `documento`, `proveedor`, `id_externo`, `estado`, `enviada_en`, `respuesta` (JSONB) | `id_externo` único para idempotencia No implementado: hoy la firma es asistida (un ejecutivo sube el PDF firmado) |
+| `FIRMANTE` | `documento`, `persona`, `rol_firmante`, `orden`, `estado`, `firmado_en` | Un documento puede requerir más de una firma **Implementado** según RN-39 `[supuesto: orden de firmas]` Con la firma avanzada (PR #68) agrega `estado` (pendiente, firmado, rechazado), `rechazado_en`, `motivo_rechazo` e `id_externo`, y el rol `representante_emisor` (representante de Easy Office) |
+| `SOLICITUD_FIRMA` | `documento`, `proveedor`, `id_externo`, `estado`, `enviada_en`, `respuesta` (JSONB) | `id_externo` único para idempotencia **Implementado** (PR #68) como `SolicitudFirma`: una fila por envío al proveedor, con `estado` (creando, enviada, completada, rechazada, expirada, cancelada, error), `ambiente_pruebas`, `detalle_error`, `enviada_en`, `expira_en`, `sincronizada_en` y `terminada_en`. Una sola solicitud abierta por documento |
+| `EVENTO_FIRMA` | `solicitud`, `proveedor`, `id_evento`, `tipo`, `clave_dedup`, `payload` (JSONB), `resultado`, `recibido_en` | **Implementado** (PR #68), solo inserción. Cada notificación del proveedor, deduplicada por `clave_dedup`; `resultado`: recibido, ignorado o firma inválida |
 
 ### 3.7 Ventas y pagos
 
@@ -242,8 +244,8 @@ operaciones de actualización ni borrado, y con la escritura mediante disparador
 de base de datos en lugar de señales de la aplicación, porque un disparador es
 más difícil de eludir y más fácil de demostrar ante una auditoría.
 
-**Implementado en el backend** (HU-30, rama `feature/HU-30-auditoria`, sin
-fusionar) como `core.RegistroAuditoria`:
+**Implementado en el backend** (HU-30, issue #61, PR #62
+abierto) como `core.RegistroAuditoria`:
 
 - `fecha_hora` toma por defecto la hora de la base; `usuario` es una referencia
   opcional que impide eliminar a un usuario que aparece en el registro (solo se
@@ -318,9 +320,9 @@ Lo que cada hash permite verificar:
 servicio nuevo no requiere tocar código. La primera implementación las define en
 una tabla dentro del código de `tramites` (MD-17).
 
-**5 · Idempotencia en operaciones externas.** `EVENTO_PAGO` lleva una clave de
-deduplicación única y `SOLICITUD_FIRMA` un identificador externo único; ambos
-registran cada evento recibido.
+**5 · Idempotencia en operaciones externas.** `EVENTO_PAGO` y `EVENTO_FIRMA`
+llevan una clave de deduplicación única y `SOLICITUD_FIRMA` un identificador
+externo único; ambos registran cada evento recibido.
 
 **6 · JSONB donde la forma es variable.** `TIPO_TRAMITE.configuracion`,
 `TRAMITE.datos`, `SERVICIO_CONTRATADO.caracteristicas` y los valores de auditoría.
@@ -427,7 +429,7 @@ que es público.
 | MD-13 | Retención y cifrado en reposo de la cédula del autorizante | Ley 21.719 de protección de datos personales; depende del alojamiento (TA-09) Incluye la conservación de los borradores de contrato abandonados |
 | MD-14 | Si la renovación conserva el folio | Hoy una renovación es un contrato nuevo con folio nuevo que apunta al anterior |
 | MD-15 | Dueño del correo y del celular de aviso (empresa o representante) | Define dónde se guardan; hoy viven en `CONTRATO` |
-| MD-16 | ~~Registro en auditoría de los modelos nuevos (RF-15)~~ | Cerrado en el backend (HU-30, sin fusionar): contratos, inmuebles, autorizantes y configuración quedan en el registro |
+| MD-16 | ~~Registro en auditoría de los modelos nuevos (RF-15)~~ | Cerrado en el backend (HU-30, PR #62 abierto): contratos, inmuebles, autorizantes y configuración quedan en el registro |
 | MD-17 | Transiciones de estado en el código frente a la tabla `TRANSICION_ESTADO` | La decisión 4 y el `CLAUDE.md` prevén una tabla de datos; la primera implementación usa una tabla en el código |
 
 ---
@@ -446,4 +448,5 @@ que es público.
 | 1.7 | 20-10-2026 | `SERVICIO` con `visible_en_portal` y `orden` (PR #48) |
 | 1.8 | 21-10-2026 | Bodega virtual con `PLT-02` (issue #59, PR #60, abierto): tipo de trámite `bodega` y claves de `configuracion`; permiso `tramites.iniciar_tramite`; planes de la bodega; línea del domicilio incluida en el plan; requisitos de la bodega; ocupación de inmuebles exclusivos; `PLT-02` v1; MD-04 ampliado |
 | 1.9 | 22-10-2026 | PR #60 del backend y PR #23 del frontend fusionados: lo descrito de la bodega virtual en la versión 1.8 ya está en la rama principal. Diagrama de clases en `UML-002`. Corrección: `SERVICIO_CONTRATADO` no tiene `plan`; el plan queda en `TRAMITE.datos` |
-| 1.10 | 22-10-2026 | Auditoría implementada en el backend (HU-30, rama `feature/HU-30-auditoria`, sin fusionar): `REGISTRO_AUDITORIA` con `origen`, acciones, tablas auditadas y excluidas, campos que nunca se guardan y protección en la base; MD-16 cerrado |
+| 1.10 | 22-10-2026 | Auditoría implementada en el backend (HU-30, issue #61, PR #62 abierto): `REGISTRO_AUDITORIA` con `origen`, acciones, tablas auditadas y excluidas, campos que nunca se guardan y protección en la base; MD-16 cerrado |
+| 1.11 | 27-10-2026 | Firma avanzada (PR #68): `SOLICITUD_FIRMA` implementada, `EVENTO_FIRMA` nuevo, campos y rol nuevos en `FIRMANTE`, clave `firma` en `TIPO_TRAMITE.configuracion` |
