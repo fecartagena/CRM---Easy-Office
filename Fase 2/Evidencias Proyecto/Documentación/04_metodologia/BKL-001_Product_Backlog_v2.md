@@ -6,7 +6,7 @@
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
 | **Versión** | 2.12 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Fecha** | 28 de octubre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -76,8 +76,9 @@ quedan en auditoría.
 | HU-12 | Como ejecutivo, quiero que el sistema impida transiciones de estado no válidas, para que el proceso se cumpla en orden | Must | Propuesto | HU-10 | RN-08 |
 | HU-13 | Como ejecutivo, quiero atender un trámite asistido que requiere mi intervención, para los casos no automatizables | Must | Confirmado | HU-10 | RF-18 |
 
-> Los estados del trámite y sus transiciones válidas están
-> `[PENDIENTE DE VALIDAR CON EASY OFFICE]`.
+> Los tres estados del trámite (Iniciado, Pendiente con motivo y Completado)
+> fueron confirmados el 12-10-2026 (`RN-42`). Las transiciones válidas entre
+> ellos siguen siendo un supuesto del equipo `[PENDIENTE DE VALIDAR CON EASY OFFICE]`.
 
 ---
 
@@ -127,6 +128,9 @@ configuración; ningún cambio en la configuración altera trámites ya emitidos
 | HU-28 | Como cliente, quiero seguir el estado de mi trámite, para saber en qué etapa está | Should | Propuesto | HU-24 | RF-27 |
 | HU-29 | Como cliente, quiero descargar el documento final firmado, para disponer de él | Must | Confirmado | HU-37 | RF-26 |
 
+> HU-59 está implementada en el frontend (issue #24, PR #25, fusionado el
+> 22-10-2026). La paleta y el logo definitivos siguen pendientes (TA-06).
+
 ---
 
 ## Épica 8 · Auditoría
@@ -141,7 +145,7 @@ eliminación queda registrada; el registro no admite modificación ni eliminaci�
 incluye usuario, fecha, entidad afectada, valor anterior y valor nuevo.
 
 **Avance al 22-10-2026.** HU-30 está implementada en el backend, en la rama
-`feature/HU-30-auditoria` (issue #61, PR #62 abierto): registro con disparadores de
+`feature/HU-30-auditoria`, todavía sin issue ni PR: registro con disparadores de
 PostgreSQL, protección en la base, ingresos y descargas, y 59 pruebas nuevas. De
 HU-31 está la API de consulta, solo para el Administrador; las pantallas van en
 otra rama del frontend, después de fusionar el backend.
@@ -176,15 +180,11 @@ ejecuta con datos personales reales en entornos de desarrollo.
 
 > HU-35 y HU-37 dependen de `[CREDENCIALES PENDIENTES]`. Con la implementación
 > simulada de HU-34, el flujo queda construido y probado igualmente.
-
-**Avance al 27-10-2026.** HU-34, HU-35, HU-36, HU-37 y HU-22 están
-implementadas: backend issues #66 y #67, PR #68; frontend issue #26, PR #27;
-ambos fusionados. El documento se envía a un proveedor por HTTP con sus
-firmantes en orden, y se reciben webhooks verificados. Al completarse, el PDF
-firmado se verifica (RF-39) y el contrato queda vigente. En desarrollo el
-proveedor es un PSC de pruebas sin validez legal (AD-16). Falta el adaptador de
-tufirma.digital (TA-07), y los tipos de trámite siguen con firma asistida por
-defecto.
+>
+> La firma avanzada contra un prestador de pruebas (sin validez legal) está
+> integrada en el backend (issue #66, PR #68) y en el frontend (issue #26,
+> PR #27), fusionados el 27-10-2026. El prestador definitivo (`tufirma.digital`)
+> sigue pendiente (TA-07).
 
 ---
 
@@ -327,13 +327,91 @@ diferencias entre `PLT-01` y `PLT-02`, y lo que sugieren para el motor, quedan e
 `docs/variation-points.md` del backend. El motor (HU-14, HU-16 y HU-17) no se
 construye en este cambio.
 
-Este backlog está clasificado con MoSCoW pero **no está ordenado ni estimado para
-sprint**. Ese orden se define en el Sprint Planning.
+**Avance al 28-10-2026.** Se contrastó cada historia con el código y con
+`TRZ-001 v2.13`. De las 66 historias: 33 implementadas, 17 parciales,
+2 en rama sin fusionar, 10 sin iniciar y 4 por verificar. La tabla
+siguiente no reemplaza la columna "Estado" de cada épica, que indica el estado de
+validación con Easy Office. Aquí "Implementado" significa que existe en el código
+fusionado a `main`; no equivale a "Verificado" ni a "Validado" (ver `TRZ-001`).
 
-Las historias de las épicas 1, 2, 3 y 14 no dependen de información pendiente de
-la contraparte y son las candidatas naturales para el primer sprint de
-construcción. Las de las épicas 6, 9, 10 y 11 dependen de las plantillas, la
-planilla Excel o las credenciales externas.
+### Avance por historia
+
+| HU | Avance | Observación | Referencia TRZ-001 |
+|---|---|---|---|
+| HU-01 | Implementado |  | RF-01, RS-01 |
+| HU-02 | Parcial |  | RF-03 |
+| HU-03 | Implementado |  | RF-45 |
+| HU-04 | Parcial | Alta y edición en Django admin; sin pantalla propia | RF-02, RS-02 |
+| HU-05 | Implementado |  | RF-04 |
+| HU-06 | Implementado |  | RF-05 |
+| HU-07 | Parcial | Vía RF-08 y RF-10; sin pantalla propia | — |
+| HU-08 | Implementado |  | RF-05 |
+| HU-09 | Parcial | El modelo registra `vigente_desde` y `vigente_hasta`; sin pantalla propia (SPR-001) | — |
+| HU-10 | Parcial | El ejecutivo crea trámites desde "Nuevo trámite" (bodega virtual) | — |
+| HU-11 | Por verificar | Sin fila propia en TRZ-001; la ficha muestra un marcador de posición | — |
+| HU-12 | Parcial | Tabla `TRANSICIONES` supuesta (pendiente de validar) | RF-41 |
+| HU-13 | Sin iniciar |  | RF-18 |
+| HU-14 | Parcial | Falta la pantalla de configuración | RF-33, RF-35, RNF-04, RNF-08 |
+| HU-15 | Parcial |  | RF-33, RF-34, RF-36, RNF-08 |
+| HU-16 | Parcial | Falta la pantalla de configuración | RF-33 |
+| HU-17 | Parcial |  | RF-41 |
+| HU-18 | Parcial |  | RF-36, RF-37 |
+| HU-19 | Implementado |  | RF-24 |
+| HU-20 | Implementado |  | RF-37 |
+| HU-21 | Implementado |  | RF-38 |
+| HU-22 | Sin iniciar |  | RF-39 |
+| HU-23 | Implementado |  | RF-19 |
+| HU-24 | Implementado |  | RF-20 |
+| HU-25 | Por verificar | Sin fila propia en TRZ-001; relacionada con RF-06 | — |
+| HU-26 | Implementado |  | RF-21 |
+| HU-27 | Implementado |  | RF-21 |
+| HU-28 | Implementado |  | RF-27 |
+| HU-29 | Implementado |  | RF-26 |
+| HU-30 | En rama sin fusionar | Rama `feature/HU-30-auditoria`; sin issue ni PR | RF-15, RF-16, RS-04 |
+| HU-31 | En rama sin fusionar | Rama de auditoría; sin fusionar | RF-17 |
+| HU-32 | Sin iniciar |  | RF-43 |
+| HU-33 | Sin iniciar |  | RF-44 |
+| HU-34 | Implementado | Prestador de pruebas, sin validez legal; tufirma.digital pendiente (TA-07) | IN-01 |
+| HU-35 | Implementado | Prestador de pruebas, sin validez legal; tufirma.digital pendiente (TA-07) | RF-25, IN-01 |
+| HU-36 | Implementado |  | RF-40 |
+| HU-37 | Implementado | Prestador de pruebas, sin validez legal; tufirma.digital pendiente (TA-07) | IN-01 |
+| HU-38 | Implementado | Ambiente de pruebas (Klap y Flow) | IN-02 |
+| HU-39 | Implementado | Ambiente de pruebas (Klap y Flow) | RF-22, IN-02 |
+| HU-40 | Implementado | Webhooks idempotentes (RF-23); Ambiente de pruebas (Klap y Flow) | — |
+| HU-41 | Implementado |  | RF-14 |
+| HU-42 | Sin iniciar |  | RF-13 |
+| HU-43 | Por verificar | Sin fila propia en TRZ-001; la fuente RNF-06 corresponde a usabilidad | — |
+| HU-44 | Por verificar | Sin fila propia en TRZ-001 | — |
+| HU-45 | Parcial | Parcial según SPR-001 | — |
+| HU-46 | Sin iniciar |  | RNF-10 |
+| HU-47 | Parcial |  | RF-08 |
+| HU-48 | Parcial |  | RF-11 |
+| HU-49 | Parcial |  | RF-10 |
+| HU-50 | Parcial |  | RF-09 |
+| HU-51 | Implementado |  | RF-07 |
+| HU-52 | Parcial |  | RF-06 |
+| HU-53 | Sin iniciar |  | RF-12 |
+| HU-54 | Sin iniciar |  | RF-28, RF-29 |
+| HU-55 | Sin iniciar |  | RF-30, RF-32 |
+| HU-56 | Implementado |  | RF-31 |
+| HU-57 | Implementado | Ambiente de pruebas (Klap y Flow) | RF-23 |
+| HU-58 | Sin iniciar | Existe una rama del sitio de prueba; el estado sigue en Especificado | RF-46 |
+| HU-59 | Implementado |  | RNF-12 |
+| HU-60 | Implementado |  | RF-07 |
+| HU-61 | Implementado |  | RF-47 |
+| HU-62 | Implementado | Ambiente de pruebas (Klap y Flow) | RF-22, RF-48, IN-02 |
+| HU-63 | Implementado | Ambiente de pruebas (Klap y Flow) | RF-49 |
+| HU-64 | Implementado | Ambiente de pruebas (Klap y Flow) | RF-50 |
+| HU-65 | Implementado |  | RF-24 |
+| HU-66 | Implementado |  | RF-24 |
+
+Este backlog está clasificado con MoSCoW. El orden y la estimación por sprint
+se registran en `SPR-001` (Sprint Backlog), no en este documento.
+
+Lo que sigue dependiendo de la contraparte: la planilla Excel de clientes
+(TA-10), que condiciona la migración de datos; las credenciales del prestador de
+firma definitivo (TA-07); y el proveedor de pago definitivo (TA-08). Mientras
+tanto, la firma y los pagos se prueban con prestadores de pruebas.
 
 ---
 
@@ -353,5 +431,5 @@ planilla Excel o las credenciales externas.
 | 2.8 | 20-10-2026 | HU-41 con datos reales fusionada; HU-65 y HU-66 fusionadas |
 | 2.9 | 21-10-2026 | Avance de HU-15 con la bodega virtual y `PLT-02` (issues #59 y #22, PR #60 y #23, abiertos) |
 | 2.10 | 22-10-2026 | HU-15: bodega virtual con `PLT-02` fusionada (PR #60 del backend y #23 del frontend) |
-| 2.11 | 22-10-2026 | Avance de HU-30 y de la API de HU-31 (auditoría, issue #61, PR #62 abierto) |
-| 2.12 | 27-10-2026 | Épica 10: firma avanzada mediante un proveedor (PR #68 y #27) |
+| 2.11 | 22-10-2026 | Avance de HU-30 y de la API de HU-31 (auditoría, rama sin fusionar) |
+| 2.12 | 28-10-2026 | Avance por historia contrastado con el código; estados del trámite (`RN-42`); firma avanzada (backend PR #68, frontend PR #27); HU-59 implementada; se retiran párrafos obsoletos sobre el primer sprint |
