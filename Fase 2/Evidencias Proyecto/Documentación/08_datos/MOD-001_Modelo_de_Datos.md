@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MOD-001 · Modelo de datos |
-| **Versión** | 1.11 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Versión** | 1.12 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Motor** | PostgreSQL (ver `REC-001` para la justificación) |
 | **Estado** | Actualizado con la muestra de 34 campos, las plantillas y las decisiones de la reunión del 08-10-2026 (`ACTA-002`). Pendientes en la sección 7 |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -244,8 +244,8 @@ operaciones de actualización ni borrado, y con la escritura mediante disparador
 de base de datos en lugar de señales de la aplicación, porque un disparador es
 más difícil de eludir y más fácil de demostrar ante una auditoría.
 
-**Implementado en el backend** (HU-30, issue #61, PR #62
-abierto) como `core.RegistroAuditoria`:
+**Implementado** (HU-30, issue #61, PR #62, fusionado el 03-11-2026) como
+`core.RegistroAuditoria`:
 
 - `fecha_hora` toma por defecto la hora de la base; `usuario` es una referencia
   opcional que impide eliminar a un usuario que aparece en el registro (solo se
@@ -254,7 +254,8 @@ abierto) como `core.RegistroAuditoria`:
   `sistema`, para distinguir una tarea de Celery o una notificación de pago de un
   usuario vacío.
 - `accion`: `crear`, `modificar`, `eliminar`, `inicio_sesion`, `cierre_sesion`,
-  `inicio_sesion_fallido`, `descarga_documento` y `acceso_documento_identidad`.
+  `inicio_sesion_fallido`, `descarga_documento`, `acceso_documento_identidad`,
+  `reenvio_firma`, `cancelacion_firma` y `reintento_firma`.
 - `entidad` tiene la forma `app.modelo` (por ejemplo `clientes.cliente`) y
   `registro_id` es numérico. En un intento de ingreso fallido, `registro_id`
   apunta a la cuenta y `usuario` queda vacío, porque no se sabe quién lo intentó.
@@ -266,21 +267,29 @@ abierto) como `core.RegistroAuditoria`:
   `SERVICIO_CONTRATADO` y `DURACION_CONTRATO`; `TIPO_TRAMITE`, `MOTIVO_PENDIENTE` y
   `TRAMITE`; las plantillas, versiones, documentos y firmantes; el catálogo, las
   ventas, sus ítems, órdenes y pagos; los usuarios, los roles y la pertenencia a
-  roles y permisos, guardada por nombre. No se auditan `EVENTO_TRAMITE`,
-  `EVENTO_PAGO` ni `CORRELATIVO_FOLIO`, porque ya son registros o solo generan
-  ruido, ni las tablas de sesiones, Celery y allauth.
+  roles y permisos, guardada por nombre; `SOLICITUD_FIRMA`; y los segundos
+  factores y tokens de API, sin sus secretos. No se auditan `EVENTO_TRAMITE`,
+  `EVENTO_PAGO`, `EVENTO_FIRMA` ni `CORRELATIVO_FOLIO`, porque ya son registros o
+  solo generan ruido, ni las tablas de sesiones, Celery beat y correo de allauth.
+  Las tablas `EVENTO_*` tampoco están protegidas en la base, porque
+  `anonimizar_datos` debe cambiarlas en la copia de staging. Las entradas de un
+  token no tienen `registro_id`, porque su clave es su llave primaria.
 - Nunca se guardan `last_login`, `Pago.respuesta`, `OrdenPago.redirect_url` ni
-  `Documento.datos_snapshot`. La contraseña se registra como `***` y los archivos
-  solo por su nombre.
+  `Documento.datos_snapshot`, ni el `data` de un segundo factor ni la `key` de un
+  token. La contraseña se registra como `***` y los archivos solo por su nombre.
 - La base rechaza `UPDATE`, `DELETE` y `TRUNCATE` sobre el registro, también para
   el usuario de base de datos de la aplicación. El dueño de la base sí podría
   eliminar los disparadores: separar ese rol queda para el despliegue (TA-09).
 - Migraciones `core/0004` (tabla, funciones y protección), `core/0005`
   (disparadores en las tablas auditadas) y `core/0006` (permiso
-  `core.consultar_auditoria`, solo para el Administrador).
+  `core.consultar_auditoria`, solo para el Administrador); `core/0007` audita
+  `SOLICITUD_FIRMA`, `core/0008` agrega las tres acciones de firma y `core/0009`
+  los segundos factores y tokens.
 - `ASSUMPTION: pending validation with Easy Office`: plazo de conservación del
-  registro (hoy indefinido; Ley 21.719) y conservar los intentos fallidos con el
-  correo escrito.
+  registro (hoy indefinido y sin forma de purgar, porque la base bloquea todo
+  borrado; Ley 21.719), conservar los intentos fallidos con el correo escrito y que
+  el historial de un cliente no incluya sus contratos ni trámites.
+- Las copias a staging no llevan el historial: `copy_local_db.sh` excluye la tabla.
 
 ---
 
@@ -429,7 +438,7 @@ que es público.
 | MD-13 | Retención y cifrado en reposo de la cédula del autorizante | Ley 21.719 de protección de datos personales; depende del alojamiento (TA-09) Incluye la conservación de los borradores de contrato abandonados |
 | MD-14 | Si la renovación conserva el folio | Hoy una renovación es un contrato nuevo con folio nuevo que apunta al anterior |
 | MD-15 | Dueño del correo y del celular de aviso (empresa o representante) | Define dónde se guardan; hoy viven en `CONTRATO` |
-| MD-16 | ~~Registro en auditoría de los modelos nuevos (RF-15)~~ | Cerrado en el backend (HU-30, PR #62 abierto): contratos, inmuebles, autorizantes y configuración quedan en el registro |
+| MD-16 | ~~Registro en auditoría de los modelos nuevos (RF-15)~~ | Cerrado (HU-30, PR #62, fusionado el 03-11-2026): contratos, inmuebles, autorizantes y configuración quedan en el registro |
 | MD-17 | Transiciones de estado en el código frente a la tabla `TRANSICION_ESTADO` | La decisión 4 y el `CLAUDE.md` prevén una tabla de datos; la primera implementación usa una tabla en el código |
 
 ---
@@ -450,3 +459,4 @@ que es público.
 | 1.9 | 22-10-2026 | PR #60 del backend y PR #23 del frontend fusionados: lo descrito de la bodega virtual en la versión 1.8 ya está en la rama principal. Diagrama de clases en `UML-002`. Corrección: `SERVICIO_CONTRATADO` no tiene `plan`; el plan queda en `TRAMITE.datos` |
 | 1.10 | 22-10-2026 | Auditoría implementada en el backend (HU-30, issue #61, PR #62 abierto): `REGISTRO_AUDITORIA` con `origen`, acciones, tablas auditadas y excluidas, campos que nunca se guardan y protección en la base; MD-16 cerrado |
 | 1.11 | 27-10-2026 | Firma avanzada (PR #68): `SOLICITUD_FIRMA` implementada, `EVENTO_FIRMA` nuevo, campos y rol nuevos en `FIRMANTE`, clave `firma` en `TIPO_TRAMITE.configuracion` |
+| 1.12 | 03-11-2026 | Auditoría fusionada (PR #62): acciones de firma, `SOLICITUD_FIRMA`, segundos factores y tokens, tablas excluidas, migraciones `core/0007` a `0009` y copias a staging sin historial |

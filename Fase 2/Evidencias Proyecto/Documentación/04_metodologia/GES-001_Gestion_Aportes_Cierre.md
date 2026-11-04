@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | GES-001 · Gestión, aportes y cierre |
-| **Versión** | 0.1 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Versión** | 0.2 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | **Formatos y textos propuestos.** No registra reuniones ni evaluaciones que no ocurrieron. La tabla de aportes (§5) está tomada del historial de Git al 27-10-2026 |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -38,7 +38,7 @@ falta. Fechas y puntos no se asignan después del hecho.
 | Trabajo | Resultado verificable | Dependencia | Responsable |
 |---|---|---|---|
 | Adoptar las decisiones de `DEC-001` | Registro de adopción completo | Sesión del equipo | Por acordar |
-| Fusionar la auditoría (backend #62 y su frontend) | Commit en la rama principal y `EVI-T11` | Revisión del PR | Por acordar |
+| ~~Fusionar la auditoría (backend #62 y su frontend)~~ | Fusionada el 03-11-2026 (backend PR #62, frontend PR #31). `EVI-T11` sobre el código fusionado el 03-11-2026, revisado por Nicolás Zapata (`12_evidencias/2026-11-03_auditoria/`). Falta dejar constancia de la revisión cruzada de los PR: GitHub no registra una aprobación en ninguno de los dos | Revisión del PR | Fernando |
 | Candidato del backend y del frontend | Commits y resultados de pruebas y compilación | Integración | Por acordar |
 | Recorrido del piloto y capturas | `EVI-T01`, `EVI-T10` y anexos A.2 a A.8 | Ambiente funcionando | Por acordar |
 | Importador sintético | `MIG-T01` a `MIG-T09` | Ninguna externa para el ensayo | Por acordar |
@@ -190,3 +190,4 @@ verifica.
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 0.1 | 27-10-2026 | Versión inicial: estado metodológico, planificación, review, retrospectiva, aportes por integrante desde el historial de Git, plantillas en inglés, pauta y preparación de la Fase 3 |
+| 0.2 | 03-11-2026 | Auditoría fusionada (PR #62 y #31); EVI-T11 sobre el código fusionado; queda la constancia de la revisión de los PR |

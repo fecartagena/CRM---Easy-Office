@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ARQ-001 · Arquitectura de la solución |
-| **Versión** | 1.8 |
+| **Versión** | 1.9 |
 | **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | Propuesta de arquitectura. Sujeta a ajustes al recibir la documentación técnica de la plataforma de firma electrónica |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -175,7 +175,7 @@ graph TB
 
 | Módulo | Responsabilidad | Depende de |
 |---|---|---|
-| `users`, `core` | Usuarios (inicio de sesión con correo), roles Administrador y Ejecutivo, permisos del sistema, modelo base con fechas, registro de auditoría (HU-30, PR #62 abierto) | Nada |
+| `users`, `core` | Usuarios (inicio de sesión con correo), roles Administrador y Ejecutivo, permisos del sistema, modelo base con fechas, registro de auditoría (HU-30, PR #62, fusionado) | Nada |
 | `clientes` | Personas, empresas, representación legal, código del cliente y cuentas del portal | `core`, `users` |
 | `configuracion` | Datos de Easy Office, marcas y cuentas donde recibe pagos | `core` |
 | `inmuebles` | Oficinas y bodegas, rol de avalúo y autorizantes con su cédula | `core`, `clientes`, `configuracion` |
@@ -608,7 +608,7 @@ a paso en `docs/staging.md` del backend.
 | AD-05 | Generación documental y llamadas externas en cola asíncrona | Dentro del ciclo de petición | Latencia y fallas de terceros no deben afectar al usuario |
 | AD-06 | Tipos de trámite y servicios definidos por configuración | Desarrollo por cada documento | Lo exigen los §5.2, §8.2, §8.3 y §11 del encargo |
 | AD-07 | Almacenamiento de documentos fuera del contenedor | Volumen local del contenedor | Persistencia entre despliegues y respaldo independiente |
-| AD-08 | Auditoría mediante disparadores de base de datos | Señales de la aplicación; `django-pghistory` con `django-pgtrigger` | Ver `DIS-001 §7`. Implementada con disparadores escritos a mano en migraciones, sin dependencias nuevas. El usuario, la IP y el origen llegan a la base con `set_config(..., true)` antes de la primera escritura de cada transacción (HU-30) |
+| AD-08 | Auditoría mediante disparadores de base de datos | Señales de la aplicación; `django-pghistory` con `django-pgtrigger` | Ver `DIS-001 §7`. Implementada con disparadores escritos a mano en migraciones, sin dependencias nuevas. El usuario, la IP y el origen llegan a la base con `set_config(..., true)` antes de la primera escritura de cada transacción (HU-30, PR #62, fusionado el 03-11-2026). Se eligieron disparadores y no señales porque hay escrituras con `.update()` y `bulk_create` que las señales no ven. La dirección sale de `DJANGO_NUM_PROXIES`, así que un cliente no la elige con `X-Forwarded-For` |
 | AD-09 | El estado de una venta cambia solo en el servicio de dominio de `ventas`, y el precio sale siempre del servidor | Cambiar el estado desde cada endpoint o webhook; aceptar el precio del cliente | Tres caminos (webhook, retorno, sincronización) llegan al mismo resultado y una petición manipulada no debe alterar un cobro |
 | AD-10 | Notificaciones de pago idempotentes, con registro de eventos y clave de deduplicación | Procesar cada notificación como nueva | Los proveedores reintentan y notifican fuera de orden |
 | AD-11 | Verificar en segundo plano las notificaciones sin firma (Flow) consultando al proveedor | Confiar en el contenido de la notificación | Flow solo envía un token; la verdad la tiene el proveedor |
@@ -649,3 +649,4 @@ a paso en `docs/staging.md` del backend.
 | 1.6 | 22-10-2026 | AD-08 implementada (HU-30, PR #62 abierto): disparadores escritos a mano y contexto por transacción; `core` con el registro de auditoría | Equipo de proyecto |
 | 1.7 | 27-10-2026 | Firma avanzada mediante un proveedor (backend PR #68, frontend PR #27): componente del PSC de pruebas en §3.1, módulos en §3.2, secuencia en §5.1 y decisión AD-16 | Equipo de proyecto |
 | 1.8 | 03-11-2026 | Ambiente de staging (backend PR #73, frontend PR #29) en §6.1; AD-16: el PSC de pruebas corre en local y staging, nunca en producción; sin marca visible de pruebas, por decisión del equipo | Equipo de proyecto |
+| 1.9 | 03-11-2026 | AD-08 fusionada (backend PR #62, frontend PR #31): motivo de los disparadores y origen de la dirección | Equipo de proyecto |

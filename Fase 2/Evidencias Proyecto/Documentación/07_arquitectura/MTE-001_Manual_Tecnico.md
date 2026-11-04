@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MTE-001 · Manual técnico |
-| **Versión** | 0.2 |
+| **Versión** | 0.3 |
 | **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | **Borrador.** Comandos tomados de los README y archivos de la rama principal (backend `7869d0a`, frontend `f2e4758`). La instalación limpia siguiendo este manual **no se ha ejecutado** todavía |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -155,6 +155,7 @@ quedan dentro del código que recibe el navegador: no llevan secretos.
 | Staging | `.envs/.staging/` (ejemplo en `.envs.example/.staging/`): `STAGING_HOST`, `STAGING_ACME_EMAIL`, `STAGING_SIGNATURE_PROVIDER`, `STAGING_SIGNATURE_API_BASE_URL`, `CELERY_WORKER_CONCURRENCY`, `STAGING_DEMO_ADMIN_PASSWORD`, `STAGING_DEMO_EJECUTIVO_PASSWORD`, `STAGING_DEMO_CLIENTE1_PASSWORD`, `STAGING_DEMO_CLIENTE2_PASSWORD`, `FIRMA_SANDBOX_RUNSERVER_OPTS` | Solo en la VM, nunca en Git. Detalle en `docs/staging.md` |
 | Archivos privados | `DJANGO_PRIVATE_MEDIA_ROOT` | Fuera de la ruta pública; se respaldan y su acceso se controla |
 | Folio | `CONTRATO_FOLIO_ANCHO` | Por defecto 4 dígitos |
+| Ingreso y auditoría | `DJANGO_THROTTLE_LOGIN`, `DJANGO_NUM_PROXIES` | Límite de intentos de ingreso por dirección (supuesto: 10 por minuto). Proxies delante de Django: 0 en local, 1 en producción y staging; de ahí sale la dirección que se registra |
 
 ---
 
@@ -186,6 +187,9 @@ con `PAYMENT_TUNNEL_METRICS_URL` vacía, como en la CI: si `.envs/.local/.django
 la define y el servicio `tunnel` no corre, dos pruebas de
 `ventas/tests/test_tasks.py` fallan. La rama de auditoría (PR #62) tiene sus
 propias cifras.
+
+Con la auditoría fusionada (PR #62), el backend tiene 799 pruebas según el PR
+(715 de `main` y 84 nuevas) y el frontend 223 en 32 archivos (PR #31).
 Cada ejecución se registra con comando, salida, código de retorno y commit
 (`12_evidencias/README.md`).
 
@@ -207,6 +211,9 @@ la repite siguiendo solo este manual y anota cada desviación.
 | El pago no avanza | Modo configurado, URL del túnel y estado de la venta en el backend |
 | La firma no avanza | `firma-sandbox` y `firma-sandbox-worker`, Mailpit y el estado de cada firmante en el detalle del trámite |
 | Acceso denegado | Rol y pertenencia al cliente; un 403 puede ser lo esperado |
+| Ingreso responde `429` | Se superó el límite de intentos por dirección (`DJANGO_THROTTLE_LOGIN`); esperar y reintentar |
+| `manage.py flush` falla | Es lo esperado: la base rechaza vaciar el registro de auditoría. Reiniciar la base local con `docker compose -f docker-compose.local.yml down -v` |
+| No se puede eliminar un usuario | Aparece en el registro de auditoría: se desactiva, no se elimina |
 
 ```bash
 docker compose -f docker-compose.local.yml logs --tail=100 django celeryworker gotenberg firma-sandbox
@@ -232,3 +239,4 @@ Antes de adjuntar un log se quitan claves, cookies, tokens y datos personales.
 |---|---|---|
 | 0.1 | 27-10-2026 | Versión inicial: componentes, instalación del backend y del frontend, firma con el PSC de pruebas, configuración, verificación y diagnóstico |
 | 0.2 | 03-11-2026 | Staging (backend PR #73, frontend PR #29): componentes, variables, imagen nginx del frontend, `seed_demo_usuarios` y cifras de pruebas |
+| 0.3 | 03-11-2026 | Auditoría fusionada (PR #62 y #31): variables de ingreso y proxies, cifras de pruebas y diagnóstico (`429`, `flush`, usuarios) |

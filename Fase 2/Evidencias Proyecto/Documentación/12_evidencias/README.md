@@ -2,8 +2,10 @@
 
 Respaldo de las sesiones con Easy Office y de las decisiones del proyecto.
 
-**Estado al 27 de octubre de 2026: esta carpeta contiene solo este README.** Lo
-que figura en la tabla está previsto y todavía no se ha versionado.
+**Estado al 3 de noviembre de 2026:** esta carpeta contiene este README y la
+primera evidencia de una ejecución, `2026-11-03_auditoria/` (EVI-T11, con su
+`manifest.md`, `resultados.md` y capturas, según `EVI-001` §2). Lo que figura en
+la tabla está previsto y todavía no se ha versionado.
 
 | Contenido | Formato | Condición | Estado |
 |---|---|---|---|
