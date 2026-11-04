@@ -7,8 +7,8 @@
 | **Documento** | SPR-001 · Sprint Backlog |
 | **Sprints** | 1 · Núcleo de datos y accesos — cerrado<br>2 · Domicilio tributario de punta a punta — cerrado<br>3 · Segundo documento y motor configurable — en ejecución |
 | **Período** | 22 de septiembre – 31 de octubre de 2026 |
-| **Versión** | 2.2 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Versión** | 2.3 |
+| **Fecha** | 2 de noviembre de 2026 |
 | **Preparado por** | Equipo de proyecto |
 
 ---
@@ -235,7 +235,7 @@ presentación. `[CONFIRMAR responsables y alcance en la planificación]`
 
 | ID | Elemento | Resp. | Estado |
 |---|---|---|---|
-| HU-30, HU-31 | Registro de auditoría de solo escritura y su consulta (RF-15 a RF-17) | Fernando | En curso: backend listo en el PR #62, abierto y pendiente de revisión; faltan las pantallas |
+| HU-30, HU-31 | Registro de auditoría de solo escritura y su consulta (RF-15 a RF-17) | Fernando | En curso: backend en el PR #62 (issue #61), abierto y pendiente de revisión; pantallas implementadas en la rama local `feature/HU-31-auditoria` del frontend (issue #30), sin subir ni PR. No cumple todavía el nivel de fusionado ni la revisión de otro integrante; el frontend se fusiona después del PR #62 |
 | HU-14, HU-16 | Pantalla para configurar tipos de trámite: campos, plantilla, pago y firma | Nicolás | Pendiente |
 | HU-45 | Pruebas de control de acceso por rol y pruebas de seguridad | Marcos | Pendiente |
 | HU-46 | Pruebas de rendimiento (RNF-10) | Marcos | Pendiente |
@@ -284,3 +284,4 @@ presentación. `[CONFIRMAR responsables y alcance en la planificación]`
 | 2.0 | 22-10-2026 | Cierre del Sprint 1 con su resultado real; sprints 2 y 3 reconstruidos desde issues, PR y commits; corrección de la nota de la versión 1.1; suma de capacidad corregida | Equipo de proyecto |
 | 2.1 | 22-10-2026 | Sprint 3: avance de HU-30 y HU-31 | Equipo de proyecto |
 | 2.2 | 27-10-2026 | Niveles de cumplimiento (fusionado, DoD, aceptado); métricas del Sprint 1 cortadas al 03-10; responsables por autoría de commits (HU-24 y HU-41 son de Fernando); Sprint 3 con HU-59 y la firma avanzada hechas y responsables de HU-30, HU-31, HU-14 y HU-16 según la distribución acordada en el diario de reflexión | Equipo de proyecto |
+| 2.3 | 02-11-2026 | Sprint 3: pantallas de HU-31 implementadas en una rama local del frontend, sin fusionar | Equipo de proyecto |

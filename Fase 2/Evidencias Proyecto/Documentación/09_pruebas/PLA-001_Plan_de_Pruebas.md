@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.11 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Versión** | 1.13 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 
@@ -384,7 +384,49 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 - Verificado en la base local: un cambio a un cliente aparece en su historial con
   usuario, fecha, valor anterior y nuevo; el Ejecutivo recibe 403; un `DELETE`
   directo en psql falla.
-- Pendiente: las pantallas de consulta (HU-31, frontend).
+- Las pantallas de consulta (HU-31) se describen en el bloque siguiente.
+
+**Pantallas de auditoría (HU-31, frontend, issue #30, rama local `feature/HU-31-auditoria`, sin subir)**
+
+- `npm run typecheck`, `npm run lint`, `npm test` (223 pruebas en 32 archivos) y
+  `npm run build` pasan en la rama local. La CI no se ha ejecutado, porque la rama
+  no está subida. Las pruebas del backend no se volvieron a ejecutar: el backend
+  no cambió en este trabajo.
+- Cubren:
+  - el menú y la ruta según el permiso, con el árbol de rutas real;
+  - un `403` sin reintento y la sesión terminada;
+  - los filtros hacia los parámetros y desde la URL, los errores de validación y
+    la paginación;
+  - "Sistema" y "Sin identificar" cuando no hay usuario;
+  - el detalle de una creación, un cambio, una eliminación, un cambio de rol y
+    los demás eventos;
+  - la zona horaria en verano y en invierno;
+  - el mensaje de `429` en el ingreso.
+- Solo con pruebas automáticas, sin recorrido manual: un `403` con la sesión aún
+  activa y el `429` en el ingreso del portal.
+- Recorrido manual: EVI-T11, ejecutado en local sobre ramas sin fusionar
+  (`EVI-001`). En local, la IP registrada es la de la red de Docker, así que no
+  prueba la IP real detrás del proxy; se revisa en el primer despliegue.
+
+**Staging (backend PR #73 y frontend PR #29, fusionados)**
+
+- Backend: 715 pruebas pasan, con `PAYMENT_TUNNEL_METRICS_URL` vacía, como en la
+  CI. Con un `.envs/.local/.django` que la define y sin el servicio `tunnel`, dos
+  pruebas de `ventas/tests/test_tasks.py` fallan, también antes de este cambio.
+  `firma_sandbox`: 64 pasan. Frontend: 165 pasan.
+- La CI pasó en ambos PR: `linter`, `pytest`, `firma-sandbox` y `e2e` en el
+  backend; `checks` en el frontend, que ahora tiene CI.
+- Separación del PSC (AD-16): la configuración de producción sigue rechazándolo,
+  la de staging lo acepta, staging también lo rechaza con los nombres de variables
+  de producción, y la compose de producción no lo incluye.
+- `anonimizar_datos`: ningún valor original sobrevive, incluido uno del snapshot
+  que ningún registro tiene; RUT válidos, únicos y consistentes; cada negativa;
+  hashes de los archivos; campos sin clasificar.
+- En una pila local desechable, antes del merge: rutas y contraseña, firma de
+  punta a punta a través de Traefik, despliegue, vuelta atrás automática y manual,
+  copia de la base con sustitutos de `ssh` y `scp`, respaldo y restauración en una
+  base separada.
+- En la VM y lo pendiente: `MOP-001` §1.1.
 
 **Firma avanzada con el PSC de pruebas (backend PR #68 y frontend PR #27, fusionados)**
 
@@ -435,3 +477,5 @@ ejecución (fecha, commit, entorno y resultado).
 | 1.9 | 22-10-2026 | Estado de los PR de la bodega virtual: fusionados | Equipo de proyecto |
 | 1.10 | 22-10-2026 | Pruebas de la auditoría (696 en el backend, PR #62 abierto); dos casos de seguridad de §3.4 automatizados | Equipo de proyecto |
 | 1.11 | 27-10-2026 | Pruebas de la firma avanzada con el PSC de pruebas (685 en el backend en `main`, 62 del PSC y la prueba de punta a punta) | Equipo de proyecto |
+| 1.12 | 02-11-2026 | Pruebas de las pantallas de auditoría (HU-31): 223 del frontend en una rama local sin subir; EVI-T11 en local | Equipo de proyecto |
+| 1.13 | 03-11-2026 | Pruebas del ambiente de staging (PR #73 y #29): 715 del backend en `main`, 64 del PSC y 165 del frontend; separación del PSC y anonimización | Equipo de proyecto |

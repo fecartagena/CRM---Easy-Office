@@ -5,9 +5,9 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MOP-001 · Manual de operación |
-| **Versión** | 0.1 |
-| **Fecha** | 27 de octubre de 2026 |
-| **Estado** | **Procedimiento propuesto.** No hay un despliegue ni una restauración ejecutados. El alojamiento productivo sigue abierto (TA-09) |
+| **Versión** | 0.2 |
+| **Fecha** | 3 de noviembre de 2026 |
+| **Estado** | **Procedimiento propuesto para producción.** Staging está desplegado en una VM (§1.1); la restauración solo se ensayó en una pila local desechable. El alojamiento productivo sigue abierto (TA-09) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
 La instalación local está en `07_arquitectura/MTE-001`.
@@ -40,6 +40,73 @@ documentar cómo se publica y cómo se resuelven las rutas de React.
 
 Una demostración local no reemplaza el despliegue que figura en el alcance. Si
 la entrega se limita a una demostración, se registra como ajuste de alcance.
+
+### 1.1 Staging
+
+Ambiente en internet, solo con datos ficticios, donde funciona todo lo que
+funciona en local (`ARQ-001` §6.1). Lo crearon el backend PR #73 (issue #72) y el
+frontend PR #29 (issue #28). La guía paso a paso, en nueve secciones más el plan
+alternativo para Let's Encrypt, es `docs/staging.md` del backend.
+
+| Dato operativo | Staging |
+|---|---|
+| Host | VM de Compute Engine en `southamerica-west1`, Ubuntu 24.04, 4 GB de RAM, 2 GB de swap; puertos 22, 80 y 443 |
+| Dominio | `<ip-con-guiones>.sslip.io`, `firma.` y `correo.` del mismo; un certificado de Let's Encrypt |
+| Acceso | Un usuario `basicAuth` (`equipo`) en los tres hosts; contraseña fuera del repositorio |
+| Servicios | `django`, `postgres`, `redis`, `celeryworker`, `celerybeat`, `gotenberg`, `frontend`, `firma-sandbox`, `firma-sandbox-worker`, `mailpit`, `nginx`, `traefik` |
+| Modo de pago y de firma | Klap y Flow en sandbox; firma avanzada con el PSC de pruebas, sin validez legal; todo el correo va a Mailpit |
+| Usuarios de demostración | `seed_demo_usuarios --force`: un Administrador, un Ejecutivo y dos clientes empresa del portal, con contraseñas del entorno |
+| Secretos de GitHub | `STAGING_HOST`, `STAGING_USER`, `STAGING_SSH_KEY` en el ambiente `staging` de ambos repositorios. **Todavía sin configurar** |
+
+**Despliegue.** Cada merge a `main` que pasa la CI ejecuta `deploy.sh` por SSH
+con una clave restringida (`restrict,command=`) del usuario `deploy`. El script
+compila en la VM, migra, revisa la salud y, si falla, restaura el código y las
+imágenes anteriores. No revierte migraciones, pero respalda la base antes de
+migrar si hay migraciones pendientes. Sin los secretos, el flujo termina sin
+desplegar y deja un aviso.
+
+**Respaldos.** Diarios a las 03:00, hora de Chile, con 7 días de retención: base de
+datos, archivos privados y datos del PSC. Quedan en la misma VM, así que todavía
+no cumplen la copia fuera del host de §3.
+
+**Copia de la base local.** Solo a pedido, con `scripts/staging/copy_local_db.sh`,
+nunca en un despliegue. Reemplaza lo que hay en staging, salvo los datos del PSC.
+Antes de salir del computador, `anonimizar_datos` anonimiza una copia desechable:
+
+- se niega sin `--es-copia`, con configuración de producción o de staging, y si la
+  base no se llama `crm_copia`;
+- genera nombres, correos, teléfonos, direcciones y RUT; cada RUT tiene dígito
+  verificador válido, es único y es consistente entre tablas, desde 91.000.000;
+- de `Documento.datos_snapshot` solo conserva `folio`, fechas, duración y
+  `servicios`; el resto se reemplaza, incluidos valores que ya ningún registro
+  tiene;
+- deja las contraseñas inutilizables y vacía tokens, MFA, sesiones, `LogEntry` y
+  los payloads de proveedores (`Pago.respuesta`, `EventoPago.payload`,
+  `EventoFirma.payload`);
+- reemplaza las cédulas por una imagen PNG de relleno, y cada Word y PDF por un
+  archivo "Documento no disponible en la copia de staging", con su SHA-256
+  recalculado;
+- cierra las `SolicitudFirma` y `OrdenPago` abiertas;
+- borra las tablas que ningún modelo conoce, y avisa cuáles;
+- al final busca los valores originales en todas las tablas, salvo los catálogos
+  del framework y las columnas clasificadas como no identificatorias. Las columnas
+  sobrescritas se comparan por valor exacto y las demás por subcadena. Si queda
+  alguno, falla y no confirma nada.
+
+Cada campo de texto o JSON está clasificado en `ANONIMIZADOS`, `CONSERVADOS` o
+`REVISADOS`; una prueba falla si aparece uno nuevo sin clasificar.
+
+**Comprobado en la VM:** el primer despliegue con `deploy.sh`; el certificado para
+los tres hosts; la contraseña en los tres hosts y los puertos internos cerrados
+desde afuera; el primer respaldo automático de las 03:00; una orden creada en Klap
+con su webhook de validación respondido con 200; y una solicitud de firma enviada
+al PSC, con su correo en Mailpit y el enlace público.
+
+**Sin confirmar todavía en la VM:** el pago con Flow; que el webhook de
+confirmación de pago se haya registrado; la firma completa de los tres firmantes;
+la copia real de la base; y las variantes de la demostración. **Sin ejecutar:** el
+despliegue automático desde GitHub Actions, porque el ambiente `staging` aún no
+tiene secretos.
 
 ---
 
@@ -112,14 +179,17 @@ recuperación.
 
 | Fecha y versión | Ambiente aislado | Respaldo usado | Conteos antes y después | Archivo recuperado | Tiempo medido | Resultado | Operador y revisor |
 |---|---|---|---|---|---|---|---|
-| No ejecutado | — | — | — | — | — | Pendiente | — |
+| Antes del merge del PR #73, pila local desechable | Base separada | Respaldo de `scripts/staging/backup.sh` | No registrados | No registrado | No medido | Restauró; ensayo parcial, sin conteos ni tiempos | No registrado |
+| Producción: no ejecutado | — | — | — | — | — | Pendiente | — |
 
 ---
 
 ## 5. Actualizaciones, reversión e incidentes
 
 - **Antes de actualizar:** respaldo comprobado, lista de migraciones y si son
-  reversibles. Se conserva la versión anterior.
+  reversibles. Se conserva la versión anterior. En staging, `deploy.sh` respalda
+  la base si hay migraciones pendientes y, si la revisión de salud falla, restaura
+  el código y las imágenes anteriores, no las migraciones (§1.1).
 - **Si la verificación falla:** detener nuevas operaciones y conservar los
   registros. Volver a la versión anterior solo si el esquema sigue siendo
   compatible; si no, aplicar la recuperación ensayada y documentar lo que se pierde
@@ -143,6 +213,17 @@ recuperación.
 - [ ] Manual de usuario (`MUS-001`) revisado y sesión de traspaso, si corresponde.
 - [ ] Acta de entrega, solo cuando la entrega ocurra.
 
+**Pendientes de staging**
+
+- [ ] Configurar los secretos del ambiente `staging` en ambos repositorios y
+      comprobar el primer despliegue automático.
+- [ ] Comprobar en la VM lo que quedó sin confirmar (§1.1).
+- [ ] `docs/staging.md`, sección 3: en un clon nuevo no existe `.envs/`; falta
+      crearla antes de copiar a `.envs/.staging`.
+- [ ] Confirmar si Flow sandbox acepta correos `@example.test`.
+- [ ] Al terminar el semestre, eliminar la VM y liberar la IP estática, que sigue
+      cobrando si queda reservada.
+
 ---
 
 ## Historial de versiones
@@ -150,3 +231,4 @@ recuperación.
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 0.1 | 27-10-2026 | Versión inicial: ambiente objetivo, publicación, respaldo, ensayo de recuperación, incidentes y entrega operativa |
+| 0.2 | 03-11-2026 | Staging (backend PR #73, frontend PR #29): ambiente, despliegue continuo, respaldos, copia anonimizada de la base, lo comprobado en la VM y pendientes |

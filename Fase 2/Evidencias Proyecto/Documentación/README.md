@@ -33,13 +33,13 @@ Documentación/
 | Código | Documento | Carpeta | Versión |
 |---|---|---|---|
 | PV-001 | Product Vision | 03 | 2.0 |
-| BKL-001 | Product Backlog | 04 | 2.12 |
-| SPR-001 | Sprint Backlog · sprints 1 a 3 | 04 | 2.2 |
+| BKL-001 | Product Backlog | 04 | 2.13 |
+| SPR-001 | Sprint Backlog · sprints 1 a 3 | 04 | 2.3 |
 | DOD-001 | Definition of Done | 04 | 1.0 |
-| DIS-001 | Documento de diseño | 07 | 1.6 |
+| DIS-001 | Documento de diseño | 07 | 1.7 |
 | RET-001 | Registro de retrospectivas | 04 | 1.2 |
 | GNT-001 | Carta Gantt, hitos, plan de trabajo y sprints (.xlsx + .pdf) | 05 | 1.1 |
-| PLA-001 | Plan de pruebas | 09 | 1.11 |
+| PLA-001 | Plan de pruebas | 09 | 1.13 |
 | GES-001 | Gestión del trabajo, aportes individuales y preparación del cierre | 04 | 0.1 |
 | CHK-003 | Checklist de cierre documental | 04 | 1.0 |
 
@@ -48,7 +48,7 @@ Documentación/
 | Código | Documento | Carpeta | Versión |
 |---|---|---|---|
 | DIP-001 | Documento de inicio de proyecto | 03 | 1.0 |
-| ARQ-001 | Arquitectura: diagrama, componentes UML, comunicación, secuencia | 07 | 1.7 |
+| ARQ-001 | Arquitectura: diagrama, componentes UML, comunicación, secuencia | 07 | 1.8 |
 | MOD-001 | Modelo de datos (ER) | 08 | 1.11 |
 | UML-002 | Diagrama de clases | 07 | 1.2 |
 | UML-001 | Casos de uso | 07 | 1.2 |
@@ -62,21 +62,21 @@ Documentación/
 | ESP-DOC | Especificaciones de documentos entregadas por Easy Office | 01 | — |
 | CAT-001 | Catálogo de identificadores | 02 | 1.6 |
 | RN-001 | Reglas de negocio | 02 | 2.9 |
-| TRZ-001 | Matriz de trazabilidad | 02 | 2.14 |
+| TRZ-001 | Matriz de trazabilidad | 02 | 2.15 |
 | ALC-001 | Alcance del MVP | 03 | 2.0 |
 | FUN-001 | Ficha funcional del servicio piloto | 03 | 1.2 |
 | DEC-001 | Decisiones del equipo ante la participación limitada de Easy Office (borrador para adopción) | 03 | 1.0 |
 | REC-001 | Recomendación técnica | 07 | 1.0 |
-| MTE-001 | Manual técnico: instalación, configuración y verificación (borrador) | 07 | 0.1 |
+| MTE-001 | Manual técnico: instalación, configuración y verificación (borrador) | 07 | 0.2 |
 | MIG-001 | Plan de migración desde la planilla (diseño; importador pendiente) | 08 | 0.1 |
-| EVI-001 | Plan de evidencias, casos de punta a punta y aceptación técnica (sin ejecutar) | 09 | 0.1 |
-| RSK-001 | Registro de riesgos | 10 | 1.6 |
+| EVI-001 | Plan de evidencias, casos de punta a punta y aceptación técnica (EVI-T11 ejecutado en local, sin fusionar) | 09 | 0.3 |
+| RSK-001 | Registro de riesgos | 10 | 1.7 |
 | CHK-001 | Checklist de validación con la contraparte | 11 | — |
 | ACTA-002 | Reunión de validación con Easy Office, 08-10-2026 | 11 | 1.8 |
 | PLT-000 | Catálogo de plantillas, diccionario de campos y regla del folio | 13 | 1.5 |
 | PLT-01 a PLT-05 | Plantillas documentales anonimizadas | 13 | — |
 | MUS-001 | Manual de usuario: portal y backoffice (borrador) | 14 | 0.1 |
-| MOP-001 | Manual de operación: despliegue, respaldo y recuperación (procedimiento propuesto) | 14 | 0.1 |
+| MOP-001 | Manual de operación: despliegue, respaldo y recuperación (procedimiento propuesto; staging desplegado) | 14 | 0.2 |
 
 Las versiones anteriores de MRQ-001, ALC-001, RN-001, TRZ-001 y PV-001 se
 conservan en `_historico/` como evidencia de la evolución del proyecto.
@@ -138,9 +138,9 @@ efectivamente se hizo: lo que no se ejecutó se registra como no ejecutado.
 | Documento | Qué falta | Cuándo corresponde |
 |---|---|---|
 | Retrospectivas en `RET-001` | `RET-001` v1.2 registra que las sesiones de los sprints 1 y 2 no quedaron registradas. Falta hacer una revisión con su fecha real (`GES-001` §4) | Con el aporte de los tres integrantes |
-| Evidencia de pruebas (`PLA-001` §6, `EVI-001`) | Los casos y formatos están en `EVI-001`, sin ejecutar. Falta el resultado de la integración continua, cobertura (`09_pruebas/sprint-N/`), rendimiento (`09_pruebas/rendimiento/`), seguridad (`09_pruebas/seguridad/`) y aceptación. Cada evidencia con fecha, commit, entorno y resultado. Las capturas del mockup no prueban el funcionamiento del sistema | Pruebas, correcciones y validación: semanas 9 a 15 (`GNT-001`) |
+| Evidencia de pruebas (`PLA-001` §6, `EVI-001`) | Los casos y formatos están en `EVI-001`; solo EVI-T11 se ejecutó, en local y sobre ramas sin fusionar. Falta el resultado de la integración continua, cobertura (`09_pruebas/sprint-N/`), rendimiento (`09_pruebas/rendimiento/`), seguridad (`09_pruebas/seguridad/`) y aceptación. Cada evidencia con fecha, commit, entorno y resultado. Las capturas del mockup no prueban el funcionamiento del sistema | Pruebas, correcciones y validación: semanas 9 a 15 (`GNT-001`) |
 | Evidencias de las sesiones | Transcripciones `T1` y `T2` anonimizadas, confirmación escrita de `ACTA-002` y capturas de las demostraciones, en `12_evidencias/`. `ACTA-001` afirma que las transcripciones se conservan ahí, y hoy no están | Por planificar |
-| Manual técnico y de despliegue | Borradores `MTE-001` (instalación local) y `MOP-001` (despliegue, respaldos, restauración y reversión). Falta una instalación limpia hecha por otro integrante y el ensayo de restauración. El despliegue depende del alojamiento productivo (TA-09) | Etapa de cierre, semanas 16 a 18 (hito H8) |
+| Manual técnico y de despliegue | Borradores `MTE-001` (instalación local) y `MOP-001` (despliegue, respaldos, restauración y reversión). Staging desplegado en una VM con despliegue continuo y respaldos diarios (`ARQ-001` §6.1, `MOP-001` §1.1). Falta una instalación limpia hecha por otro integrante y el ensayo de restauración medido. El despliegue de producción depende del alojamiento productivo (TA-09) | Etapa de cierre, semanas 16 a 18 (hito H8) |
 | Manual de usuario y aceptación | Borrador `MUS-001`. Falta recorrerlo con cada rol, agregar capturas y hacer la aceptación técnica interna (`EVI-001` §8). La aceptación de Easy Office queda aparte | Por planificar |
 | Plan de migración | `MIG-001` v0.1 mapea las 34 columnas a los modelos. Falta el importador y su ensayo con datos sintéticos; la carga real depende de la planilla completa anonimizada (TA-10) | Antes del hito H5 (31-10-2026) |
 | Plantilla de Pull Request y CI del frontend | Este repositorio ya tiene su plantilla (`.github/pull_request_template.md`). Faltan las de los repositorios de código, con la checklist de `DOD-001`, y un flujo de CI en el frontend que ejecute pruebas, tipos, lint y compilación | Por planificar |

@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | DIS-001 · Documento de diseño |
-| **Versión** | 1.6 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Versión** | 1.7 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
 | **Clasificación** | Uso interno del proyecto |
@@ -162,10 +162,11 @@ proveedores) está en `REC-001`.
 | Cuenta del cliente | Sin rol ni acceso al backoffice; el registro tiene límite de intentos y un RUT ya registrado no se revela (mismo error genérico ante cualquier rechazo) |
 | Cobros | El precio sale del servidor; el estado cambia solo en el servicio de dominio; los resultados se verifican contra el proveedor y no contra el navegador |
 | Documentos del trámite | Sin URL pública: el portal y el backoffice piden cada archivo con la sesión del usuario y lo muestran desde una URL local del navegador; las respuestas no se guardan en caché. El cliente solo ve sus propios trámites |
-| Firma avanzada | Notificaciones del proveedor verificadas con HMAC sobre el cuerpo y una marca de tiempo (ventana de 300 s), deduplicadas por id de evento; el PDF firmado se acepta solo si el documento enviado es su prefijo exacto y los hashes coinciden (RF-39); la clave de API viaja solo en el encabezado. El PSC de pruebas no puede usarse en producción: se niega a iniciar y la configuración de producción rechaza su URL (AD-16) |
+| Firma avanzada | Notificaciones del proveedor verificadas con HMAC sobre el cuerpo y una marca de tiempo (ventana de 300 s), deduplicadas por id de evento; el PDF firmado se acepta solo si el documento enviado es su prefijo exacto y los hashes coinciden (RF-39); la clave de API viaja solo en el encabezado. El PSC de pruebas corre en local y staging, nunca en producción: solo inicia con `FIRMA_SANDBOX_ENV` en `local`, `test`, `ci` o `staging`, la compose de producción no lo incluye y la configuración de producción rechaza su URL (AD-16) |
 | Notificaciones de pago | Firma verificada cuando el proveedor la ofrece (Klap); verificación en segundo plano consultando al proveedor cuando no (Flow); registro de eventos con clave de deduplicación; monto distinto del esperado deja la orden en error |
 | Llaves de proveedores | Solo en archivos de entorno ignorados por Git; el ejemplo versionado lleva marcadores vacíos |
 | Túnel de webhooks | Solo en desarrollo local, que usa datos ficticios, porque expone la API local a internet mientras corre |
+| Staging | Solo datos ficticios. Un usuario `basicAuth` en los tres hosts y `X-Robots-Tag: noindex, nofollow`; solo los retornos y avisos de pago quedan sin contraseña, cada uno con su verificación. La copia de la base local se anonimiza antes de salir del computador y falla si queda algún valor original (`ARQ-001` §6.1, `MOP-001`) |
 
 El repositorio del proyecto es público, lo que convierte la última línea en una
 condición no negociable, incorporada a la Definition of Done.
@@ -207,7 +208,7 @@ El detalle de cada verificación está en `PLA-001 Plan de pruebas`.
 | AD-13 | Plantilla Word llenada con `docxtpl` | Editar el XML del Word en cada generación |
 | AD-14 | Conversión a PDF en un contenedor aparte (Gotenberg) | LibreOffice en la imagen del worker |
 | AD-15 | Cookie de sesión propia para el panel de administración | Una sola cookie de sesión para el panel y la aplicación web |
-| AD-16 | PSC de pruebas propio para la firma avanzada en desarrollo, sin validez legal, consumido por HTTP | Construir una firma avanzada propia para producción; esperar las credenciales del proveedor |
+| AD-16 | PSC de pruebas propio para la firma avanzada, sin validez legal, consumido por HTTP; corre en local y staging, nunca en producción | Construir una firma avanzada propia para producción; esperar las credenciales del proveedor |
 
 El contexto y las consecuencias de cada una están en `ARQ-001 §8`.
 
@@ -262,3 +263,4 @@ el proyecto a un motor que no genera ningún documento real está registrado en
 | 1.4 | 17-10-2026 | Sesión separada para el panel de administración (AD-15) | Equipo de proyecto |
 | 1.5 | 22-10-2026 | §7 Trazabilidad: auditoría con disparadores y alcance de su protección (HU-30) | Equipo de proyecto |
 | 1.6 | 27-10-2026 | §7: controles de la firma avanzada; §9: AD-16 | Equipo de proyecto |
+| 1.7 | 03-11-2026 | §7: controles del ambiente de staging; AD-16 con el PSC en local y staging, nunca en producción | Equipo de proyecto |

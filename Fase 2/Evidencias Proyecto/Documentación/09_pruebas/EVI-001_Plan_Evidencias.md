@@ -5,9 +5,9 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | EVI-001 · Plan de evidencias |
-| **Versión** | 0.1 |
-| **Fecha** | 27 de octubre de 2026 |
-| **Estado** | **Plan y formatos.** Ningún caso de este documento se ha ejecutado todavía |
+| **Versión** | 0.3 |
+| **Fecha** | 3 de noviembre de 2026 |
+| **Estado** | **Plan y formatos.** Solo EVI-T11 se ha ejecutado, en local y sobre ramas sin fusionar; ningún caso se ha ejecutado sobre el código fusionado |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
 Complementa `PLA-001` (qué se prueba y con qué herramientas) y
@@ -30,6 +30,8 @@ Las cifras de pruebas son de cortes distintos y se citan con el suyo:
 | Guía 2.4, 20-10-2026 | 545 | 131 | Entrega de la Fase 2 |
 | Rama principal, 27-10-2026 | 685 (más 62 del PSC de pruebas) | Ver `PLA-001` | `PLA-001` v1.11 |
 | Rama de auditoría, sin fusionar | 696 | — | `PLA-001` v1.11 |
+| Pantallas de auditoría, rama local del frontend sin subir, 02-11-2026 | — | 223 (32 archivos) | `PLA-001` v1.12 |
+| Rama principal con staging (PR #73 y #29), 01-11-2026 | 715 (más 64 del PSC de pruebas) | 165 | `PLA-001` v1.13 |
 
 Este documento no ejecutó esas suites ni revisó sus registros en GitHub Actions.
 
@@ -101,6 +103,23 @@ Todos comienzan en **No ejecutado**.
 | Defecto, severidad y reejecución | Si aplica; el primer resultado no se borra |
 | Revisor y decisión | Pendiente |
 
+### Fichas registradas
+
+**EVI-T11 · Auditoría**
+
+| Campo | Valor |
+|---|---|
+| Caso | EVI-T11 |
+| Estado | **Ejecutado en local contra ramas sin fusionar; se debe volver a ejecutar tras la fusión.** El paso "integrar la auditoría" no está cumplido |
+| Fecha, persona, ambiente y commits | 02-11-2026. Ejecutado por Claude Code a pedido del equipo. Docker local y Vite. Backend `2acf8b5` (PR #62, rama `feature/HU-30-auditoria`). Frontend: recorrido sobre los cambios de la rama `feature/HU-31-auditoria` antes de confirmarlos, con el mismo contenido de `48d541d` |
+| Precondición y datos exactos | Datos sintéticos: cuentas de `seed_demo_usuarios` y un cliente de prueba `CLI-000023` |
+| Resultado esperado | Actor, fecha y cambio registrados; el historial no se puede editar; solo el Administrador consulta |
+| Resultado observado | Crear y editar un cliente, ingresar, cerrar sesión e intentar un ingreso fallido aparecen en la pantalla con actor, fecha y cambio. Como Ejecutivo no hay entrada en el menú, la URL directa muestra "Sin acceso" y la API responde `403`. Como Administrador, `POST`, `PUT`, `PATCH` y `DELETE` responden `405` o `404`, y el total de filas no cambia. Con el límite de intentos, el intento 11 responde `429` y no deja fila |
+| Límite | En local la IP registrada es la de la red de Docker (`172.18.0.1`); no prueba la IP real detrás del proxy. Se revisa en el primer despliegue |
+| Evidencia | `01-registro-filtrado.jpg`, `02-detalle-modificacion.jpg`, `03-historial-en-ficha.jpg`, `04-error-hasta-antes-de-desde.jpg`, `05-ejecutivo-sin-acceso.jpg`, `06-ingreso-429.jpg`. Fuera del repositorio, pendientes de archivar por el equipo (§2). Solo muestran cuentas de demostración y datos sintéticos |
+| Defecto, severidad y reejecución | Ninguno abierto en la pantalla. Reejecución después de fusionar el PR #62 del backend y el PR del frontend |
+| Revisor y decisión | Pendiente |
+
 ---
 
 ## 4. Rendimiento
@@ -158,7 +177,7 @@ escenario en su pie.
 
 | Requisito | Historia | PR | Caso | Resultado y fecha | Estado |
 |---|---|---|---|---|---|
-| RF-15 a RF-17 | HU-30, HU-31 | Backend #62, sin fusionar | EVI-T11 | No ejecutado | Implementado en rama |
+| RF-15 a RF-17 | HU-30, HU-31 | Backend #62, abierto; frontend en rama local `feature/HU-31-auditoria`, sin PR | EVI-T11 | Ejecutado en local sobre ramas sin fusionar, 02-11-2026; se repite tras la fusión | Implementado en ramas sin fusionar |
 | RF-25, RF-39, RF-40 | Firma avanzada | Backend #68, frontend #27 | EVI-T10 | No ejecutado aquí | Fusionado; aceptación pendiente |
 | RF-43, RF-44 | Verificar historia vigente en `BKL-001` | — | EVI-T13, `MIG-T` | No ejecutado | Pendiente |
 | RF-19 a RF-32 | HU-23 a HU-29 | Backend #51, frontend #18 | EVI-T01 | No ejecutado aquí | Fusionado; aceptación pendiente |
@@ -198,3 +217,5 @@ compara con la espera real de una firma con validez legal sin advertirlo.
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 0.1 | 27-10-2026 | Versión inicial: regla de evidencia, carpetas, 16 casos de punta a punta (incluida la firma avanzada), rendimiento, seguridad, capturas del anexo A y acta de aceptación técnica |
+| 0.3 | 03-11-2026 | Corte de pruebas de la rama principal con staging (PR #73 y #29) |
+| 0.2 | 02-11-2026 | Ficha de EVI-T11, ejecutado en local sobre ramas sin fusionar (backend PR #62, frontend `feature/HU-31-auditoria`); corte de pruebas del frontend de esa rama |

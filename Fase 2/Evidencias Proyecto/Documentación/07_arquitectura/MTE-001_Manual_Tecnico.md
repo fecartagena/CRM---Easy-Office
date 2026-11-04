@@ -5,13 +5,14 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MTE-001 · Manual técnico |
-| **Versión** | 0.1 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Versión** | 0.2 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | **Borrador.** Comandos tomados de los README y archivos de la rama principal (backend `7869d0a`, frontend `f2e4758`). La instalación limpia siguiendo este manual **no se ha ejecutado** todavía |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
 El despliegue, los respaldos y la recuperación están en `14_manuales/MOP-001`.
-Este manual cubre el ambiente local.
+Este manual cubre el ambiente local. El ambiente de staging se instala con
+`docs/staging.md` del backend (`ARQ-001` §6.1).
 
 ---
 
@@ -31,7 +32,9 @@ completa está en `ARQ-001`.
 | Tipos de trámite, solicitudes, estados y firmantes | `crm_easyoffice/tramites/` |
 | Plantillas, conversión, archivos y generación | `crm_easyoffice/documentos/` |
 | Pagos y firma (adaptadores de proveedores) | `crm_easyoffice/integrations/` |
-| PSC de pruebas, sin validez legal (`ARQ-001` AD-16) | `firma_sandbox/` |
+| PSC de pruebas, sin validez legal; local y staging, nunca producción (`ARQ-001` AD-16) | `firma_sandbox/` |
+| Staging: compose, configuración, scripts y guía | `docker-compose.staging.yml`, `config/settings/staging.py`, `compose/staging/`, `scripts/staging/`, `docs/staging.md` |
+| Anonimización de la copia de la base | `crm_easyoffice/migracion/anonimizacion.py`, comando `anonimizar_datos` |
 | Diferencias entre plantillas | `docs/variation-points.md` |
 | Rutas y permisos del frontend | `src/routes/routes.tsx`, `src/features/auth/permisos.ts` |
 
@@ -80,7 +83,8 @@ docker compose -f docker-compose.local.yml run --rm django python manage.py seed
 
 Para probar por rol se crean usuarios separados: un Administrador, un Ejecutivo
 y dos clientes del portal. El superusuario no sirve como evidencia del acceso de
-cada rol.
+cada rol. `seed_demo_usuarios --force` crea esos cuatro usuarios (los clientes,
+como empresas del portal); es idempotente y toma las contraseñas del entorno.
 
 | Recurso | Dirección |
 |---|---|
@@ -119,6 +123,9 @@ cp .env.example .env
 npm run dev
 ```
 
+`Dockerfile` es la imagen de desarrollo. Staging usa `Dockerfile.nginx` y
+`nginx.conf`, que sirven la aplicación compilada.
+
 `npm ci` instala exactamente lo del lockfile. Si falla, se registra el error; no
 se regenera el lockfile para ocultarlo.
 
@@ -145,6 +152,7 @@ quedan dentro del código que recibe el navegador: no llevan secretos.
 | PDF | `PDF_CONVERTER`, `GOTENBERG_URL`, `PDF_CONVERSION_TIMEOUT_SECONDS` | Cada evidencia indica si usó el conversor simulado o Gotenberg |
 | Pago | `PAYMENT_PROVIDER`, `PAYMENT_PROVIDERS`, `KLAP_*`, `FLOW_*`, `PAYMENT_WEBHOOK_BASE_URL`, `PORTAL_BASE_URL` | Solo claves de sandbox; registrar el modo, no las claves |
 | Firma | `.envs/.local/.firma` | Secretos compartidos con el PSC de pruebas; nunca en producción |
+| Staging | `.envs/.staging/` (ejemplo en `.envs.example/.staging/`): `STAGING_HOST`, `STAGING_ACME_EMAIL`, `STAGING_SIGNATURE_PROVIDER`, `STAGING_SIGNATURE_API_BASE_URL`, `CELERY_WORKER_CONCURRENCY`, `STAGING_DEMO_ADMIN_PASSWORD`, `STAGING_DEMO_EJECUTIVO_PASSWORD`, `STAGING_DEMO_CLIENTE1_PASSWORD`, `STAGING_DEMO_CLIENTE2_PASSWORD`, `FIRMA_SANDBOX_RUNSERVER_OPTS` | Solo en la VM, nunca en Git. Detalle en `docs/staging.md` |
 | Archivos privados | `DJANGO_PRIVATE_MEDIA_ROOT` | Fuera de la ruta pública; se respaldan y su acceso se controla |
 | Folio | `CONTRATO_FOLIO_ANCHO` | Por defecto 4 dígitos |
 
@@ -171,9 +179,13 @@ npm run lint
 npm run build
 ```
 
-**Cifras de referencia, no ejecutadas para este manual:** `PLA-001` v1.11
-registra 685 pruebas del backend en la rama principal y 62 del PSC de pruebas.
-Las 696 del backend corresponden a la rama de auditoría (PR #62), sin fusionar.
+**Cifras de referencia, no ejecutadas para este manual:** con el PR #73 del
+backend y el #29 del frontend (`PLA-001` v1.13), pasan 715 pruebas del backend en
+la rama principal, 64 del PSC de pruebas y 165 del frontend. Las 715 se obtienen
+con `PAYMENT_TUNNEL_METRICS_URL` vacía, como en la CI: si `.envs/.local/.django`
+la define y el servicio `tunnel` no corre, dos pruebas de
+`ventas/tests/test_tasks.py` fallan. La rama de auditoría (PR #62) tiene sus
+propias cifras.
 Cada ejecución se registra con comando, salida, código de retorno y commit
 (`12_evidencias/README.md`).
 
@@ -219,3 +231,4 @@ Antes de adjuntar un log se quitan claves, cookies, tokens y datos personales.
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 0.1 | 27-10-2026 | Versión inicial: componentes, instalación del backend y del frontend, firma con el PSC de pruebas, configuración, verificación y diagnóstico |
+| 0.2 | 03-11-2026 | Staging (backend PR #73, frontend PR #29): componentes, variables, imagen nginx del frontend, `seed_demo_usuarios` y cifras de pruebas |

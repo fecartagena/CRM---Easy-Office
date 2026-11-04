@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | RSK-001 · Registro inicial de riesgos |
-| **Versión** | 1.6 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Versión** | 1.7 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Revisión** | Al cierre de cada sprint |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -52,7 +52,7 @@ materializando y que corresponde activar la contingencia.
 | R-13 | La calidad de los datos del Excel impide una migración limpia | Técnico | Media | Medio | Medio | Más del 10% de los registros queda en cuarentena en la primera corrida | Perfilado de los datos antes de migrar; registros inconsistentes a cuarentena en vez de carga parcial | Migrar el subconjunto válido y entregar el reporte de inconsistencias para que la contraparte lo corrija | Nicolás | Abierto |
 | R-14 | Sobreingeniería del motor configurable en desmedro de funcionalidad demostrable | Técnico | Media | Alto | Alto | El motor lleva un sprint completo sin generar ningún documento real | Implementar primero el trámite prioritario de forma directa y extraer el motor a partir de casos concretos; no construir editor visual de flujos · 17-10-2026: el domicilio tributario genera su documento real de punta a punta antes de extraer el motor (PR #51) | Entregar los documentos implementados aunque el motor quede parcialmente generalizado, priorizando funcionalidad sobre abstracción | Nicolás | Abierto |
 | R-15 | Dos implementaciones de pago y la cuenta obligatoria del cliente aumentan el esfuerzo del MVP | Gestión | Media | Medio | Medio | El sprint del portal cierra sin el flujo de pago completo | Klap y Flow ya están integrados detrás de la misma interfaz; la cuenta del cliente y el flujo de pago con ambos proveedores ya están implementados y probados en sandbox; el esfuerzo restante es conectar el pago con el trámite del domicilio tributario | Entregar con una pasarela real y la segunda desactivada por configuración | Nicolás | En seguimiento |
-| R-16 | Los precios cargados en el catálogo de ventas no coinciden con los de Easy Office | Dependencia externa | Alta | Medio | Alto | Se publica el portal con valores sin confirmar | Los servicios llevan `precio_confirmado = falso` y el portal los rotula como «Valores de ejemplo»; los valores cargados (14.900 y 3.500) difieren de los de los contratos vigentes (59.990 y 5.900) | Easy Office entrega la lista de precios vigente antes de abrir el portal | Fernando | Abierto |
+| R-16 | Los precios cargados en el catálogo de ventas no coinciden con los de Easy Office | Dependencia externa | Alta | Medio | Alto | Se publica el portal con valores sin confirmar | Los servicios llevan `precio_confirmado = falso`. La nota «Valores de ejemplo» se retiró de la interfaz (frontend `cf429ff`) y falta decidir si vuelve; los valores cargados (14.900 y 3.500) difieren de los de los contratos vigentes (59.990 y 5.900) | Easy Office entrega la lista de precios vigente antes de abrir el portal | Fernando | Abierto |
 | R-17 | No existe política de reembolsos y el adaptador de Flow no soporta la operación | Producto y legal | Media | Medio | Medio | Un cliente pide devolución de un pago | Se registra como pendiente en `ACTA-002`; el adaptador de Klap ya soporta el reembolso | Gestionar los reembolsos de forma manual en el panel del proveedor mientras se define la política | Nicolás | Abierto |
 | R-18 | El túnel de desarrollo expone la API local a internet | Seguridad | Baja | Medio | Bajo | Uso de datos reales en un entorno local | Solo se usan datos ficticios en local; las llaves viven en archivos ignorados por Git; el túnel se renueva solo y no usa el socket de Docker | Apagar el servicio `tunnel` y usar un túnel manual | Nicolás | Mitigado |
 | R-19 | Exposición o retención excesiva de la cédula del autorizante (anverso y reverso) y de los borradores de contrato | Cumplimiento y seguridad | Baja | Alto | Medio | Acceso a la cédula por un perfil no autorizado, o datos reales en un entorno de desarrollo | Almacenamiento privado fuera de los archivos públicos y sin URL; descarga solo con permiso propio del Administrador, como adjunto y sin caché; carpeta excluida del repositorio | Definir retención y cifrado en reposo conforme a la Ley 21.719 al decidir el alojamiento (TA-09) | Nicolás | Abierto |
@@ -93,3 +93,4 @@ Se dejan registrados para evitar que se agreguen sin fundamento:
 | 1.4 | 14-10-2026 | Nuevo R-19 (cédula del autorizante) |
 | 1.5 | 17-10-2026 | R-10 y R-14 actualizados con la generación del documento real; R-19 incluye el reverso de la cédula y los borradores |
 | 1.6 | 27-10-2026 | R-03: flujo de firma avanzada contra el PSC de pruebas (PR #68); la contingencia ya no afirma que pasar al proveedor real sea solo un cambio de configuración |
+| 1.7 | 03-11-2026 | R-16: la nota «Valores de ejemplo» ya no se muestra en el portal |
