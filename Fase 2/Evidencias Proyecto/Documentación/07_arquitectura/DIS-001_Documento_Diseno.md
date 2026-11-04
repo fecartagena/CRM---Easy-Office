@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | DIS-001 · Documento de diseño |
-| **Versión** | 1.7 |
+| **Versión** | 1.8 |
 | **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
@@ -157,7 +157,7 @@ proveedores) está en `REC-001`.
 | Secretos | Variables de entorno, fuera del código y del repositorio |
 | Datos en reposo | Cifrado de los documentos almacenados |
 | Minimización | Solo se solicitan los campos que el servicio requiere |
-| Trazabilidad | Registro inalterable de acciones sobre la información, con disparadores de PostgreSQL (AD-08) y consulta solo para el Administrador. Es inalterable para la aplicación y su usuario de base de datos; el dueño de la base podría eliminar los disparadores, y separar ese rol es tarea del despliegue (TA-09). Implementado en el backend, PR #62 abierto (HU-30) |
+| Trazabilidad | Registro inalterable de acciones sobre la información, con disparadores de PostgreSQL (AD-08) y consulta solo para el Administrador. Es inalterable para la aplicación y su usuario de base de datos; el dueño de la base podría eliminar los disparadores, y separar ese rol es tarea del despliegue (TA-09). Implementado: backend PR #62 y frontend PR #31, fusionados el 03-11-2026 (HU-30, HU-31). El ingreso tiene un límite de intentos por dirección y responde `429` al superarlo, sin registrar nada |
 | Desarrollo | Datos anonimizados; ningún dato real se versiona |
 | Cuenta del cliente | Sin rol ni acceso al backoffice; el registro tiene límite de intentos y un RUT ya registrado no se revela (mismo error genérico ante cualquier rechazo) |
 | Cobros | El precio sale del servidor; el estado cambia solo en el servicio de dominio; los resultados se verifican contra el proveedor y no contra el navegador |
@@ -264,3 +264,4 @@ el proyecto a un motor que no genera ningún documento real está registrado en
 | 1.5 | 22-10-2026 | §7 Trazabilidad: auditoría con disparadores y alcance de su protección (HU-30) | Equipo de proyecto |
 | 1.6 | 27-10-2026 | §7: controles de la firma avanzada; §9: AD-16 | Equipo de proyecto |
 | 1.7 | 03-11-2026 | §7: controles del ambiente de staging; AD-16 con el PSC en local y staging, nunca en producción | Equipo de proyecto |
+| 1.8 | 03-11-2026 | §7 Trazabilidad: auditoría fusionada y límite de intentos en el ingreso | Equipo de proyecto |

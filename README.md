@@ -220,7 +220,7 @@ Backoffice CRM (React)  ─┘             │
 
 | Módulo | Responsabilidad |
 |---|---|
-| `users` · `core` | Usuarios, roles (Administrador y Ejecutivo), permisos y registro de auditoría inalterable (HU-30, en desarrollo) |
+| `users` · `core` | Usuarios, roles (Administrador y Ejecutivo), permisos y registro de auditoría inalterable y su consulta para el Administrador (HU-30, HU-31) |
 | `clientes` | Personas, empresas, representación legal y cuentas de cliente del portal |
 | `configuracion` | Datos de Easy Office, marcas y cuentas donde recibe pagos |
 | `inmuebles` | Oficinas y bodegas, rol de avalúo y autorizantes |

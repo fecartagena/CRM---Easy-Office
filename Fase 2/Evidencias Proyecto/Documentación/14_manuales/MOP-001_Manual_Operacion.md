@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MOP-001 · Manual de operación |
-| **Versión** | 0.2 |
+| **Versión** | 0.3 |
 | **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | **Procedimiento propuesto para producción.** Staging está desplegado en una VM (§1.1); la restauración solo se ensayó en una pila local desechable. El alojamiento productivo sigue abierto (TA-09) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -95,6 +95,10 @@ Antes de salir del computador, `anonimizar_datos` anonimiza una copia desechable
 
 Cada campo de texto o JSON está clasificado en `ANONIMIZADOS`, `CONSERVADOS` o
 `REVISADOS`; una prueba falla si aparece uno nuevo sin clasificar.
+
+La copia no lleva el registro de auditoría: `copy_local_db.sh` excluye
+`core_registroauditoria` del respaldo, `anonimizar_datos` no lo toca y la
+verificación lo omite. El historial de staging empieza vacío después de cada copia.
 
 **Comprobado en la VM:** el primer despliegue con `deploy.sh`; el certificado para
 los tres hosts; la contraseña en los tres hosts y los puertos internos cerrados
@@ -199,7 +203,13 @@ recuperación.
 - **Pago inconsistente:** conservar orden, venta, evento y respuesta saneada, y
   conciliar con el proveedor antes de cambiar estados.
 - **Acceso indebido:** restringir el acceso afectado, conservar la evidencia y
-  registrar la corrección, sin datos reales en un issue público.
+  registrar la corrección, sin datos reales en un issue público. El registro de
+  auditoría (pantalla "Registro de auditoría", solo Administrador) muestra quién
+  hizo qué, desde dónde y por qué canal.
+- **Usuarios:** un usuario que aparece en el registro de auditoría no se elimina,
+  se desactiva. Separar el rol de base de datos de la aplicación del dueño de la
+  base es tarea del despliegue de producción (TA-09): el dueño puede eliminar los
+  disparadores.
 
 ---
 
@@ -221,6 +231,8 @@ recuperación.
 - [ ] `docs/staging.md`, sección 3: en un clon nuevo no existe `.envs/`; falta
       crearla antes de copiar a `.envs/.staging`.
 - [ ] Confirmar si Flow sandbox acepta correos `@example.test`.
+- [ ] Comprobar en staging la pantalla "Registro de auditoría" y que la dirección
+      registrada sea la del visitante y no la de Traefik (`DJANGO_NUM_PROXIES`).
 - [ ] Al terminar el semestre, eliminar la VM y liberar la IP estática, que sigue
       cobrando si queda reservada.
 
@@ -232,3 +244,4 @@ recuperación.
 |---|---|---|
 | 0.1 | 27-10-2026 | Versión inicial: ambiente objetivo, publicación, respaldo, ensayo de recuperación, incidentes y entrega operativa |
 | 0.2 | 03-11-2026 | Staging (backend PR #73, frontend PR #29): ambiente, despliegue continuo, respaldos, copia anonimizada de la base, lo comprobado en la VM y pendientes |
+| 0.3 | 03-11-2026 | Auditoría fusionada: la copia a staging no lleva historial; usuarios que no se eliminan; comprobación pendiente en staging |

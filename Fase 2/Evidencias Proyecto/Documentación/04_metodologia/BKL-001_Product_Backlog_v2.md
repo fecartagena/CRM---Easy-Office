@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.13 |
-| **Fecha** | 2 de noviembre de 2026 |
+| **Versión** | 2.14 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -155,14 +155,18 @@ como criterios de aceptación:
 - solo el Administrador consulta; el Ejecutivo no;
 - solo lectura.
 
-**Avance al 02-11-2026.** HU-30 y la API de HU-31 están en el backend, en el
-PR #62 (issue #61, rama `feature/HU-30-auditoria`), abierto y con revisión
-pendiente: registro con disparadores de PostgreSQL, protección en la base,
-ingresos y descargas. Las pantallas de HU-31 están implementadas en la
-rama local `feature/HU-31-auditoria` del frontend (issue #30), sin subir ni PR: pantalla "Registro de auditoría" del backoffice y sección
-"Registro de auditoría" en la ficha del cliente y en el detalle del trámite.
-HU-31 no está fusionada ni aceptada: falta subir la rama, la revisión de otro
-integrante y fusionarla después del PR #62 (`SPR-001`).
+**Avance al 03-11-2026.** HU-30 y HU-31 están fusionadas: backend PR #62 (issue
+#61) y frontend PR #31 (issue #30), el 03-11-2026, en ese orden. El registro usa
+disparadores de PostgreSQL, protección en la base, ingresos, descargas y acciones
+de firma; la consulta es la pantalla "Registro de auditoría" del backoffice y la
+sección del mismo nombre en la ficha del cliente y en el detalle del trámite.
+Nivel según `SPR-001`: **fusionado**. No cumple todavía la DoD (GitHub no registra
+una aprobación en ninguno de los dos PR) ni está aceptada por Easy Office. Los
+criterios usados para HU-31 siguen sin confirmar.
+
+Con la fusión, el registro cubre lo que piden de la auditoría los criterios de
+HU-01 (ingreso, cierre de sesión e ingreso fallido), HU-04 (cambio de rol,
+guardado por nombre) y HU-08 (cambios de la empresa).
 
 ---
 
@@ -347,6 +351,8 @@ construye en este cambio.
 siguiente no reemplaza la columna "Estado" de cada épica, que indica el estado de
 validación con Easy Office. Aquí "Implementado" significa que existe en el código
 fusionado a `main`; no equivale a "Verificado" ni a "Validado" (ver `TRZ-001`).
+Al 03-11-2026, con la fusión de HU-30 y HU-31: 35 implementadas, 17 parciales,
+ninguna en rama sin fusionar, 10 sin iniciar y 4 por verificar.
 
 ### Avance por historia
 
@@ -381,8 +387,8 @@ fusionado a `main`; no equivale a "Verificado" ni a "Validado" (ver `TRZ-001`).
 | HU-27 | Implementado |  | RF-21 |
 | HU-28 | Implementado |  | RF-27 |
 | HU-29 | Implementado |  | RF-26 |
-| HU-30 | En rama sin fusionar | Backend: issue #61, PR #62 abierto y con revisión pendiente | RF-15, RF-16, RS-04 |
-| HU-31 | En rama sin fusionar | API en el PR #62 del backend; pantallas en la rama local `feature/HU-31-auditoria` del frontend (issue #30), sin subir ni PR; criterios sin confirmar | RF-17 |
+| HU-30 | Implementado | Backend PR #62, fusionado el 03-11-2026; sin aprobación registrada en GitHub | RF-15, RF-16, RS-04 |
+| HU-31 | Implementado | API en el PR #62 del backend y pantallas en el PR #31 del frontend, fusionados el 03-11-2026; criterios sin confirmar | RF-17 |
 | HU-32 | Sin iniciar |  | RF-43 |
 | HU-33 | Sin iniciar |  | RF-44 |
 | HU-34 | Implementado | Prestador de pruebas, sin validez legal; tufirma.digital pendiente (TA-07) | IN-01 |
@@ -448,3 +454,4 @@ tanto, la firma y los pagos se prueban con prestadores de pruebas.
 | 2.11 | 22-10-2026 | Avance de HU-30 y de la API de HU-31 (auditoría, rama sin fusionar) |
 | 2.12 | 28-10-2026 | Avance por historia contrastado con el código; estados del trámite (`RN-42`); firma avanzada (backend PR #68, frontend PR #27); HU-59 implementada; se retiran párrafos obsoletos sobre el primer sprint |
 | 2.13 | 02-11-2026 | HU-30 y la API de HU-31 en el PR #62 del backend (issue #61); pantallas de HU-31 en una rama local del frontend (issue #30), sin fusionar; criterios usados para HU-31, pendientes de confirmar |
+| 2.14 | 03-11-2026 | HU-30 y HU-31 fusionadas (backend PR #62, frontend PR #31); avance por historia recalculado; criterios de auditoría de HU-01, HU-04 y HU-08 cubiertos por el registro |

@@ -5,7 +5,7 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | PLA-001 · Plan de pruebas |
-| **Versión** | 1.13 |
+| **Versión** | 1.14 |
 | **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | Emitido para revisión |
 | **Preparado por** | Equipo de proyecto |
@@ -360,11 +360,13 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 - Pendiente: recorrer en el navegador los flujos de la bodega en el portal y en el
   backoffice.
 
-**Auditoría (HU-30 y API de HU-31, issue #61, PR #62 abierto)**
+**Auditoría (HU-30 y API de HU-31, issue #61, PR #62, fusionado el 03-11-2026)**
 
-- 59 pruebas nuevas; 696 del backend pasan sobre una base creada desde cero.
-  `ruff` y `makemigrations --check` sin observaciones. Las migraciones se
-  revirtieron y se volvieron a aplicar en la base local.
+- Al fusionar: 799 pruebas del backend pasan según el PR (715 de `main` y 84
+  nuevas); `ruff` y `makemigrations --check` limpios; las migraciones se revierten
+  y se vuelven a aplicar. En la cabeza del PR pasaron `linter`, `pytest`, `e2e` y
+  `firma-sandbox`, y la CI pasó en el commit de fusión `cfa51fa`. (Al 22-10 eran 59
+  nuevas y 696 en total.)
 - Cubren:
   - creación, modificación y eliminación con el usuario, la IP y el origen
     correctos desde la API del personal, el portal, el admin y una tarea de
@@ -380,18 +382,25 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
   - ingreso, ingreso fallido, cierre de sesión, descarga de documentos y acceso a
     la cédula;
   - que los disparadores de la base coincidan con la lista de tablas auditadas y
-    que todo modelo esté declarado como auditado o no auditado.
+    que todo modelo esté declarado como auditado o no auditado;
+  - quién pidió las acciones de firma, el límite de intentos en el ingreso, la
+    dirección detrás del proxy (con cabeceras simuladas) y los segundos factores
+    y tokens, con una prueba de las columnas que parecen secretos.
+- No ejecutado de verdad: `copy_local_db.sh` de punta a punta, el alta de MFA en
+  las pantallas de allauth (se prueban las filas) y la dirección detrás de un
+  Traefik real.
+- Efectos en las pruebas: ninguna puede usar `transaction=True`, y cada
+  transacción de escritura suma un `set_config` que el conteo de consultas de
+  Django no muestra.
 - Verificado en la base local: un cambio a un cliente aparece en su historial con
   usuario, fecha, valor anterior y nuevo; el Ejecutivo recibe 403; un `DELETE`
   directo en psql falla.
 - Las pantallas de consulta (HU-31) se describen en el bloque siguiente.
 
-**Pantallas de auditoría (HU-31, frontend, issue #30, rama local `feature/HU-31-auditoria`, sin subir)**
+**Pantallas de auditoría (HU-31, frontend, issue #30, PR #31, fusionado el 03-11-2026)**
 
 - `npm run typecheck`, `npm run lint`, `npm test` (223 pruebas en 32 archivos) y
-  `npm run build` pasan en la rama local. La CI no se ha ejecutado, porque la rama
-  no está subida. Las pruebas del backend no se volvieron a ejecutar: el backend
-  no cambió en este trabajo.
+  `npm run build` pasan. La CI pasó en el PR y en el commit de fusión `f37c58d`.
 - Cubren:
   - el menú y la ruta según el permiso, con el árbol de rutas real;
   - un `403` sin reintento y la sesión terminada;
@@ -404,9 +413,13 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
   - el mensaje de `429` en el ingreso.
 - Solo con pruebas automáticas, sin recorrido manual: un `403` con la sesión aún
   activa y el `429` en el ingreso del portal.
-- Recorrido manual: EVI-T11, ejecutado en local sobre ramas sin fusionar
-  (`EVI-001`). En local, la IP registrada es la de la red de Docker, así que no
-  prueba la IP real detrás del proxy; se revisa en el primer despliegue.
+- Recorrido manual: EVI-T11, ejecutado en local el 02-11-2026 sobre las cabezas
+  que se fusionaron, y de nuevo el 03-11-2026 sobre el código fusionado
+  (`12_evidencias/2026-11-03_auditoria/`, `EVI-001`). En
+  local, la IP registrada es la de la red de Docker, así que no prueba la IP real
+  detrás del proxy.
+- El despliegue a staging terminó con éxito en ambos repositorios. **No se
+  comprobó en staging la pantalla ni la IP registrada.**
 
 **Staging (backend PR #73 y frontend PR #29, fusionados)**
 
@@ -431,7 +444,7 @@ Pruebas manuales en ambiente de pruebas de los proveedores:
 **Firma avanzada con el PSC de pruebas (backend PR #68 y frontend PR #27, fusionados)**
 
 - Backend (CRM): 685 pruebas pasan en `main` (637 previas y 48 nuevas). Las 696
-  de la auditoría corresponden a la rama del PR #62, todavía sin fusionar.
+  de la auditoría correspondían a la rama del PR #62, fusionado después (03-11).
   - Unitarias (§3.1): el adaptador HTTP con `httpx.MockTransport`, el contrato de
     firma y el registro de proveedores.
   - Integración (§3.2): webhook firmado, deduplicado y fuera de orden; envío,
@@ -479,3 +492,4 @@ ejecución (fecha, commit, entorno y resultado).
 | 1.11 | 27-10-2026 | Pruebas de la firma avanzada con el PSC de pruebas (685 en el backend en `main`, 62 del PSC y la prueba de punta a punta) | Equipo de proyecto |
 | 1.12 | 02-11-2026 | Pruebas de las pantallas de auditoría (HU-31): 223 del frontend en una rama local sin subir; EVI-T11 en local | Equipo de proyecto |
 | 1.13 | 03-11-2026 | Pruebas del ambiente de staging (PR #73 y #29): 715 del backend en `main`, 64 del PSC y 165 del frontend; separación del PSC y anonimización | Equipo de proyecto |
+| 1.14 | 03-11-2026 | Auditoría fusionada (backend PR #62, frontend PR #31): 799 pruebas del backend según el PR, 223 del frontend, CI, lo no ejecutado y EVI-T11 sobre el código fusionado | Equipo de proyecto |

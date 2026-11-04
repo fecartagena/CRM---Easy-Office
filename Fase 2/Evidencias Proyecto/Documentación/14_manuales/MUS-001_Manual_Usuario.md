@@ -5,9 +5,9 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | MUS-001 · Manual de usuario |
-| **Versión** | 0.1 |
-| **Fecha** | 27 de octubre de 2026 |
-| **Estado** | **Borrador.** Basado en las rutas y permisos del frontend en la rama principal (`f2e4758`). El recorrido con cada rol y las capturas están pendientes |
+| **Versión** | 0.2 |
+| **Fecha** | 3 de noviembre de 2026 |
+| **Estado** | **Borrador.** Basado en las rutas y permisos del frontend en la rama principal (`f37c58d`). El recorrido con cada rol y las capturas están pendientes |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
 ---
@@ -23,11 +23,10 @@ exista; en desarrollo es `http://localhost:5173`.
 |---|---|---|
 | Cliente | `/ingresar` (cuenta obligatoria, RN-41) | Contratar, revisar el borrador, pagar y seguir sus trámites y compras |
 | Ejecutivo | `/backoffice/ingresar` | Clientes, trámites, ventas y panel, según sus permisos (RN-32) |
-| Administrador | `/backoffice/ingresar` | Todo lo anterior, más la administración (RN-31) |
+| Administrador | `/backoffice/ingresar` | Todo lo anterior, más la administración y el registro de auditoría (RN-31) |
 
-Este manual describe solo lo que está en la rama principal. La auditoría de
-cambios (PR #62) y la importación desde la planilla (`MIG-001`) todavía no están
-disponibles.
+Este manual describe solo lo que está en la rama principal. La importación desde
+la planilla (`MIG-001`) todavía no está disponible.
 
 ---
 
@@ -103,6 +102,7 @@ ven el Administrador y el Ejecutivo (permiso `core.view_dashboard`, D2-06).
 | Nuevo trámite | `/backoffice/tramites/nuevo/:tipo` | Iniciar un tipo habilitado para el canal interno |
 | Ventas | `/backoffice/ventas` | Ventas y pagos con su detalle |
 | Tipos de trámite | `/backoffice/tipos-tramite` | Tipos configurados |
+| Registro de auditoría | `/backoffice/auditoria` | Quién hizo qué, cuándo y desde dónde. Solo el Administrador (entrada "Auditoría" del menú) |
 
 ### Clientes
 
@@ -119,6 +119,31 @@ manual no concede permisos.
   de la solicitud en el proveedor, con las acciones **reenviar enlace**,
   **cancelar** y **reintentar**. Si un firmante rechaza o la solicitud vence, el
   trámite queda en *falta de información* con el motivo.
+
+### Registro de auditoría
+
+Solo lo ve el Administrador (permiso `core.consultar_auditoria`). Para el
+Ejecutivo no hay entrada en el menú, y una dirección directa muestra "Sin acceso".
+El registro es de solo lectura: nadie puede modificarlo ni eliminarlo.
+
+- **Tabla:** fecha y hora de Chile, usuario, canal, acción, entidad, registro e IP.
+  Los canales son "Backoffice", "Portal del cliente", "Panel de administración" y
+  "Sistema". Sin usuario se lee "Sistema" (tareas y avisos de pago y firma), salvo
+  en un ingreso fallido, que se lee "Sin identificar".
+- **Detalle de una fila:** una modificación se lee "campo: antes → después"; una
+  creación muestra solo los valores nuevos y una eliminación solo los anteriores.
+  En un cambio de rol, el lado que falta se lee "—"; un valor vacío, "(vacío)".
+  "Ver solo este usuario" filtra por quien actuó.
+- **Filtros:** entidad, registro, usuario, acción, canal y rango de fechas. Quedan
+  en la dirección de la página, así que una vista filtrada se puede compartir. Si
+  un filtro no es válido (por ejemplo, la fecha final antes de la inicial), el
+  error aparece junto a él.
+- **En la ficha del cliente y en el detalle del trámite**, la sección "Registro de
+  auditoría" muestra el historial de ese registro y de lo que le pertenece: del
+  cliente, su persona o empresa, sus representantes y su cuenta del portal; del
+  trámite, su contrato, venta, pagos, documentos y firmantes. El "Historial" del
+  trámite sigue como antes. En la ficha del cliente, la sección de abajo es
+  "Servicios y documentos".
 
 ### Bodega en el backoffice
 
@@ -139,6 +164,8 @@ panel.
 | Pago pendiente o rechazado | Revisar el detalle en Mis compras y reintentar desde ahí |
 | No llegó el enlace de firma | El ejecutivo puede reenviarlo desde el detalle del trámite |
 | Acceso denegado | Verificar cuenta y rol con el administrador; no compartir credenciales |
+| "Hiciste demasiados intentos de ingreso" | Se superó el límite de intentos. Esperar un momento e intentar nuevamente |
+| "Sin acceso" | La cuenta no tiene permiso para esa pantalla. Si la sesión terminó, la plataforma lleva al ingreso |
 | Error en un documento ya firmado | Pedir revisión interna y conservar el documento; no borrar la historia |
 
 El contacto de soporte y su horario se completan cuando se acuerden.
@@ -149,7 +176,7 @@ El contacto de soporte y su horario se completan cuando se acuerden.
 
 - [ ] Recorrer el portal con una cuenta de cliente y datos sintéticos.
 - [ ] Recorrer el backoffice como Administrador y como Ejecutivo, con cuentas
-      distintas.
+      distintas, incluido el registro de auditoría.
 - [ ] Agregar capturas: catálogo, formulario, borrador, pago, Mis trámites,
       detalle interno y firma.
 - [ ] Copiar las etiquetas y mensajes exactamente como aparecen.
@@ -162,3 +189,4 @@ El contacto de soporte y su horario se completan cuando se acuerden.
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 0.1 | 27-10-2026 | Versión inicial: acceso, portal (domicilio, bodega, firma y estados), backoffice y situaciones frecuentes |
+| 0.2 | 03-11-2026 | Registro de auditoría para el Administrador (backend PR #62, frontend PR #31); mensajes de límite de intentos y "Sin acceso" |

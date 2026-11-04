@@ -5,9 +5,9 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | UML-002 · Diagrama de clases |
-| **Versión** | 1.2 |
-| **Fecha** | 27 de octubre de 2026 |
-| **Estado** | Refleja el código de la rama principal del backend al 27-10-2026 (después del PR #68). La auditoría (sección 5 bis) está en el PR #62, abierto |
+| **Versión** | 1.3 |
+| **Fecha** | 3 de noviembre de 2026 |
+| **Estado** | Refleja el código de la rama principal del backend al 27-10-2026 (después del PR #68), más la auditoría (sección 5 bis), fusionada el 03-11-2026 (PR #62) |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
 ---
@@ -17,8 +17,8 @@
 Este diagrama muestra las clases **implementadas** en el backend
 (`crm_easyoffice/*/models.py` e `integrations/`), no el modelo conceptual. El
 modelo conceptual, con las entidades previstas que aún no existen (alertas de
-vencimiento, migración), está en `MOD-001`. La auditoría (sección 5 bis) está
-en el PR #62, abierto.
+vencimiento, migración), está en `MOD-001`. La auditoría (sección 5 bis) se
+fusionó el 03-11-2026 (PR #62).
 
 - Cada clase es un modelo de Django y una tabla de PostgreSQL. Salvo
   `CorrelativoFolio`, `ServicioContratado`, `Firmante`, `ItemVenta`,
@@ -546,7 +546,7 @@ classDiagram
 
 ## 5 bis. Auditoría
 
-En el PR #62 del backend (issue #61), abierto al 27-10-2026.
+Backend PR #62 (issue #61), fusionado el 03-11-2026.
 
 ```mermaid
 classDiagram
@@ -579,6 +579,9 @@ classDiagram
         inicio_sesion_fallido
         descarga_documento
         acceso_documento_identidad
+        reenvio_firma
+        cancelacion_firma
+        reintento_firma
     }
     RegistroAuditoria "*" --> "0..1" User : usuario
     RegistroAuditoria ..> OrigenAuditoria
@@ -587,8 +590,9 @@ classDiagram
 
 - Las filas las escriben disparadores de PostgreSQL en las tablas auditadas
   (`crear`, `modificar`, `eliminar`) y la función `core.auditoria.registrar_evento`
-  para los accesos (ingresos, descargas, cédula). La lista de tablas auditadas
-  está en un solo lugar, `core/auditoria/registro.py`.
+  para los accesos (ingresos, descargas, cédula) y las acciones de firma de un
+  ejecutivo. La lista de tablas auditadas está en un solo lugar,
+  `core/auditoria/registro.py`.
 - `entidad` y `registro_id` identifican el registro afectado sin una clave
   foránea, porque puede pertenecer a cualquier tabla y seguir en el historial
   después de eliminado.
@@ -706,7 +710,7 @@ emite `venta_pagada` y `tramites` la escucha; `tramites` emite
 
 | Tema | `MOD-001` | Código |
 |---|---|---|
-| Auditoría | `REGISTRO_AUDITORIA` | `RegistroAuditoria` en `core`, con el campo `origen` agregado (HU-30, PR #62 abierto) |
+| Auditoría | `REGISTRO_AUDITORIA` | `RegistroAuditoria` en `core`, con el campo `origen` agregado (HU-30, PR #62, fusionado) |
 | Alertas de vencimiento | `ALERTA_VENCIMIENTO` | No implementada (HU-42, HU-53) |
 | Plan de la línea del contrato | `PLAN_SERVICIO` asociado a `SERVICIO_CONTRATADO` | El plan elegido queda en `Tramite.datos`; la línea no lo referencia |
 | Nombre del inmueble | `OFICINA` | La clase se llama `Oficina` y representa oficinas y bodegas (`tipo`) |
@@ -720,3 +724,4 @@ emite `venta_pagada` y `tramites` la escucha; `tramites` emite
 | 1.0 | 22-10-2026 | Emisión inicial, desde el código de la rama principal del backend al 22-10-2026 | Equipo de proyecto |
 | 1.1 | 22-10-2026 | Sección 5 bis: `RegistroAuditoria` (HU-30, PR #62 abierto); §8 actualizada | Equipo de proyecto |
 | 1.2 | 27-10-2026 | Firma avanzada (PR #68): `SolicitudFirma`, `EventoFirma`, estado de `Firmante` y `HttpSignatureProvider` | Equipo de proyecto |
+| 1.3 | 03-11-2026 | Sección 5 bis: auditoría fusionada (PR #62) y acciones de firma; §8 actualizada | Equipo de proyecto |

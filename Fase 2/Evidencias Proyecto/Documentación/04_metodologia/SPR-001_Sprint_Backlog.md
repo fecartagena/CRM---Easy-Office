@@ -7,8 +7,8 @@
 | **Documento** | SPR-001 · Sprint Backlog |
 | **Sprints** | 1 · Núcleo de datos y accesos — cerrado<br>2 · Domicilio tributario de punta a punta — cerrado<br>3 · Segundo documento y motor configurable — en ejecución |
 | **Período** | 22 de septiembre – 31 de octubre de 2026 |
-| **Versión** | 2.3 |
-| **Fecha** | 2 de noviembre de 2026 |
+| **Versión** | 2.4 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Preparado por** | Equipo de proyecto |
 
 ---
@@ -225,6 +225,7 @@ incorporar documentos sin código.
 | HU-15 | Bodega virtual con `PLT-02`: segundo tipo de trámite, iniciado por un ejecutivo o desde el portal, con tres planes de precio provisorio | Fernando | PR #60 | PR #23 | 21-10 |
 | HU-59 | Identidad visual de Easy Office en el portal y el backoffice, con el logo entregado por Easy Office | Fernando | — | PR #25 | 22-10 |
 | HU-34, HU-35, HU-36, HU-37, HU-22 | Firma avanzada mediante un proveedor por HTTP, con firmantes en orden, webhooks verificados y verificación de integridad, probada contra un PSC de pruebas sin validez legal (AD-16) | Nicolás | PR #68 | PR #27 | 27-10 |
+| HU-30, HU-31 | Registro de auditoría de solo escritura (disparadores de PostgreSQL) y su consulta para el Administrador. Fusionado después del cierre del sprint | Fernando | PR #62 | PR #31 | 03-11 |
 
 637 pruebas del backend y 150 del frontend pasan en la rama principal (`PLA-001`).
 
@@ -235,7 +236,7 @@ presentación. `[CONFIRMAR responsables y alcance en la planificación]`
 
 | ID | Elemento | Resp. | Estado |
 |---|---|---|---|
-| HU-30, HU-31 | Registro de auditoría de solo escritura y su consulta (RF-15 a RF-17) | Fernando | En curso: backend en el PR #62 (issue #61), abierto y pendiente de revisión; pantallas implementadas en la rama local `feature/HU-31-auditoria` del frontend (issue #30), sin subir ni PR. No cumple todavía el nivel de fusionado ni la revisión de otro integrante; el frontend se fusiona después del PR #62 |
+| HU-30, HU-31 | Registro de auditoría de solo escritura y su consulta (RF-15 a RF-17) | Fernando | Hecho fuera de plazo (03-11): backend PR #62 y frontend PR #31, fusionados en ese orden. Nivel: fusionado; no cumple la DoD, porque GitHub no registra una aprobación en ninguno de los dos PR |
 | HU-14, HU-16 | Pantalla para configurar tipos de trámite: campos, plantilla, pago y firma | Nicolás | Pendiente |
 | HU-45 | Pruebas de control de acceso por rol y pruebas de seguridad | Marcos | Pendiente |
 | HU-46 | Pruebas de rendimiento (RNF-10) | Marcos | Pendiente |
@@ -285,3 +286,4 @@ presentación. `[CONFIRMAR responsables y alcance en la planificación]`
 | 2.1 | 22-10-2026 | Sprint 3: avance de HU-30 y HU-31 | Equipo de proyecto |
 | 2.2 | 27-10-2026 | Niveles de cumplimiento (fusionado, DoD, aceptado); métricas del Sprint 1 cortadas al 03-10; responsables por autoría de commits (HU-24 y HU-41 son de Fernando); Sprint 3 con HU-59 y la firma avanzada hechas y responsables de HU-30, HU-31, HU-14 y HU-16 según la distribución acordada en el diario de reflexión | Equipo de proyecto |
 | 2.3 | 02-11-2026 | Sprint 3: pantallas de HU-31 implementadas en una rama local del frontend, sin fusionar | Equipo de proyecto |
+| 2.4 | 03-11-2026 | HU-30 y HU-31 fusionadas el 03-11-2026 (backend PR #62, frontend PR #31), fuera de plazo y sin aprobación registrada en GitHub | Equipo de proyecto |
