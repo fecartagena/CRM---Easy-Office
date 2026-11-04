@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | ARQ-001 · Arquitectura de la solución |
-| **Versión** | 1.7 |
-| **Fecha** | 27 de octubre de 2026 |
+| **Versión** | 1.8 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Estado** | Propuesta de arquitectura. Sujeta a ajustes al recibir la documentación técnica de la plataforma de firma electrónica |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
 
@@ -149,7 +149,7 @@ graph TB
         GOT["«component»<br/>Gotenberg"]
         FIRMA["«external»<br/>Prestador acreditado<br/>tufirma.digital (pendiente)"]
     end
-    subgraph PSC["«external» PSC de pruebas · firma-sandbox (solo desarrollo)"]
+    subgraph PSC["«external» PSC de pruebas · firma-sandbox (local y staging, nunca producción)"]
         PSCAPI["«component»<br/>API y páginas de firma"]
         PSCW["«component»<br/>worker de webhooks"]
         PSCDB[("SQLite<br/>y PKI de pruebas")]
@@ -425,7 +425,7 @@ arriba y el nivel por defecto, y **avanzada**, mediante un proveedor externo
 
 Hasta que lleguen las credenciales de tufirma.digital (TA-07), el proveedor es
 el **PSC de pruebas** (`firma-sandbox`), un servicio aparte, **sin validez
-legal**, que solo corre en desarrollo y pruebas (AD-16).
+legal**, que corre en local y en staging, nunca en producción (AD-16).
 
 ```mermaid
 sequenceDiagram
@@ -477,7 +477,8 @@ sequenceDiagram
   El PDF firmado por el PSC de pruebas, en cambio, **no lleva una marca visible**
   de ambiente de pruebas: sus sellos dicen «Firma electrónica avanzada», y solo
   los certificados, emitidos por una CA «de PRUEBAS», revelan que no tiene validez
-  legal. Agregar esa marca está pendiente (§9).
+  legal. El equipo decidió no agregar una marca de agua en los PDF firmados ni un
+  aviso de ambiente de pruebas en el frontend (§9).
 - Cuando lleguen las credenciales de tufirma.digital, el adaptador real será una
   copia del adaptador HTTP con otro mapeo de campos, otra URL y otra clave. El
   dominio no cambia.
@@ -534,9 +535,50 @@ aplicación si el volumen lo justificara. Un volumen dedicado cumple estas
 condiciones en la etapa actual; un almacenamiento de objetos compatible con S3 es
 la evolución natural si crece el volumen.
 
-El proveedor de alojamiento está `[PENDIENTE DE DEFINIR CON EASY OFFICE]`. Al
+El proveedor de alojamiento de producción está `[PENDIENTE DE DEFINIR CON EASY OFFICE]`. Al
 estar contenerizado, el despliegue es portable entre proveedores, que es lo que
 permite tomar esa decisión más adelante sin rehacer trabajo.
+
+### 6.1 Ambiente de staging (backend PR #73, frontend PR #29)
+
+Un ambiente en internet, **solo con datos ficticios**, donde funciona todo lo que
+funciona en local: portal y backoffice, pagos con Klap y Flow en sus sandbox y
+firma avanzada con el PSC de pruebas. La operación está en `MOP-001` y la guía paso
+a paso en `docs/staging.md` del backend.
+
+- **Infraestructura.** Una VM de Compute Engine en `southamerica-west1`, con
+  Ubuntu 24.04, 4 GB de RAM, 2 GB de swap y los puertos 22, 80 y 443 abiertos.
+- **Servicios** (`docker-compose.staging.yml`, aparte del de producción): `django`,
+  `postgres`, `redis`, `celeryworker`, `celerybeat`, `gotenberg`, `frontend`,
+  `firma-sandbox`, `firma-sandbox-worker`, `mailpit`, `nginx` y `traefik`, sin
+  `flower` ni `tunnel`, con límites de memoria y rotación de registros. El
+  frontend se sirve con una imagen nginx propia (`Dockerfile.nginx`);
+  `Dockerfile` sigue siendo la imagen de desarrollo.
+- **Configuración.** `config/settings/staging.py` hereda de producción. Como
+  `production.py` valida la URL del PSC al importarse, staging la lee con otros
+  nombres de variables (`STAGING_SIGNATURE_PROVIDER`,
+  `STAGING_SIGNATURE_API_BASE_URL`). La configuración de producción no cambió.
+- **Hosts.** `<ip-con-guiones>.sslip.io` (aplicación), `firma.<ip-con-guiones>.sslip.io`
+  (páginas de firma y verificación del PSC) y `correo.<ip-con-guiones>.sslip.io`
+  (Mailpit), con un solo certificado de Let's Encrypt. Traefik genera su
+  configuración al iniciar, para no versionar hosts reales, y mantiene la
+  estructura de la de producción.
+- **Protección.** Un usuario `basicAuth` en los tres hosts y `X-Robots-Tag:
+  noindex, nofollow`. Solo quedan sin contraseña los retornos y avisos de pago,
+  cada uno con su propia verificación:
+  - `POST /api/pagos/webhooks/klap/validacion/`: se responde solo con nuestros datos;
+  - `POST /api/pagos/webhooks/klap/confirmacion/` y `.../rechazo/`: encabezado `Apikey`;
+  - `POST /api/pagos/webhooks/flow/confirmacion/`: el token se confirma con
+    `payment/getStatus` de Flow;
+  - `GET` y `POST /api/pagos/retorno/<id>/`: no cambia nada y redirige al portal.
+- **Despliegue continuo.** Cada merge a `main` que pasa la CI, en cualquiera de los
+  dos repositorios, ejecuta `scripts/staging/deploy.sh` por SSH con una clave
+  restringida. Los grupos de concurrencia de GitHub no cruzan repositorios, así que
+  ambos flujos usan `deploy-staging` y un `flock` en la VM evita que dos
+  despliegues se solapen.
+- **Datos.** Una copia de la base local llega solo a pedido y anonimizada antes de
+  salir del computador (`anonimizar_datos`, `MOP-001`). El PSC de staging guarda
+  sus propios datos y no se copian.
 
 ---
 
@@ -574,7 +616,7 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | AD-13 | Llenar la plantilla Word con una librería de plantillas (`docxtpl`), tras convertir una vez los campos de combinación de `PLT-01` a marcas propias | Editar el XML del Word directamente en cada generación | La plantilla queda como configuración editable en Word, no como código por plantilla. Elegida en la prueba técnica del issue #49 |
 | AD-14 | Convertir a PDF en un contenedor aparte (Gotenberg, con LibreOffice) | LibreOffice dentro de la imagen del worker; no generar PDF | Vista previa del documento real y PDF para la firma, sin dependencia de Python adicional ni una imagen de aplicación más pesada |
 | AD-15 | Cookie de sesión propia para el panel de administración, mediante un middleware que extiende el de sesiones de Django y solo cambia el nombre y la ruta de la cookie | Copiar el código del middleware de Django; mantener una sola sesión | Iniciar sesión en el panel no debe cerrar la sesión de la aplicación web; extender en vez de copiar evita romper con versiones futuras de Django |
-| AD-16 | Para desarrollo, pruebas y demostraciones, un PSC de pruebas propio (`firma-sandbox`), sin validez legal, con su propia PKI (CA raíz y emisora «de PRUEBAS», sellos de tiempo, CRL y OCSP), que el CRM consume solo por HTTP como a un proveedor externo. La firma electrónica avanzada con validez legal queda con un prestador acreditado (tufirma.digital, RN-21) | Esperar las credenciales; construir una firma avanzada propia para producción; un repositorio aparte; Certomancer | Bajo la Ley 19.799 solo un prestador acreditado otorga validez a la firma avanzada. El PSC permite construir y probar de punta a punta el flujo real (PAdES, varios firmantes, webhooks) con el mismo contrato. No se despliega: se niega a iniciar fuera de desarrollo y la configuración de producción del CRM rechaza su URL. Certomancer se descartó porque sus certificados son estáticos y sus servicios usan Werkzeug |
+| AD-16 | Para desarrollo, pruebas, staging y demostraciones, un PSC de pruebas propio (`firma-sandbox`), sin validez legal, con su propia PKI (CA raíz y emisora «de PRUEBAS», sellos de tiempo, CRL y OCSP), que el CRM consume solo por HTTP como a un proveedor externo. La firma electrónica avanzada con validez legal queda con un prestador acreditado (tufirma.digital, RN-21) | Esperar las credenciales; construir una firma avanzada propia para producción; un repositorio aparte; Certomancer | Bajo la Ley 19.799 solo un prestador acreditado otorga validez a la firma avanzada. El PSC permite construir y probar de punta a punta el flujo real (PAdES, varios firmantes, webhooks) con el mismo contrato. Corre en local y en staging, nunca en producción, y en ambos sigue sin validez legal. Producción conserva tres protecciones: `docker-compose.production.yml` no tiene servicio del PSC; `production.py` rechaza su URL (`exigir_proveedor_real`); y el PSC se niega a iniciar con configuración de producción, porque solo acepta `FIRMA_SANDBOX_ENV` con `local`, `test`, `ci` o `staging`. `SIGNATURE_ALLOW_SANDBOX` es verdadero solo en las configuraciones local, test y staging. Certomancer se descartó porque sus certificados son estáticos y sus servicios usan Werkzeug |
 
 ---
 
@@ -584,11 +626,12 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
   `[PENDIENTE — Easy Office, §14]`
 - Decisión de la pasarela de pago: Klap y Flow están integrados y el cliente elige; falta que Easy Office decida cuáles ofrecerá `[PENDIENTE — Easy Office, §5.3]`
 - Política de reembolsos: Klap lo soporta en el adaptador, Flow aún no, y la aplicación no expone la operación `[PENDIENTE — Easy Office]`
-- Proveedor de alojamiento `[PENDIENTE]`
+- Proveedor de alojamiento de producción `[PENDIENTE]`. Staging corre en Compute Engine (§6.1)
+- Dominio de staging: `sslip.io` no está en la lista pública de sufijos, así que quienes lo usan comparten el límite semanal de Let's Encrypt. El plan alternativo, comprar un dominio, está documentado en `docs/staging.md` y no implementado
 - Fidelidad del PDF frente al Word original: las plantillas usan Times New Roman y LibreOffice la reemplaza por una fuente de iguales medidas; falta compararlos con Easy Office
 - Firma con el prestador real: el flujo de firma avanzada funciona contra el PSC de pruebas (AD-16); falta el adaptador de tufirma.digital `[PENDIENTE — credenciales, TA-07]`. Por defecto, los tipos de trámite siguen con firma asistida
 - Quién firma, en qué orden, si el autorizante firma por el proveedor o de forma desasistida, y quién guarda su certificado `[PENDIENTE — Easy Office]`
-- Marca visible «Documento de prueba – firma sin validez legal» en los PDF y en las páginas de firma del PSC de pruebas, para que un documento de prueba no pueda confundirse con uno firmado con validez legal `[PENDIENTE — equipo]`
+- ~~Marca visible «Documento de prueba – firma sin validez legal» en los PDF y en las páginas de firma del PSC de pruebas~~: decidido por el equipo, sin marca de agua adicional en los PDF firmados ni aviso de ambiente de pruebas en el frontend (§5.1)
 - ~~Formato de las plantillas de contratos~~: cerrado el 08-10-2026, son documentos Word con campos de combinación (`13_plantillas`)
 
 ---
@@ -605,3 +648,4 @@ permite tomar esa decisión más adelante sin rehacer trabajo.
 | 1.5 | 22-10-2026 | §3 diagrama de componentes en notación UML con los módulos reales (`configuracion`, `contratos`, `panel`) y Gotenberg; dependencias verificadas en el código; §5 secuencia real del trámite con firma asistida | Equipo de proyecto |
 | 1.6 | 22-10-2026 | AD-08 implementada (HU-30, PR #62 abierto): disparadores escritos a mano y contexto por transacción; `core` con el registro de auditoría | Equipo de proyecto |
 | 1.7 | 27-10-2026 | Firma avanzada mediante un proveedor (backend PR #68, frontend PR #27): componente del PSC de pruebas en §3.1, módulos en §3.2, secuencia en §5.1 y decisión AD-16 | Equipo de proyecto |
+| 1.8 | 03-11-2026 | Ambiente de staging (backend PR #73, frontend PR #29) en §6.1; AD-16: el PSC de pruebas corre en local y staging, nunca en producción; sin marca visible de pruebas, por decisión del equipo | Equipo de proyecto |

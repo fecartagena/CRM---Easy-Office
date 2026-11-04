@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | BKL-001 · Product Backlog |
-| **Versión** | 2.12 |
-| **Fecha** | 28 de octubre de 2026 |
+| **Versión** | 2.13 |
+| **Fecha** | 2 de noviembre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Estado** | Actualizado con `MRQ-001 v2`. Identificadores según `CAT-001`. Los criterios de aceptación son iniciales y se refinan en el Sprint Planning |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -144,11 +144,25 @@ configuración; ningún cambio en la configuración altera trámites ya emitidos
 eliminación queda registrada; el registro no admite modificación ni eliminación;
 incluye usuario, fecha, entidad afectada, valor anterior y valor nuevo.
 
-**Avance al 22-10-2026.** HU-30 está implementada en el backend, en la rama
-`feature/HU-30-auditoria`, todavía sin issue ni PR: registro con disparadores de
-PostgreSQL, protección en la base, ingresos y descargas, y 59 pruebas nuevas. De
-HU-31 está la API de consulta, solo para el Administrador; las pantallas van en
-otra rama del frontend, después de fusionar el backend.
+**Criterios usados para HU-31, pendientes de confirmar.** HU-31 no tiene
+criterios de aceptación escritos. Para implementarla se derivaron de la historia,
+RF-17, UC-13, RN-31, RN-35 y EVI-T11, y deben confirmarse antes de registrarlos
+como criterios de aceptación:
+
+- ver el historial de un registro y quién lo modificó;
+- seleccionar un registro o un rango de fechas;
+- ver usuario, fecha y hora, registro, acción, valor anterior y nuevo;
+- solo el Administrador consulta; el Ejecutivo no;
+- solo lectura.
+
+**Avance al 02-11-2026.** HU-30 y la API de HU-31 están en el backend, en el
+PR #62 (issue #61, rama `feature/HU-30-auditoria`), abierto y con revisión
+pendiente: registro con disparadores de PostgreSQL, protección en la base,
+ingresos y descargas. Las pantallas de HU-31 están implementadas en la
+rama local `feature/HU-31-auditoria` del frontend (issue #30), sin subir ni PR: pantalla "Registro de auditoría" del backoffice y sección
+"Registro de auditoría" en la ficha del cliente y en el detalle del trámite.
+HU-31 no está fusionada ni aceptada: falta subir la rama, la revisión de otro
+integrante y fusionarla después del PR #62 (`SPR-001`).
 
 ---
 
@@ -367,8 +381,8 @@ fusionado a `main`; no equivale a "Verificado" ni a "Validado" (ver `TRZ-001`).
 | HU-27 | Implementado |  | RF-21 |
 | HU-28 | Implementado |  | RF-27 |
 | HU-29 | Implementado |  | RF-26 |
-| HU-30 | En rama sin fusionar | Rama `feature/HU-30-auditoria`; sin issue ni PR | RF-15, RF-16, RS-04 |
-| HU-31 | En rama sin fusionar | Rama de auditoría; sin fusionar | RF-17 |
+| HU-30 | En rama sin fusionar | Backend: issue #61, PR #62 abierto y con revisión pendiente | RF-15, RF-16, RS-04 |
+| HU-31 | En rama sin fusionar | API en el PR #62 del backend; pantallas en la rama local `feature/HU-31-auditoria` del frontend (issue #30), sin subir ni PR; criterios sin confirmar | RF-17 |
 | HU-32 | Sin iniciar |  | RF-43 |
 | HU-33 | Sin iniciar |  | RF-44 |
 | HU-34 | Implementado | Prestador de pruebas, sin validez legal; tufirma.digital pendiente (TA-07) | IN-01 |
@@ -433,3 +447,4 @@ tanto, la firma y los pagos se prueban con prestadores de pruebas.
 | 2.10 | 22-10-2026 | HU-15: bodega virtual con `PLT-02` fusionada (PR #60 del backend y #23 del frontend) |
 | 2.11 | 22-10-2026 | Avance de HU-30 y de la API de HU-31 (auditoría, rama sin fusionar) |
 | 2.12 | 28-10-2026 | Avance por historia contrastado con el código; estados del trámite (`RN-42`); firma avanzada (backend PR #68, frontend PR #27); HU-59 implementada; se retiran párrafos obsoletos sobre el primer sprint |
+| 2.13 | 02-11-2026 | HU-30 y la API de HU-31 en el PR #62 del backend (issue #61); pantallas de HU-31 en una rama local del frontend (issue #30), sin fusionar; criterios usados para HU-31, pendientes de confirmar |

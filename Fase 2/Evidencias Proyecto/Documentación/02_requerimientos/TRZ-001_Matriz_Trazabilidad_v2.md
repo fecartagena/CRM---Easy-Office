@@ -5,8 +5,8 @@
 | **Cliente** | Easy Office |
 | **Proyecto** | CRM Easy Office · Plataforma de gestión y automatización documental |
 | **Documento** | TRZ-001 · Matriz de trazabilidad |
-| **Versión** | 2.13 |
-| **Fecha** | 28 de octubre de 2026 |
+| **Versión** | 2.15 |
+| **Fecha** | 3 de noviembre de 2026 |
 | **Reemplaza a** | Versión 1.0 (10-09-2026) |
 | **Motivo** | La versión 1.0 referenciaba los identificadores de `MRQ-001 v1.0`, que la versión 2.0 reutilizó para requerimientos distintos. Esta versión está reconstruida contra el catálogo vigente `CAT-001` |
 | **Preparado por** | Fernando Cartagena · Nicolás Zapata · Marcos Álvarez |
@@ -57,16 +57,16 @@ Según la versión reducida de objetivos (cinco específicos).
 | RF-07 Identificador único y folio de contrato | HU-51, HU-60 | UC-04 | OE-2 | clientes, contratos | #17 · #38 (HU-60) | PR #18 (código del cliente) · PR #45 (HU-60) | Folio común entre sucursales y marcas, reinicio anual, ancho configurable, creación concurrente, alias `folio` | — | Implementado |
 | RF-08 Búsqueda de clientes | HU-47 | UC-05 | OE-2 | clientes | #17 | Backend PR #18 · Frontend PR #5 | Búsqueda por cada palabra, RUT con o sin puntos; pruebas de `ListaClientes` | — | Implementado parcial · RUT, nombre, razón social, nombre de fantasía, correo y teléfono; faltan folio y servicio contratado |
 | RF-09 Filtros de listado | HU-50 | UC-05 | OE-2 | clientes | #17 | Backend PR #18 · Frontend PR #5 | Filtros por tipo (persona o empresa) y por estado activo | — | Implementado parcial · faltan fechas y ejecutivo |
-| RF-10 Ficha del cliente | HU-49 | UC-05 | OE-2 | clientes | #17 | Backend PR #18 · Frontend PR #5 | Pruebas de `FichaCliente` | — | Implementado parcial · datos del cliente y representantes legales; servicios y documentos pendientes (HU-48); el historial ya tiene API (`/api/auditoria/historial/`, sin fusionar) y falta la pantalla (HU-31) |
+| RF-10 Ficha del cliente | HU-49 | UC-05 | OE-2 | clientes | #17 | Backend PR #18 · Frontend PR #5 | Pruebas de `FichaCliente` | — | Implementado parcial · datos del cliente y representantes legales; servicios y documentos pendientes (HU-48); el historial tiene API (`/api/auditoria/historial/`, backend PR #62, abierto) y una sección "Registro de auditoría" en la ficha, en la rama local `feature/HU-31-auditoria` del frontend (issue #30), sin subir ni PR (HU-31); en esa rama la sección de abajo de la ficha pasa a llamarse "Servicios y documentos" |
 | RF-11 Gestión de servicios contratados | HU-48 | UC-06 | OE-2 | servicios | #38 | Backend PR #45 | Pruebas de contratos y folio (RF-07) | Falta pantalla en prototipo | En desarrollo · modelo `ServicioContratado`, API de contratos y panel de administración; la ficha del cliente muestra un marcador y falta la pantalla de gestión |
 | RF-12 Detección de vencimientos | HU-53 | UC-14 | OE-4 | servicios | Pendiente | Pendiente | Pendiente | — | Especificado |
 | RF-13 Alertas configurables | HU-42 | UC-09 | OE-4 | servicios | Pendiente | Pendiente | Pendiente | Falta pantalla en prototipo | Especificado |
 | RF-14 Dashboard | HU-41 | UC-08 | OE-2 | panel, backoffice | Backend #53 · Frontend #20 | Backend PR #54 · Frontend PR #21 | Indicadores con datos reales, fecha de referencia, acceso por rol (Administrador y Ejecutivo), Excel sin valores de ejemplo, número de consultas acotado (545 pruebas backend); panel sin rótulos de ejemplo, desglose por motivo, nota de ventas y estado vacío (131 pruebas frontend) | Prototipo pantalla 7 | Implementado |
 | RF-47 Motivo de pendiente | HU-61 | UC-11 | OE-2 | tramites | Backend #50 · Frontend #17 · Backend #53 y Frontend #20 (dashboard) | Backend PR #51 · Frontend PR #18 | Motivo solo mientras está Pendiente; 123 pruebas frontend; pendientes por motivo en el dashboard | — | Implementado · motivos provisionales (TA-13) |
 | RF-50 Consulta de ventas | HU-64 | UC-17 | OE-2 | ventas, backoffice | Frontend #7 | Frontend #9, #10 | Pruebas de ListaVentas y DetalleVenta | — | Implementado en pruebas |
-| RF-15 Registro de auditoría | HU-30 | UC-13 | OE-2 | core | Sin issue todavía | Backend, rama `feature/HU-30-auditoria` publicada en GitHub (último cambio c2bbc1c, 22-10-2026), sin PR ni fusión | `core/tests/test_auditoria_*.py`: creación, modificación y eliminación con usuario, IP y origen desde la API, el portal, el admin y Celery; sin fila si no hay cambios; campos excluidos (59 pruebas nuevas, 696 en total) | Prototipo pantalla 8 (interfaz pendiente, HU-31) | Implementado en el backend · sin fusionar |
-| RF-16 Protección del historial | HU-30 | UC-13 | OE-2 | core | Sin issue todavía | Backend, rama `feature/HU-30-auditoria` publicada en GitHub (último cambio c2bbc1c, 22-10-2026), sin PR ni fusión | `UPDATE`, `DELETE` y `TRUNCATE` directos fallan en la base; el modelo y el admin no permiten modificar ni eliminar | — | Implementado en el backend · sin fusionar |
-| RF-17 Consulta de auditoría | HU-31 | UC-13 | OE-2 | core | Sin issue todavía | Backend, rama `feature/HU-30-auditoria` publicada en GitHub (último cambio c2bbc1c, 22-10-2026), sin PR ni fusión | Matriz de acceso (Administrador 200; Ejecutivo, cliente y anónimo 403), filtros, historial agrupado y número de consultas acotado | Prototipo pantalla 8 (pantallas pendientes) | API implementada · pantallas pendientes |
+| RF-15 Registro de auditoría | HU-30 | UC-13 | OE-2 | core | Backend #61 | Backend PR #62, abierto y con revisión pendiente (rama `feature/HU-30-auditoria`, último commit `2acf8b5`) | `core/tests/test_auditoria_*.py`: creación, modificación y eliminación con usuario, IP y origen desde la API, el portal, el admin y Celery; sin fila si no hay cambios; campos excluidos (59 pruebas nuevas, 696 en total) | EVI-T11 ejecutado en local sobre ramas sin fusionar (02-11-2026); se repite tras la fusión | Implementado en el backend · sin fusionar |
+| RF-16 Protección del historial | HU-30 | UC-13 | OE-2 | core | Backend #61 | Backend PR #62, abierto y con revisión pendiente (rama `feature/HU-30-auditoria`, último commit `2acf8b5`) | `UPDATE`, `DELETE` y `TRUNCATE` directos fallan en la base; el modelo y el admin no permiten modificar ni eliminar | — | Implementado en el backend · sin fusionar |
+| RF-17 Consulta de auditoría | HU-31 | UC-13 | OE-2 | core, backoffice | Backend #61 · Frontend #30 | Backend PR #62, abierto y con revisión pendiente (rama `feature/HU-30-auditoria`, último commit `2acf8b5`) · Frontend: rama local `feature/HU-31-auditoria` (último commit `48d541d`), sin subir ni PR | Matriz de acceso (Administrador 200; Ejecutivo, cliente y anónimo 403), filtros, historial agrupado y número de consultas acotado. Frontend, en la rama local: 223 pruebas en 32 archivos (menú y ruta según el permiso, `403`, filtros, detalle, zona horaria y `429` en el ingreso) | EVI-T11 ejecutado en local sobre ramas sin fusionar (02-11-2026); se repite tras la fusión | API y pantallas implementadas · sin fusionar |
 | RF-18 Procesos asistidos | HU-13 | UC-07 | OE-2 | tramites | Pendiente | Pendiente | Pendiente | — | Especificado |
 
 ## Matriz · Portal de contratación
@@ -122,13 +122,13 @@ Según la versión reducida de objetivos (cinco específicos).
 | RNF-01 Persistencia relacional | — | — | OE-2 | datos | Pendiente | Pendiente | Pendiente | `REC-001` | Decidido |
 | RNF-03 Escalabilidad de datos | — | — | OE-2 | datos | Pendiente | Pendiente | Pendiente | `MOD-001 §5` | Diseñado |
 | RNF-04 Escalabilidad funcional | HU-14 | UC-11 | OE-3 | tramites | Pendiente | Pendiente | Pendiente | — | Especificado |
-| RNF-05 Respaldo periódico | — | — | OE-5 | infra | Pendiente | Pendiente | Pendiente | `REC-001 §7` | Diseñado |
+| RNF-05 Respaldo periódico | — | — | OE-5 | infra | Backend #72 | Backend PR #73 | Respaldo y restauración en una base separada, en una pila local desechable | Primer respaldo automático de las 03:00 comprobado en la VM de staging (`MOP-001` §1.1) | Implementado parcial · en staging, diario y con 7 días, en la misma VM; sin copia fuera del host ni ensayo de recuperación medido |
 | RNF-07 Portabilidad | — | — | OE-5 | infra | Pendiente | Pendiente | Pendiente | — | Pendiente |
-| RNF-09 Documentación técnica | — | — | OE-5 | docs | Pendiente | Pendiente | — | — | Pendiente |
+| RNF-09 Documentación técnica | — | — | OE-5 | docs | Backend #72 · Frontend #28 | Backend PR #73 · Frontend PR #29 | — | `docs/staging.md`, `MTE-001` y `MOP-001` | Implementado parcial · instrucciones de despliegue de staging; manuales en borrador |
 | RNF-10 Rendimiento | HU-46 | — | OE-5 | — | Pendiente | Pendiente | Pendiente | — | Propuesto |
 | RS-01 Acceso individual | HU-01 | — | OE-2 | core | Backend #14 · Frontend #2 | Backend PR #15 | Las de RF-01 | — | Implementado · ver RF-01 |
 | RS-02 Control de permisos | HU-04 | UC-10 | OE-2 | core | Pendiente | Pendiente | HU-45 | — | Especificado |
-| RS-04 Registro de accesos | HU-30 | UC-13 | OE-2 | core | Sin issue todavía | Backend, rama `feature/HU-30-auditoria` publicada en GitHub (último cambio c2bbc1c, 22-10-2026), sin PR ni fusión | Ingreso, ingreso fallido y cierre de sesión (personal, portal y admin); descarga de documentos; acceso a la cédula del autorizante | — | Implementado en el backend · sin fusionar |
+| RS-04 Registro de accesos | HU-30 | UC-13 | OE-2 | core | Backend #61 | Backend PR #62, abierto y con revisión pendiente (rama `feature/HU-30-auditoria`, último commit `2acf8b5`) | Ingreso, ingreso fallido y cierre de sesión (personal, portal y admin); descarga de documentos; acceso a la cédula del autorizante | — | Implementado en el backend · sin fusionar |
 | RS-08 Datos reales fuera del repositorio | — | — | OE-2 | — | — | `DOD-001` | Revisión en PR | `DOD-001` | Vigente |
 | RS-09 Anonimización en desarrollo | — | — | OE-2 | migracion | Pendiente | Pendiente | Pendiente | — | Propuesto |
 | IN-01 Firma electrónica | HU-34, HU-35, HU-37 | UC-16 | OE-4 | integrations | Backend #66 · Frontend #26 | Backend PR #68 · Frontend PR #27 | Interfaz con proveedor simulado y adaptador HTTP; conteo de pruebas por registrar | — | Implementado en pruebas con el prestador de pruebas · tufirma.digital: dependencia externa (TA-07) |
@@ -149,7 +149,7 @@ Estado al 28-10-2026. Los conteos salen de la columna *Objetivo* de las matrices
 | OE-2 | 28 | 8 | 4 | 7 | 4 | 5 | Autenticación, clientes, dashboard y motivo de pendiente implementados. Auditoría en rama sin fusionar. Migración desde Excel bloqueada por la planilla (TA-10) |
 | OE-3 | 9 | 2 | 0 | 5 | 0 | 2 | Segundo tipo de trámite y segundo documento (`PLT-02`) implementados; motor genérico y pantalla de configuración pendientes |
 | OE-4 | 25 | 17 | 0 | 0 | 0 | 8 | Domicilio tributario de punta a punta, cuenta del cliente, pagos con Klap y Flow y firma de pruebas implementados. Firma legal (tufirma.digital), alertas de vencimiento y acceso desde el sitio web pendientes |
-| OE-5 | 4 | 0 | 0 | 0 | 1 | 3 | Pruebas de rendimiento y de seguridad, manual técnico y despliegue por hacer. El backend tiene CI; el frontend no |
+| OE-5 | 4 | 0 | 0 | 2 | 0 | 2 | Staging desplegado en una VM con despliegue continuo y respaldos (PR #73 y #29); ambos repositorios tienen CI. Pruebas de rendimiento y de seguridad, y el alojamiento de producción, por hacer |
 
 *Implementado* incluye lo que funciona solo en ambiente de pruebas (pagos con Klap y Flow, firma de pruebas) y no equivale a validado por Easy Office.
 
@@ -224,16 +224,21 @@ Cada cifra (por ejemplo 97, 123, 128, 131, 150, 214, 498, 545, 637 y 696) corres
 no indica el commit ni el entorno. Las 696 pruebas incluyen las de la rama de
 auditoría, que no está fusionada.
 
+RF-15 a RF-17 tienen una ejecución de EVI-T11 del 02-11-2026, en local y sobre
+ramas sin fusionar (`EVI-001`). No es evidencia del código fusionado: se vuelve a
+ejecutar después de la fusión.
+
 ---
 
 ## Registro de fusiones
 
 PR fusionados en la rama principal de cada repositorio. Fuente: el historial de
-git, consultado el 28-10-2026 (backend `7869d0a`, frontend `f2e4758`). La fecha es la de
+git, consultado el 03-11-2026 (backend `5a4096b`, frontend `6892633`). La fecha es la de
 la fusión y el commit es el de fusión.
 
 | Repositorio | PR | Rama | Fecha de fusión | Commit |
 |---|---|---|---|---|
+| Backend | #73 | `chore/staging` | 01-11-2026 | `5a4096b` |
 | Backend | #68 | `feature/IN-01-firma-sandbox` | 27-10-2026 | `7869d0a` |
 | Backend | #60 | `feature/HU-15-plt02-bodega` | 21-10-2026 | `e73431e` |
 | Backend | #54 | `feature/HU-41-dashboard-real` | 20-10-2026 | `5139f10` |
@@ -252,6 +257,7 @@ la fusión y el commit es el de fusión.
 | Backend | #24 | `feature/HU-03-cuentas-cliente` | 10-10-2026 | `2520fe3` |
 | Backend | #18 | `feature/HU-06-gestion-clientes` | 10-10-2026 | `09d13d6` |
 | Backend | #15 | `feature/HU-01-login` | 05-10-2026 | `d536f10` |
+| Frontend | #29 | `chore/staging-docker` | 01-11-2026 | `6892633` |
 | Frontend | #27 | `feature/IN-01-firma-avanzada` | 27-10-2026 | `f2e4758` |
 | Frontend | #25 | `feature/HU-59-identidad-visual` | 22-10-2026 | `77f13eb` |
 | Frontend | #23 | `feature/HU-15-plt02-bodega` | 21-10-2026 | `3ab1398` |
@@ -303,3 +309,5 @@ Los identificadores provienen de `CAT-001` y no se reutilizan.
 | 2.11 | 22-10-2026 | HU-15, bodega virtual: backend PR #60 y frontend PR #23 fusionados el 21-10-2026 (RF-24, RF-33, RF-34, RF-36 y OE-3). RF-06, RF-08, RF-09 y RF-10 al día con lo que entregó el PR #18 del backend y el #5 del frontend (10-10-2026), que no se había registrado |
 | 2.12 | 22-10-2026 | Auditoría (HU-30 y API de HU-31) implementada en el backend, en la rama `feature/HU-30-auditoria`, sin issue ni PR todavía: RF-15, RF-16, RF-17, RS-04 y el historial de RF-10 |
 | 2.13 | 28-10-2026 | Estados contrastados con el código de la rama principal: RNF-12 (frontend PR #25), RF-02, RF-03, RF-04, RS-01, RF-11, RF-25, IN-01, RF-40 y RF-41 actualizados; firma de pruebas (backend PR #68, frontend PR #27); rama de auditoría publicada. Filas nuevas de RNF-02, RNF-06 y RNF-08. «Cobertura por objetivo» recalculada. Nuevas secciones: historias sin fila y fuentes divergentes (propuestas), evidencia pendiente y registro de fusiones |
+| 2.14 | 02-11-2026 | Auditoría: backend con issue #61 y PR #62 abierto (RF-15, RF-16, RF-17, RS-04); pantallas de HU-31 en una rama local del frontend, issue #30, sin subir (RF-10, RF-17); EVI-T11 ejecutado en local sobre ramas sin fusionar |
+| 2.15 | 03-11-2026 | Ambiente de staging (backend #72 y PR #73, frontend #28 y PR #29): RNF-05 y RNF-09 implementados en parte; «Cobertura por objetivo» de OE-5 y registro de fusiones al día |
